@@ -1,0 +1,394 @@
+@import './styles/tokens.css';
+
+/* ============================================================
+   Reset & base
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-ui);
+  background: var(--bw-black);
+  color: var(--bw-text);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+/* ============================================================
+   App shell
+   ============================================================ */
+.app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   Lobby — hanging room tags
+   ============================================================ */
+.lobby {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-16) var(--sp-8) var(--sp-12);
+  background:
+    radial-gradient(1200px 500px at 50% -10%, #1a1a1e 0%, var(--bw-black) 60%);
+}
+
+.lobby__header {
+  text-align: center;
+  margin-bottom: var(--sp-16);
+}
+
+.lobby__title {
+  font-family: var(--font-title);
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 400;
+  color: var(--bw-text);
+  letter-spacing: 0.01em;
+  margin: 0 0 var(--sp-2);
+}
+
+.lobby__subtitle {
+  color: var(--bw-text-dim);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.lobby__rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-12) var(--sp-10);
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.lobby__empty {
+  text-align: center;
+  color: var(--bw-text-dim);
+  padding: var(--sp-16) 0;
+}
+
+/* ---- Room tag (thread + tag) --------------------------- */
+.room-tag {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  transform-origin: top center;
+  animation: tag-sway 6s ease-in-out infinite;
+}
+
+.room-tag:nth-child(2n) { animation-delay: -2s; }
+.room-tag:nth-child(3n) { animation-delay: -4s; }
+
+@keyframes tag-sway {
+  0%, 100% { transform: rotate(-1.2deg); }
+  50%      { transform: rotate(1.2deg); }
+}
+
+.room-tag__thread {
+  width: 1px;
+  height: 56px;
+  background: linear-gradient(var(--thread), transparent 90%);
+}
+
+.room-tag__tag {
+  position: relative;
+  min-width: 148px;
+  padding: var(--sp-4) var(--sp-5, 20px) var(--sp-5, 20px);
+  background: var(--tag);
+  color: var(--tag-ink);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow-tag);
+  text-align: center;
+  transition:
+    transform var(--dur-med) var(--ease-out),
+    box-shadow var(--dur-med) var(--ease-out);
+}
+
+.room-tag:hover .room-tag__tag,
+.room-tag:focus-visible .room-tag__tag {
+  transform: translateY(3px);
+  box-shadow: var(--shadow-paper);
+}
+
+/* punched hole at top of tag */
+.room-tag__tag::before {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--bw-charcoal);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.room-tag__symbol {
+  display: block;
+  font-size: 1.5rem;
+  margin: var(--sp-2) 0 var(--sp-1);
+}
+
+.room-tag__name {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 500;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* new-room tag is a quiet invite, not a button wall */
+.room-tag--new .room-tag__tag {
+  background: transparent;
+  border: 1px dashed var(--bw-line-strong);
+  color: var(--bw-text-dim);
+  box-shadow: none;
+}
+
+.room-tag--new:hover .room-tag__tag {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: none;
+}
+
+/* ============================================================
+   Room — black wall canvas
+   ============================================================ */
+.room {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bw-charcoal);
+}
+
+.room__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-4) var(--sp-6);
+  border-bottom: 1px solid var(--bw-line);
+  background: rgba(11, 11, 12, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: var(--z-chrome);
+}
+
+.room__back {
+  color: var(--bw-text-dim);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.room__back:hover { color: var(--bw-text); }
+
+.room__title {
+  font-family: var(--font-title);
+  font-size: 1.7rem;
+  font-weight: 400;
+  margin: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--bw-text);
+  pointer-events: none;
+  max-width: 40vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.room__actions {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: center;
+}
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  color: var(--bw-text-dim);
+  font-size: 1.3rem;
+  line-height: 1;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.icon-btn:hover {
+  color: var(--bw-text);
+  background: var(--bw-line);
+  transform: translateY(-1px);
+}
+
+/* ---- Wall ------------------------------------------------ */
+.wall {
+  position: relative;
+  flex: 1;
+  overflow: auto;
+  background:
+    radial-gradient(1000px 420px at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 55%),
+    var(--bw-charcoal);
+}
+
+.wall__inner {
+  position: relative;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.wall__hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--bw-text-faint);
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  pointer-events: none;
+  animation: hint-in var(--dur-slow) var(--ease-out);
+}
+
+@keyframes hint-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ============================================================
+   Sticky note — paper on the wall
+   ============================================================ */
+.sticky {
+  position: absolute;
+  border-radius: 1px;
+  box-shadow: var(--shadow-paper);
+  cursor: grab;
+  user-select: none;
+  transition:
+    box-shadow var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.sticky:active { cursor: grabbing; }
+
+.sticky--dragging {
+  box-shadow: var(--shadow-paper-lifted);
+  transition: none;
+}
+
+.sticky__tape {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 64px;
+  height: 22px;
+  background: var(--tape-washi);
+  border-left: 1px dashed rgba(255, 255, 255, 0.25);
+  border-right: 1px dashed rgba(255, 255, 255, 0.25);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.sticky__body {
+  position: absolute;
+  inset: 26px 0 0 0;
+  height: auto;
+  padding: 0 var(--sp-4) var(--sp-4);
+  background: transparent;
+  border: none;
+  resize: none;
+  font-family: var(--font-note);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--note-ink, #3d3320);
+  outline: none;
+  cursor: text;
+}
+
+.sticky__body::placeholder {
+  color: rgba(0, 0, 0, 0.28);
+}
+
+.sticky__delete {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  color: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.sticky:hover .sticky__delete,
+.sticky:focus-within .sticky__delete {
+  opacity: 1;
+}
+
+.sticky__delete:hover {
+  color: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* peel-in on create */
+.sticky--new {
+  animation: sticky-peel-in var(--dur-med) var(--ease-land);
+}
+
+@keyframes sticky-peel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .room-tag { animation: none; }
+  .sticky--new { animation: none; }
+  .wall__hint { animation: none; }
+}

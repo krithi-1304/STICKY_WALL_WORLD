@@ -1,0 +1,89 @@
+/* ============================================================
+   Black Wall — design tokens
+   Foundation → material → semantic → component layers.
+   ============================================================ */
+
+:root {
+  /* ---- Foundation: color ------------------------------- */
+  --bw-black: #0b0b0c;
+  --bw-coal: #121214;
+  --bw-charcoal: #161618;
+  --bw-ash: #1d1d20;
+  --bw-line: rgba(255, 255, 255, 0.06);
+  --bw-line-strong: rgba(255, 255, 255, 0.12);
+  --bw-text: #eceae6;
+  --bw-text-dim: #9a978f;
+  --bw-text-faint: #5c5a55;
+
+  /* Material: paper */
+  --paper-butter: #f2e3a3;
+  --paper-blush: #f0c6c6;
+  --paper-sage: #c9d6b8;
+  --paper-sky: #c0d4e8;
+  --paper-lilac: #d8cbe8;
+  --paper-mist: #d8d4cc;
+
+  /* Material: tape */
+  --tape-washi: rgba(255, 255, 255, 0.34);
+  --tape-clear: rgba(255, 255, 255, 0.16);
+  --tape-masking: rgba(240, 230, 200, 0.5);
+
+  /* Material: thread & tag */
+  --thread: #8a8578;
+  --tag: #e6e1d6;
+  --tag-ink: #3a362f;
+
+  /* Accent — used sparingly */
+  --accent: #c9a86a;
+
+  /* Focus */
+  --focus-ring: rgba(201, 168, 106, 0.9);
+
+  /* ---- Foundation: type -------------------------------- */
+  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-title: 'Caveat', 'Segoe Script', cursive;
+  --font-note: 'Inter', system-ui, sans-serif;
+
+  /* ---- Foundation: space (8px base) -------------------- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* ---- Foundation: radius ------------------------------ */
+  --r-sm: 3px;
+  --r-md: 6px;
+  --r-lg: 12px;
+
+  /* ---- Foundation: elevation --------------------------- */
+  --shadow-paper: 0 1px 2px rgba(0, 0, 0, 0.5), 0 6px 18px rgba(0, 0, 0, 0.35);
+  --shadow-paper-lifted: 0 4px 8px rgba(0, 0, 0, 0.55), 0 16px 40px rgba(0, 0, 0, 0.5);
+  --shadow-tag: 0 2px 6px rgba(0, 0, 0, 0.4);
+
+  /* ---- Foundation: motion ------------------------------ */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-land: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-fast: 160ms;
+  --dur-med: 260ms;
+  --dur-slow: 420ms;
+
+  /* z-index bands */
+  --z-wall: 0;
+  --z-note: 10;
+  --z-dragging: 60;
+  --z-chrome: 100;
+
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-med: 0ms;
+    --dur-slow: 0ms;
+  }
+}
