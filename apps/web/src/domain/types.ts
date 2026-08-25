@@ -32,6 +32,8 @@ export interface Sticky {
   zIndex: number;
   color: StickyColorId;
   tape: TapeStyle;
+  /** Tape rotation in degrees, ±3. Set once at creation. */
+  tapeTilt: number;
   body: string;
   pinned: boolean;
   archived: boolean;

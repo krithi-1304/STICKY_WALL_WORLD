@@ -82,6 +82,7 @@ export const useWall = create<WallStore>((set, get) => ({
       zIndex: nextZ(inRoom),
       color: pickColor(inRoom),
       tape: 'washi',
+      tapeTilt: Math.round((Math.random() * 6 - 3) * 10) / 10,
       body: '',
       pinned: false,
       archived: false,

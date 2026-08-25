@@ -80,14 +80,46 @@ button {
 }
 
 .lobby__rail {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--sp-12) var(--sp-10);
-  justify-content: center;
+  gap: var(--sp-8) var(--sp-10);
+  justify-content: flex-start;
   align-items: flex-start;
   max-width: 1100px;
   margin: 0 auto;
+  padding-top: var(--sp-2);
 }
+
+/* the string the tags hang from */
+.lobby__rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 2%;
+  right: 2%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--thread) 8%,
+    var(--thread) 92%,
+    transparent 100%
+  );
+  opacity: 0.5;
+}
+
+/* varied hang heights — a wall, not a menu */
+.lobby__rail > :nth-child(4n + 1) { padding-top: var(--sp-3); }
+.lobby__rail > :nth-child(4n + 2) { padding-top: var(--sp-8); }
+.lobby__rail > :nth-child(4n + 3) { padding-top: var(--sp-5, 20px); }
+.lobby__rail > :nth-child(4n + 4) { padding-top: var(--sp-1); }
+
+/* threads vary in length to match */
+.lobby__rail > :nth-child(4n + 1) .room-tag__thread { height: 44px; }
+.lobby__rail > :nth-child(4n + 2) .room-tag__thread { height: 30px; }
+.lobby__rail > :nth-child(4n + 3) .room-tag__thread { height: 52px; }
+.lobby__rail > :nth-child(4n + 4) .room-tag__thread { height: 64px; }
 
 .lobby__empty {
   text-align: center;
@@ -203,6 +235,16 @@ button {
   background: rgba(11, 11, 12, 0.6);
   backdrop-filter: blur(8px);
   z-index: var(--z-chrome);
+  transition: opacity 0.9s var(--ease-out);
+}
+
+.room__topbar--dim {
+  opacity: 0.22;
+}
+
+.room__topbar--dim:hover {
+  opacity: 1;
+  transition-duration: var(--dur-fast);
 }
 
 .room__back {
@@ -263,14 +305,37 @@ button {
   flex: 1;
   overflow: auto;
   background:
-    radial-gradient(1000px 420px at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 55%),
+    radial-gradient(1200px 500px at 50% 0%, rgba(255, 255, 255, 0.025) 0%, transparent 50%),
+    radial-gradient(900px 100% at 50% 100%, rgba(0, 0, 0, 0.35) 0%, transparent 60%),
     var(--bw-charcoal);
+}
+
+/* matte grain over the whole wall */
+.wall::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.85;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+}
+
+/* gentle vignette — edges fall away, wall feels like a space */
+.wall::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(ellipse 88% 82% at 50% 45%, transparent 48%, rgba(0, 0, 0, 0.3) 100%);
 }
 
 .wall__inner {
   position: relative;
   min-width: 100%;
   min-height: 100%;
+  z-index: 2;
 }
 
 .wall__hint {
@@ -304,6 +369,31 @@ button {
     transform var(--dur-fast) var(--ease-out);
 }
 
+/* paper grain */
+.sticky::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  opacity: 0.6;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* bottom-right corner lift — paper is not perfectly flat */
+.sticky::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  background: linear-gradient(315deg, transparent 0%, transparent 45%, rgba(0,0,0,0.14) 50%, rgba(255,255,255,0.10) 55%, transparent 70%);
+  border-bottom-right-radius: 2px;
+}
+
 .sticky:active { cursor: grabbing; }
 
 .sticky--dragging {
@@ -313,21 +403,52 @@ button {
 
 .sticky__tape {
   position: absolute;
-  top: -11px;
+  top: -12px;
   left: 50%;
-  transform: translateX(-50%) rotate(-2deg);
-  width: 64px;
-  height: 22px;
-  background: var(--tape-washi);
-  border-left: 1px dashed rgba(255, 255, 255, 0.25);
-  border-right: 1px dashed rgba(255, 255, 255, 0.25);
-  opacity: 0.9;
+  /* each note's tape sits slightly differently */
+  transform: translateX(-50%) rotate(var(--tape-tilt, -2deg));
+  width: 68px;
+  height: 24px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.38) 0%,
+    rgba(255, 255, 255, 0.30) 45%,
+    rgba(255, 255, 255, 0.34) 100%
+  );
+  /* torn ends */
+  clip-path: polygon(
+    2% 8%, 6% 0%, 94% 3%, 98% 10%,
+    100% 50%, 97% 92%, 92% 100%,
+    6% 96%, 1% 88%, 0% 45%
+  );
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  opacity: 0.85;
   pointer-events: none;
+  z-index: 2;
+}
+
+/* lifted tape corner — bottom right peels slightly */
+.sticky__tape::after {
+  content: '';
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  width: 14px;
+  height: 10px;
+  background: linear-gradient(
+    315deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.38) 60%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  clip-path: polygon(100% 0%, 100% 100%, 0% 100%);
+  border-bottom-right-radius: 2px;
 }
 
 .sticky__body {
   position: absolute;
   inset: 26px 0 0 0;
+  z-index: 1;
   height: auto;
   padding: 0 var(--sp-4) var(--sp-4);
   background: transparent;

@@ -18,6 +18,9 @@ export function StickyNote({ sticky, isNew }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
   const dragOffset = useRef({ x: 0, y: 0 });
+  // How far the note has swung while dragging — a pendulum feel.
+  const [swing, setSwing] = useState(0);
+  const lastX = useRef(0);
 
   const color = STICKY_COLORS.find((c) => c.id === sticky.color) ?? STICKY_COLORS[0];
 
@@ -36,6 +39,8 @@ export function StickyNote({ sticky, isNew }: Props) {
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
     const rect = ref.current!.getBoundingClientRect();
     dragOffset.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    lastX.current = e.clientX;
+    setSwing(0);
     setDragging(true);
   }
 
@@ -44,11 +49,16 @@ export function StickyNote({ sticky, isNew }: Props) {
     const wall = ref.current!.parentElement!.getBoundingClientRect();
     const x = e.clientX - wall.left - dragOffset.current.x;
     const y = e.clientY - wall.top - dragOffset.current.y;
+    // Note swings slightly against drag direction — feels like paper, not a card.
+    const vx = e.clientX - lastX.current;
+    lastX.current = e.clientX;
+    setSwing(Math.max(-4, Math.min(4, -vx * 0.35)));
     updateSticky(sticky.id, { x, y });
   }
 
   function onPointerUp() {
     setDragging(false);
+    setSwing(0);
   }
 
   function onKeyDown(e: React.KeyboardEvent) {
@@ -87,7 +97,8 @@ export function StickyNote({ sticky, isNew }: Props) {
         zIndex: dragging ? 60 : sticky.zIndex,
         background: color.paper,
         ['--note-ink' as string]: color.ink,
-        transform: `rotate(${sticky.rotation}deg)`,
+        ['--tape-tilt' as string]: `${sticky.tapeTilt}deg`,
+        transform: `rotate(${sticky.rotation + (dragging ? swing : 0)}deg) scale(${dragging ? 1.02 : 1})`,
       }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
