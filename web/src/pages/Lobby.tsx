@@ -1,13 +1,13 @@
 import { useWall } from '../state/wall';
 import { RoomTag } from '../components/RoomTag';
 
-/** Lobby: a dark wall of hanging room tags. */
+/** Lobby: a dark wall of hanging room tags, revealed through mist. */
 export function Lobby() {
   const rooms = useWall((s) => s.rooms);
   const sorted = [...rooms].sort((a, b) => b.updatedAt - a.updatedAt);
 
   return (
-    <main className="lobby">
+    <main className="lobby mist">
       <header className="lobby__header">
         <h1 className="lobby__title">The Black Wall</h1>
         <p className="lobby__subtitle">Choose a room. Hang a thought.</p>

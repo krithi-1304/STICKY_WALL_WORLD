@@ -39,9 +39,6 @@ button {
   border-radius: var(--r-sm);
 }
 
-/* ============================================================
-   App shell
-   ============================================================ */
 .app {
   height: 100%;
   display: flex;
@@ -49,7 +46,20 @@ button {
 }
 
 /* ============================================================
-   Lobby — hanging room tags
+   Mist — the gallery reveals itself through fog
+   ============================================================ */
+.mist {
+  animation: mist-clear 1.6s var(--ease-out) both;
+}
+
+@keyframes mist-clear {
+  0%   { opacity: 0; filter: blur(18px); transform: scale(1.02); }
+  55%  { opacity: 1; filter: blur(6px); }
+  100% { opacity: 1; filter: blur(0); transform: scale(1); }
+}
+
+/* ============================================================
+   Lobby — a string of hung room tags
    ============================================================ */
 .lobby {
   flex: 1;
@@ -66,7 +76,7 @@ button {
 
 .lobby__title {
   font-family: var(--font-title);
-  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-size: clamp(2.6rem, 5.5vw, 4rem);
   font-weight: 400;
   color: var(--bw-text);
   letter-spacing: 0.01em;
@@ -77,6 +87,7 @@ button {
   color: var(--bw-text-dim);
   font-size: 0.95rem;
   margin: 0;
+  font-style: italic;
 }
 
 .lobby__rail {
@@ -86,7 +97,7 @@ button {
   gap: var(--sp-8) var(--sp-10);
   justify-content: flex-start;
   align-items: flex-start;
-  max-width: 1100px;
+  max-width: 1080px;
   margin: 0 auto;
   padding-top: var(--sp-2);
 }
@@ -96,30 +107,29 @@ button {
   content: '';
   position: absolute;
   top: 0;
-  left: 2%;
-  right: 2%;
+  left: 1%;
+  right: 1%;
   height: 1px;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--thread) 8%,
-    var(--thread) 92%,
+    var(--thread) 6%,
+    var(--thread) 94%,
     transparent 100%
   );
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
 /* varied hang heights — a wall, not a menu */
 .lobby__rail > :nth-child(4n + 1) { padding-top: var(--sp-3); }
-.lobby__rail > :nth-child(4n + 2) { padding-top: var(--sp-8); }
+.lobby__rail > :nth-child(4n + 2) { padding-top: var(--sp-9, 36px); }
 .lobby__rail > :nth-child(4n + 3) { padding-top: var(--sp-5, 20px); }
 .lobby__rail > :nth-child(4n + 4) { padding-top: var(--sp-1); }
 
-/* threads vary in length to match */
-.lobby__rail > :nth-child(4n + 1) .room-tag__thread { height: 44px; }
-.lobby__rail > :nth-child(4n + 2) .room-tag__thread { height: 30px; }
-.lobby__rail > :nth-child(4n + 3) .room-tag__thread { height: 52px; }
-.lobby__rail > :nth-child(4n + 4) .room-tag__thread { height: 64px; }
+.lobby__rail > :nth-child(4n + 1) .room-tag__thread { height: 46px; }
+.lobby__rail > :nth-child(4n + 2) .room-tag__thread { height: 28px; }
+.lobby__rail > :nth-child(4n + 3) .room-tag__thread { height: 54px; }
+.lobby__rail > :nth-child(4n + 4) .room-tag__thread { height: 66px; }
 
 .lobby__empty {
   text-align: center;
@@ -127,34 +137,39 @@ button {
   padding: var(--sp-16) 0;
 }
 
-/* ---- Room tag (thread + tag) --------------------------- */
+/* ---- Room tag (thread + pin + tag) ------------------------ */
 .room-tag {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-decoration: none;
   transform-origin: top center;
-  animation: tag-sway 6s ease-in-out infinite;
+  animation: tag-sway 7s ease-in-out infinite;
 }
 
-.room-tag:nth-child(2n) { animation-delay: -2s; }
-.room-tag:nth-child(3n) { animation-delay: -4s; }
+/* each tag settles at a slightly different angle */
+.lobby__rail > :nth-child(odd) .room-tag { --tag-rot: -1.6deg; }
+.lobby__rail > :nth-child(even) .room-tag { --tag-rot: 1.3deg; }
+
+.room-tag:nth-child(2n) { animation-delay: -2.2s; }
+.room-tag:nth-child(3n) { animation-delay: -4.4s; }
+.room-tag:nth-child(5n) { animation-delay: -1.3s; }
 
 @keyframes tag-sway {
-  0%, 100% { transform: rotate(-1.2deg); }
-  50%      { transform: rotate(1.2deg); }
+  0%, 100% { transform: rotate(calc(var(--tag-rot, 0deg) - 0.9deg)); }
+  50%      { transform: rotate(calc(var(--tag-rot, 0deg) + 0.9deg)); }
 }
 
 .room-tag__thread {
   width: 1px;
-  height: 56px;
-  background: linear-gradient(var(--thread), transparent 90%);
+  height: 52px;
+  background: linear-gradient(var(--thread), transparent 92%);
 }
 
 .room-tag__tag {
   position: relative;
-  min-width: 148px;
-  padding: var(--sp-4) var(--sp-5, 20px) var(--sp-5, 20px);
+  min-width: 152px;
+  padding: var(--sp-5, 20px) var(--sp-5, 20px) var(--sp-5, 20px);
   background: var(--tag);
   color: var(--tag-ink);
   border-radius: var(--r-sm);
@@ -171,37 +186,36 @@ button {
   box-shadow: var(--shadow-paper);
 }
 
-/* punched hole at top of tag */
+/* the pin at the top of the tag */
 .room-tag__tag::before {
   content: '';
   position: absolute;
-  top: 7px;
+  top: -6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 9px;
-  height: 9px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
-  background: var(--bw-charcoal);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+  background: radial-gradient(circle at 35% 30%, #5a5548, #2c2921);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255,255,255,0.15);
 }
 
 .room-tag__symbol {
   display: block;
   font-size: 1.5rem;
-  margin: var(--sp-2) 0 var(--sp-1);
+  margin: var(--sp-1) 0;
 }
 
 .room-tag__name {
   display: block;
-  font-size: 0.88rem;
-  font-weight: 500;
-  max-width: 180px;
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  max-width: 190px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* new-room tag is a quiet invite, not a button wall */
 .room-tag--new .room-tag__tag {
   background: transparent;
   border: 1px dashed var(--bw-line-strong);
@@ -209,14 +223,18 @@ button {
   box-shadow: none;
 }
 
-.room-tag--new:hover .room-tag__tag {
-  border-color: var(--accent);
-  color: var(--accent);
+.room-tag--new .room-tag__tag::before {
+  background: var(--bw-line-strong);
   box-shadow: none;
 }
 
+.room-tag--new:hover .room-tag__tag {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* ============================================================
-   Room — black wall canvas
+   Room — black wall
    ============================================================ */
 .room {
   flex: 1;
@@ -239,7 +257,7 @@ button {
 }
 
 .room__topbar--dim {
-  opacity: 0.22;
+  opacity: 0.2;
 }
 
 .room__topbar--dim:hover {
@@ -258,7 +276,7 @@ button {
 
 .room__title {
   font-family: var(--font-title);
-  font-size: 1.7rem;
+  font-size: 1.8rem;
   font-weight: 400;
   margin: 0;
   position: absolute;
@@ -274,32 +292,61 @@ button {
 
 .room__actions {
   display: flex;
-  gap: var(--sp-3);
+  gap: var(--sp-2);
   align-items: center;
 }
 
 .icon-btn {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 var(--sp-2);
   border-radius: var(--r-md);
   color: var(--bw-text-dim);
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   line-height: 1;
+  font-family: var(--font-ui);
   transition:
     color var(--dur-fast) var(--ease-out),
-    background var(--dur-fast) var(--ease-out),
-    transform var(--dur-fast) var(--ease-out);
+    background var(--dur-fast) var(--ease-out);
 }
 
 .icon-btn:hover {
   color: var(--bw-text);
   background: var(--bw-line);
-  transform: translateY(-1px);
 }
 
-/* ---- Wall ------------------------------------------------ */
+/* font picker */
+.font-pick {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  margin-right: var(--sp-2);
+  border: 1px solid var(--bw-line);
+  border-radius: var(--r-md);
+  padding: 2px;
+}
+
+.font-pick__btn {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-sm);
+  display: grid;
+  place-items: center;
+  color: var(--bw-text-dim);
+  font-size: 1.05rem;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.font-pick__btn:hover { color: var(--bw-text); }
+
+.font-pick__btn[aria-pressed='true'] {
+  color: var(--accent);
+  background: rgba(201, 168, 106, 0.1);
+}
+
+/* ---- Wall ------------------------------------------------- */
 .wall {
   position: relative;
   flex: 1;
@@ -310,7 +357,6 @@ button {
     var(--bw-charcoal);
 }
 
-/* matte grain over the whole wall */
 .wall::before {
   content: '';
   position: absolute;
@@ -321,7 +367,6 @@ button {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
 }
 
-/* gentle vignette — edges fall away, wall feels like a space */
 .wall::after {
   content: '';
   position: absolute;
@@ -345,7 +390,7 @@ button {
   transform: translate(-50%, -50%);
   color: var(--bw-text-faint);
   font-family: var(--font-title);
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   pointer-events: none;
   animation: hint-in var(--dur-slow) var(--ease-out);
 }
@@ -355,8 +400,34 @@ button {
   to   { opacity: 1; }
 }
 
+/* one calm word breathing in the empty space */
+.wall__calm {
+  position: absolute;
+  font-family: var(--font-title);
+  color: rgba(255, 255, 255, 0.055);
+  font-size: 2.6rem;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: calm-breathe 9s ease-in-out infinite;
+}
+
+@keyframes calm-breathe {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.7; }
+}
+
+/* marquee selection rectangle */
+.wall__marquee {
+  position: absolute;
+  border: 1px solid rgba(201, 168, 106, 0.6);
+  background: rgba(201, 168, 106, 0.07);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 55;
+}
+
 /* ============================================================
-   Sticky note — paper on the wall
+   Sticky note — paper, washi tape, date tag
    ============================================================ */
 .sticky {
   position: absolute;
@@ -369,7 +440,6 @@ button {
     transform var(--dur-fast) var(--ease-out);
 }
 
-/* paper grain */
 .sticky::before {
   content: '';
   position: absolute;
@@ -381,7 +451,6 @@ button {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
 }
 
-/* bottom-right corner lift — paper is not perfectly flat */
 .sticky::after {
   content: '';
   position: absolute;
@@ -401,53 +470,77 @@ button {
   transition: none;
 }
 
+.sticky--selected {
+  outline: 1.5px solid rgba(201, 168, 106, 0.85);
+  outline-offset: 3px;
+  box-shadow: var(--shadow-paper-lifted);
+}
+
+/* ---- washi tape variants ---------------------------------- */
 .sticky__tape {
   position: absolute;
-  top: -12px;
+  top: -13px;
   left: 50%;
-  /* each note's tape sits slightly differently */
   transform: translateX(-50%) rotate(var(--tape-tilt, -2deg));
-  width: 68px;
-  height: 24px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.38) 0%,
-    rgba(255, 255, 255, 0.30) 45%,
-    rgba(255, 255, 255, 0.34) 100%
-  );
-  /* torn ends */
+  width: 72px;
+  height: 26px;
   clip-path: polygon(
-    2% 8%, 6% 0%, 94% 3%, 98% 10%,
-    100% 50%, 97% 92%, 92% 100%,
-    6% 96%, 1% 88%, 0% 45%
+    2% 10%, 7% 0%, 93% 3%, 98% 12%,
+    100% 50%, 97% 90%, 91% 100%,
+    7% 95%, 1% 87%, 0% 45%
   );
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
   opacity: 0.85;
   pointer-events: none;
   z-index: 2;
 }
 
-/* lifted tape corner — bottom right peels slightly */
-.sticky__tape::after {
-  content: '';
+.sticky--tape-plain .sticky__tape {
+  background: linear-gradient(180deg, rgba(255,255,255,0.38), rgba(255,255,255,0.30) 45%, rgba(255,255,255,0.34));
+}
+
+.sticky--tape-diagonal .sticky__tape {
+  background:
+    repeating-linear-gradient(45deg,
+      rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 5px,
+      rgba(201,168,106,0.4) 5px, rgba(201,168,106,0.4) 10px);
+}
+
+.sticky--tape-dots .sticky__tape {
+  background:
+    radial-gradient(circle at 6px 6px, rgba(201,168,106,0.55) 1.8px, transparent 2.2px) 0 0 / 12px 12px,
+    linear-gradient(180deg, rgba(255,255,255,0.36), rgba(255,255,255,0.28));
+}
+
+.sticky--tape-grid .sticky__tape {
+  background:
+    repeating-linear-gradient(0deg, rgba(201,168,106,0.3) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(90deg, rgba(201,168,106,0.3) 0 1px, transparent 1px 7px),
+    linear-gradient(180deg, rgba(255,255,255,0.34), rgba(255,255,255,0.26));
+}
+
+/* ---- date tag — a small torn label pinned to the corner --- */
+.sticky__date {
   position: absolute;
-  right: 1px;
-  bottom: 1px;
-  width: 14px;
-  height: 10px;
-  background: linear-gradient(
-    315deg,
-    rgba(255, 255, 255, 0.22) 0%,
-    rgba(255, 255, 255, 0.38) 60%,
-    rgba(0, 0, 0, 0.06) 100%
-  );
-  clip-path: polygon(100% 0%, 100% 100%, 0% 100%);
-  border-bottom-right-radius: 2px;
+  right: 10px;
+  bottom: -9px;
+  z-index: 3;
+  padding: 2px 8px 3px;
+  font-family: var(--font-ui);
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  color: var(--tag-ink);
+  background: #efe9db;
+  border-radius: 1px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transform: rotate(-2deg);
+  clip-path: polygon(4% 0%, 100% 2%, 98% 92%, 2% 100%);
+  pointer-events: none;
 }
 
 .sticky__body {
   position: absolute;
-  inset: 26px 0 0 0;
+  inset: 30px 0 12px 0;
   z-index: 1;
   height: auto;
   padding: 0 var(--sp-4) var(--sp-4);
@@ -455,22 +548,22 @@ button {
   border: none;
   resize: none;
   font-family: var(--font-note);
-  font-size: 0.9rem;
-  line-height: 1.45;
+  font-size: 1.3rem;
+  line-height: 1.4;
   color: var(--note-ink, #3d3320);
   outline: none;
   cursor: text;
 }
 
 .sticky__body::placeholder {
-  color: rgba(0, 0, 0, 0.28);
+  color: rgba(0, 0, 0, 0.24);
 }
 
 .sticky__delete {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  z-index: 2;
+  top: 5px;
+  right: 5px;
+  z-index: 3;
   width: 22px;
   height: 22px;
   border-radius: 50%;
@@ -489,27 +582,22 @@ button {
 
 .sticky__delete:hover {
   color: rgba(0, 0, 0, 0.75);
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(0, 0, 0, 0.07);
 }
 
-/* peel-in on create */
 .sticky--new {
   animation: sticky-peel-in var(--dur-med) var(--ease-land);
 }
 
 @keyframes sticky-peel-in {
-  from {
-    opacity: 0;
-    transform: translateY(-6px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .mist { animation: none; }
   .room-tag { animation: none; }
+  .wall__calm { animation: none; opacity: 0.4; }
   .sticky--new { animation: none; }
   .wall__hint { animation: none; }
 }

@@ -42,7 +42,7 @@
   /* ---- Foundation: type -------------------------------- */
   --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-title: 'Caveat', 'Segoe Script', cursive;
-  --font-note: 'Inter', system-ui, sans-serif;
+  --font-note: 'Caveat', cursive;
 
   /* ---- Foundation: space (8px base) -------------------- */
   --sp-1: 4px;

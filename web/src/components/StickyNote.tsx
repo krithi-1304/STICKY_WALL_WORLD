@@ -1,30 +1,39 @@
 import { useEffect, useRef, useState } from 'react';
 import { useWall } from '../state/wall';
-import { STICKY_COLORS, STICKY_LIMITS } from '../domain/types';
+import { HAND_FONTS, STICKY_COLORS, STICKY_LIMITS } from '../domain/types';
 import type { Sticky } from '../domain/types';
 
 interface Props {
   sticky: Sticky;
   isNew: boolean;
+  fontId: string;
+  selected: boolean;
+  onSelectToggle: (id: string) => void;
+}
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function formatDate(ts: number): string {
+  const d = new Date(ts);
+  return `${MONTHS[d.getMonth()]} ${d.getDate()}`;
 }
 
 /**
- * A sticky note on the wall.
- * Drag with pointer; edit inline; keyboard nudge with arrows.
+ * A sticky note on the wall — real paper, washi tape, a small date tag.
+ * Drag to move; click to edit; arrows nudge; shift-click adds to selection.
  */
-export function StickyNote({ sticky, isNew }: Props) {
+export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle }: Props) {
   const updateSticky = useWall((s) => s.updateSticky);
   const deleteSticky = useWall((s) => s.deleteSticky);
   const ref = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
   const dragOffset = useRef({ x: 0, y: 0 });
-  // How far the note has swung while dragging — a pendulum feel.
   const [swing, setSwing] = useState(0);
   const lastX = useRef(0);
 
   const color = STICKY_COLORS.find((c) => c.id === sticky.color) ?? STICKY_COLORS[0];
+  const font = HAND_FONTS.find((f) => f.id === fontId) ?? HAND_FONTS[0];
 
-  // Focus new notes so the user can type immediately.
   useEffect(() => {
     if (isNew) {
       const ta = ref.current?.querySelector('textarea');
@@ -33,7 +42,11 @@ export function StickyNote({ sticky, isNew }: Props) {
   }, [isNew]);
 
   function onPointerDown(e: React.PointerEvent) {
-    // Don't start a drag from the textarea or delete button.
+    // Shift-click toggles selection instead of dragging.
+    if (e.shiftKey) {
+      onSelectToggle(sticky.id);
+      return;
+    }
     if ((e.target as HTMLElement).closest('textarea, .sticky__delete')) return;
     e.preventDefault();
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
@@ -49,7 +62,6 @@ export function StickyNote({ sticky, isNew }: Props) {
     const wall = ref.current!.parentElement!.getBoundingClientRect();
     const x = e.clientX - wall.left - dragOffset.current.x;
     const y = e.clientY - wall.top - dragOffset.current.y;
-    // Note swings slightly against drag direction — feels like paper, not a card.
     const vx = e.clientX - lastX.current;
     lastX.current = e.clientX;
     setSwing(Math.max(-4, Math.min(4, -vx * 0.35)));
@@ -85,9 +97,15 @@ export function StickyNote({ sticky, isNew }: Props) {
   return (
     <div
       ref={ref}
-      className={`sticky${dragging ? ' sticky--dragging' : ''}${isNew ? ' sticky--new' : ''}`}
+      className={
+        `sticky sticky--tape-${sticky.tape}` +
+        `${dragging ? ' sticky--dragging' : ''}` +
+        `${isNew ? ' sticky--new' : ''}` +
+        `${selected ? ' sticky--selected' : ''}`
+      }
       role="note"
       aria-label="Sticky note"
+      aria-pressed={selected}
       tabIndex={0}
       style={{
         left: sticky.x,
@@ -98,7 +116,7 @@ export function StickyNote({ sticky, isNew }: Props) {
         background: color.paper,
         ['--note-ink' as string]: color.ink,
         ['--tape-tilt' as string]: `${sticky.tapeTilt}deg`,
-        transform: `rotate(${sticky.rotation + (dragging ? swing : 0)}deg) scale(${dragging ? 1.02 : 1})`,
+        transform: `rotate(${sticky.rotation + (dragging ? swing : 0)}deg) scale(${dragging ? 1.03 : 1})`,
       }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
@@ -112,7 +130,9 @@ export function StickyNote({ sticky, isNew }: Props) {
         placeholder="Write…"
         maxLength={STICKY_LIMITS.maxBodyLength}
         onChange={(e) => updateSticky(sticky.id, { body: e.target.value })}
+        style={{ fontFamily: font.stack, fontSize: font.size }}
       />
+      <span className="sticky__date" aria-hidden="true">{formatDate(sticky.createdAt)}</span>
       <button
         className="sticky__delete"
         aria-label="Remove note"

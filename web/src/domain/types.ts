@@ -3,9 +3,20 @@
  * Keep these shapes stable; they map 1:1 to future DB tables.
  */
 
-export type TapeStyle = 'washi' | 'clear' | 'masking';
+export type TapeStyle = 'plain' | 'dots' | 'diagonal' | 'grid';
 
 export type WallTint = 'none' | 'charcoal' | 'ash' | 'midnight';
+
+/** Handwriting faces — a different hand for a different mood. */
+export const HAND_FONTS = [
+  { id: 'caveat', label: 'Caveat', stack: "'Caveat', cursive", size: '1.35rem' },
+  { id: 'kalam', label: 'Kalam', stack: "'Kalam', cursive", size: '1.05rem' },
+  { id: 'shadow', label: 'Shadow', stack: "'Shadows Into Light', cursive", size: '1.15rem' },
+  { id: 'gochi', label: 'Gochi', stack: "'Gochi Hand', cursive", size: '1rem' },
+  { id: 'homemade', label: 'Homemade', stack: "'Homemade Apple', cursive", size: '0.9rem' },
+] as const;
+
+export type HandFontId = (typeof HAND_FONTS)[number]['id'];
 
 /** Paper colors allowed on the wall (constraint that creates beauty). */
 export const STICKY_COLORS = [
@@ -32,7 +43,7 @@ export interface Sticky {
   zIndex: number;
   color: StickyColorId;
   tape: TapeStyle;
-  /** Tape rotation in degrees, ±3. Set once at creation. */
+  /** Tape rotation in degrees, ±4. Set once at creation. */
   tapeTilt: number;
   body: string;
   pinned: boolean;
@@ -49,6 +60,8 @@ export interface Room {
   symbol: string;
   accent: string | null;
   wallTint: WallTint;
+  /** Handwriting face for all notes in this room. */
+  fontId: HandFontId;
   createdAt: number;
   updatedAt: number;
 }

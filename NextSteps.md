@@ -1,0 +1,22 @@
+--User usability test
+--UI Principles
+--UX Principles
+--Pyschology 
+--Architecture testing 
+--design testing
+--checking loopholes
+--Purpose of development 
+--Uniqueness 
+--Multiple link as notepad
+--attach photos as well 
+--secure your one setting up a password 
+--check for malicious code 
+--and secure with password 
+--hosting version 1 
+--completing project and working on upgradation and adding new features 
+--creativity 
+--psycology of design and person who wanna use it 
+--How can I run it for free forever?
+--Check the code before pushing to the github 
+--create features and usage document - with clear screenshots 
+--
