@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useWall } from '../state/wall';
 import { HAND_FONTS, STICKY_COLORS, STICKY_LIMITS } from '../domain/types';
 import type { Sticky } from '../domain/types';
@@ -19,14 +20,15 @@ function formatDate(ts: number): string {
 }
 
 /**
- * A sticky note on the wall — real paper, washi tape, a small date tag.
- * Drag to move; click to edit; arrows nudge; shift-click adds to selection.
+ * A sticky note — real paper, washi tape, a date tag hanging by thread.
+ * Drag to move · click ↗ to hold it up close · shift-click to select.
  */
 export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle }: Props) {
   const updateSticky = useWall((s) => s.updateSticky);
   const deleteSticky = useWall((s) => s.deleteSticky);
   const ref = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
+  const [maximized, setMaximized] = useState(false);
   const dragOffset = useRef({ x: 0, y: 0 });
   const [swing, setSwing] = useState(0);
   const lastX = useRef(0);
@@ -41,13 +43,22 @@ export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle }: 
     }
   }, [isNew]);
 
+  // Escape closes the maximized view.
+  useEffect(() => {
+    if (!maximized) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setMaximized(false);
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [maximized]);
+
   function onPointerDown(e: React.PointerEvent) {
-    // Shift-click toggles selection instead of dragging.
     if (e.shiftKey) {
       onSelectToggle(sticky.id);
       return;
     }
-    if ((e.target as HTMLElement).closest('textarea, .sticky__delete')) return;
+    if ((e.target as HTMLElement).closest('textarea, .sticky__delete, .sticky__zoom')) return;
     e.preventDefault();
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
     const rect = ref.current!.getBoundingClientRect();
@@ -92,54 +103,102 @@ export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle }: 
         deleteSticky(sticky.id);
       }
     }
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      setMaximized(true);
+    }
   }
 
   return (
-    <div
-      ref={ref}
-      className={
-        `sticky sticky--tape-${sticky.tape}` +
-        `${dragging ? ' sticky--dragging' : ''}` +
-        `${isNew ? ' sticky--new' : ''}` +
-        `${selected ? ' sticky--selected' : ''}`
-      }
-      role="note"
-      aria-label="Sticky note"
-      aria-pressed={selected}
-      tabIndex={0}
-      style={{
-        left: sticky.x,
-        top: sticky.y,
-        width: sticky.w,
-        height: sticky.h,
-        zIndex: dragging ? 60 : sticky.zIndex,
-        background: color.paper,
-        ['--note-ink' as string]: color.ink,
-        ['--tape-tilt' as string]: `${sticky.tapeTilt}deg`,
-        transform: `rotate(${sticky.rotation + (dragging ? swing : 0)}deg) scale(${dragging ? 1.03 : 1})`,
-      }}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onKeyDown={onKeyDown}
-    >
-      <span className="sticky__tape" />
-      <textarea
-        className="sticky__body"
-        value={sticky.body}
-        placeholder="Write…"
-        maxLength={STICKY_LIMITS.maxBodyLength}
-        onChange={(e) => updateSticky(sticky.id, { body: e.target.value })}
-        style={{ fontFamily: font.stack, fontSize: font.size }}
-      />
-      <span className="sticky__date" aria-hidden="true">{formatDate(sticky.createdAt)}</span>
-      <button
-        className="sticky__delete"
-        aria-label="Remove note"
-        onClick={() => deleteSticky(sticky.id)}
+    <>
+      <div
+        ref={ref}
+        className={
+          `sticky sticky--tape-${sticky.tape}` +
+          `${dragging ? ' sticky--dragging' : ''}` +
+          `${isNew ? ' sticky--new' : ''}` +
+          `${selected ? ' sticky--selected' : ''}`
+        }
+        role="note"
+        aria-label="Sticky note"
+        aria-pressed={selected}
+        tabIndex={0}
+        style={{
+          left: sticky.x,
+          top: sticky.y,
+          width: sticky.w,
+          height: sticky.h,
+          zIndex: dragging ? 60 : sticky.zIndex,
+          background: color.paper,
+          ['--note-ink' as string]: color.ink,
+          ['--tape-tilt' as string]: `${sticky.tapeTilt}deg`,
+          transform: `rotate(${sticky.rotation + (dragging ? swing : 0)}deg) scale(${dragging ? 1.03 : 1})`,
+        }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onKeyDown={onKeyDown}
       >
-        ×
-      </button>
-    </div>
+        <span className="sticky__tape" />
+        <textarea
+          className="sticky__body"
+          value={sticky.body}
+          placeholder="Write…"
+          maxLength={STICKY_LIMITS.maxBodyLength}
+          onChange={(e) => updateSticky(sticky.id, { body: e.target.value })}
+          style={{ fontFamily: font.stack, fontSize: font.size }}
+        />
+        <span className="sticky__date">{formatDate(sticky.createdAt)}</span>
+        <button
+          className="sticky__zoom"
+          aria-label="Hold note up close"
+          title="Maximize"
+          onClick={() => setMaximized(true)}
+        >
+          ⤢
+        </button>
+        <button
+          className="sticky__delete"
+          aria-label="Remove note"
+          onClick={() => deleteSticky(sticky.id)}
+        >
+          ×
+        </button>
+      </div>
+
+      {maximized &&
+        createPortal(
+          <div
+            className="note-overlay"
+            role="dialog"
+            aria-label="Note, maximized"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setMaximized(false);
+            }}
+          >
+            <div className="note-overlay__paper" style={{ background: color.paper, ['--note-ink' as string]: color.ink }}>
+              <span className={`sticky__tape note-overlay__tape sticky--tape-${sticky.tape}`} />
+              <button
+                className="note-overlay__close"
+                aria-label="Close"
+                onClick={() => setMaximized(false)}
+              >
+                ×
+              </button>
+              <textarea
+                className="note-overlay__body"
+                value={sticky.body}
+                placeholder="Write…"
+                maxLength={STICKY_LIMITS.maxBodyLength}
+                autoFocus
+                style={{ fontFamily: font.stack }}
+                onChange={(e) => updateSticky(sticky.id, { body: e.target.value })}
+              />
+              <span className="note-overlay__date">{formatDate(sticky.createdAt)}</span>
+            </div>
+          </div>,
+          document.body,
+        )}
+    </>
   );
 }

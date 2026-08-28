@@ -21,6 +21,7 @@ export function Room() {
   const stickies = useWall(useShallow(selectStickiesForRoom(room?.id ?? '')));
   const addSticky = useWall((s) => s.addSticky);
   const tidyRoom = useWall((s) => s.tidyRoom);
+  const sortRoom = useWall((s) => s.sortRoom);
   const deleteStickies = useWall((s) => s.deleteStickies);
   const updateRoom = useWall((s) => s.updateRoom);
 
@@ -32,6 +33,26 @@ export function Room() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [marquee, setMarquee] = useState<Marquee | null>(null);
   const marqueeActive = useRef(false);
+  const fogRef = useRef<HTMLDivElement>(null);
+
+  // Fog drifts behind the pointer — eased, never instant.
+  useEffect(() => {
+    const el = fogRef.current;
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let raf = 0;
+    const onMove = (e: PointerEvent) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        el.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+      });
+    };
+    window.addEventListener('pointermove', onMove);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
 
   // One calm word per visit — chosen once, lazily.
   const [calmWord] = useState(
@@ -71,6 +92,11 @@ export function Room() {
   function onTidy() {
     if (!room) return;
     tidyRoom(room.id, wallSize());
+  }
+
+  function onSort(dir: 'asc' | 'desc') {
+    if (!room) return;
+    sortRoom(room.id, wallSize(), dir);
   }
 
   function onSelectToggle(id: string) {
@@ -152,10 +178,15 @@ export function Room() {
               </button>
             ))}
           </div>
+          <button className="icon-btn" onClick={() => onSort('asc')} title="Sort: oldest first">↑ old</button>
+          <button className="icon-btn" onClick={() => onSort('desc')} title="Sort: newest first">↓ new</button>
           <button className="icon-btn" onClick={onTidy} title="Tidy the wall">Tidy</button>
           <button className="icon-btn" onClick={onAdd} aria-label="Add sticky note" title="Pin a note">+</button>
         </div>
       </div>
+
+      {/* soft mist that follows the pointer — presence without noise */}
+      <div className="fog-cursor" ref={fogRef} aria-hidden="true" />
 
       <div
         className="wall"

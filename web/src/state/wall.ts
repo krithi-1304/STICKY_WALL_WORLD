@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { loadWorld, saveWorld } from '../domain/storage';
 import { slugify, uniqueSlug } from '../domain/slug';
-import { STICKY_LIMITS } from '../domain/types';
+import { STICKY_COLORS, STICKY_LIMITS } from '../domain/types';
 import type { HandFontId, Room, Sticky, StickyColorId, TapeStyle } from '../domain/types';
 
 interface WallStore {
@@ -16,6 +16,8 @@ interface WallStore {
   deleteStickies: (ids: string[]) => void;
   /** Arrange a room's notes into a loose organic grid. */
   tidyRoom: (roomId: string, wall: { w: number; h: number }) => void;
+  /** Sort notes by date into a soft grid. dir: 'asc' oldest-first, 'desc' newest-first. */
+  sortRoom: (roomId: string, wall: { w: number; h: number }, dir: 'asc' | 'desc') => void;
 }
 
 const persisted = loadWorld();
@@ -26,14 +28,15 @@ const clampRotation = (deg: number) =>
   Math.max(STICKY_LIMITS.minRotation, Math.min(STICKY_LIMITS.maxRotation, deg));
 const rand = (min: number, max: number) => min + Math.random() * (max - min);
 
+const COLOR_IDS = STICKY_COLORS.map((c) => c.id) as StickyColorId[];
+const TAPE_IDS: TapeStyle[] = ['plain', 'dots', 'diagonal', 'grid', 'hearts', 'stars', 'checker', 'confetti'];
+
 function pickColor(existing: Sticky[]): StickyColorId {
-  const palette: StickyColorId[] = ['butter', 'blush', 'sage', 'sky', 'lilac', 'mist'];
-  return palette[existing.length % palette.length] as StickyColorId;
+  return COLOR_IDS[existing.length % COLOR_IDS.length] as StickyColorId;
 }
 
 function pickTape(i: number): TapeStyle {
-  const tapes: TapeStyle[] = ['plain', 'diagonal', 'dots', 'grid'];
-  return tapes[i % tapes.length] as TapeStyle;
+  return TAPE_IDS[i % TAPE_IDS.length] as TapeStyle;
 }
 
 function nextZ(stickies: Sticky[]): number {
@@ -137,8 +140,9 @@ export const useWall = create<WallStore>((set, get) => ({
     if (inRoom.length >= STICKY_LIMITS.maxStickiesPerRoom) return null;
 
     // Real notes vary — size, angle, tape differ so the wall feels hand-made.
-    const w = Math.round(rand(176, 236));
-    const h = Math.round(rand(176, 236));
+    const { minSize, maxSize } = STICKY_LIMITS;
+    const w = Math.round(rand(minSize, maxSize));
+    const h = Math.round(rand(minSize, maxSize));
     const at = organicSpawn(wall, inRoom, w, h);
     const i = inRoom.length;
 
@@ -149,7 +153,7 @@ export const useWall = create<WallStore>((set, get) => ({
       y: at.y,
       w,
       h,
-      rotation: clampRotation(rand(-7, 7)),
+      rotation: clampRotation(rand(-12, 12)),
       zIndex: nextZ(inRoom),
       color: pickColor(inRoom),
       tape: pickTape(i),
@@ -207,41 +211,55 @@ export const useWall = create<WallStore>((set, get) => ({
     }),
 
   tidyRoom: (roomId, wall) =>
-    set((s) => {
-      const inRoom = s.stickies
-        .filter((st) => st.roomId === roomId && !st.archived)
-        .sort((a, b) => a.createdAt - b.createdAt);
-      if (inRoom.length === 0) return s;
+    set((s) => layoutRoom(s, roomId, wall, 'asc')),
 
-      // Loose grid: columns sized to the widest note, gentle jitter per cell.
-      const gap = 40;
-      const colW = Math.max(...inRoom.map((st) => st.w)) + gap;
-      const cols = Math.max(1, Math.floor((wall.w - 80) / colW));
-      const totalW = cols * colW - gap;
-      const startX = Math.max(40, (wall.w - totalW) / 2);
-      let maxRowH = 0;
-
-      const arranged = new Map<string, Partial<Sticky>>();
-      inRoom.forEach((st, i) => {
-        const col = i % cols;
-        const row = Math.floor(i / cols);
-        maxRowH = Math.max(maxRowH, st.h);
-        arranged.set(st.id, {
-          x: Math.round(startX + col * colW + rand(-6, 6)),
-          y: Math.round(72 + row * (maxRowH + gap) + rand(-5, 5)),
-          rotation: clampRotation(rand(-3, 3)),
-          updatedAt: now(),
-        });
-      });
-
-      const stickies = s.stickies.map((st) =>
-        arranged.has(st.id) ? { ...st, ...arranged.get(st.id) } : st,
-      );
-      const next = { rooms: s.rooms, stickies };
-      saveWorld(next);
-      return next;
-    }),
+  sortRoom: (roomId, wall, dir) =>
+    set((s) => layoutRoom(s, roomId, wall, dir)),
 }));
+
+/**
+ * Shared organic-grid layout. dir 'asc' = oldest first (tidy),
+ * 'desc' = newest first. Keeps per-note rotation/size so it still
+ * looks like a wall, not a spreadsheet.
+ */
+function layoutRoom(
+  s: { rooms: Room[]; stickies: Sticky[] },
+  roomId: string,
+  wall: { w: number; h: number },
+  dir: 'asc' | 'desc',
+) {
+  const inRoom = s.stickies
+    .filter((st) => st.roomId === roomId && !st.archived)
+    .sort((a, b) => (dir === 'asc' ? a.createdAt - b.createdAt : b.createdAt - a.createdAt));
+  if (inRoom.length === 0) return s;
+
+  // Loose grid: columns sized to the widest note, gentle jitter per cell.
+  const gap = 40;
+  const colW = Math.max(...inRoom.map((st) => st.w)) + gap;
+  const cols = Math.max(1, Math.floor((wall.w - 80) / colW));
+  const totalW = cols * colW - gap;
+  const startX = Math.max(40, (wall.w - totalW) / 2);
+  const rowH = Math.max(...inRoom.map((st) => st.h));
+
+  const arranged = new Map<string, Partial<Sticky>>();
+  inRoom.forEach((st, i) => {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    arranged.set(st.id, {
+      x: Math.round(startX + col * colW + rand(-7, 7)),
+      y: Math.round(72 + row * (rowH + gap) + rand(-6, 6)),
+      rotation: clampRotation(rand(-7, 7)),
+      updatedAt: now(),
+    });
+  });
+
+  const stickies = s.stickies.map((st) =>
+    arranged.has(st.id) ? { ...st, ...arranged.get(st.id) } : st,
+  );
+  const next = { rooms: s.rooms, stickies };
+  saveWorld(next);
+  return next;
+}
 
 /** Selectors */
 export const selectRoomBySlug = (slug: string) => (s: WallStore) =>

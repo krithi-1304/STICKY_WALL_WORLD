@@ -519,13 +519,46 @@ button {
     linear-gradient(180deg, rgba(255,255,255,0.34), rgba(255,255,255,0.26));
 }
 
-/* ---- date tag — a small torn label pinned to the corner --- */
+/* hearts washi — tiny hearts on translucent ribbon */
+.sticky--tape-hearts .sticky__tape {
+  background:
+    radial-gradient(circle at 5px 5px, rgba(224,110,145,0.75) 1.6px, transparent 2px) 0 0 / 14px 14px,
+    radial-gradient(circle at 12px 12px, rgba(224,110,145,0.75) 1.6px, transparent 2px) 0 0 / 14px 14px,
+    linear-gradient(180deg, rgba(255,255,255,0.38), rgba(255,255,255,0.30));
+}
+
+/* stars washi — scattered gold stars */
+.sticky--tape-stars .sticky__tape {
+  background:
+    radial-gradient(circle at 3px 3px, rgba(212,175,55,0.8) 1.2px, transparent 1.6px) 0 0 / 12px 12px,
+    radial-gradient(circle at 9px 7px, rgba(212,175,55,0.6) 1px, transparent 1.4px) 0 0 / 12px 12px,
+    linear-gradient(180deg, rgba(255,255,255,0.38), rgba(255,255,255,0.30));
+}
+
+/* checker washi — soft gingham check */
+.sticky--tape-checker .sticky__tape {
+  background:
+    repeating-linear-gradient(90deg, rgba(163,177,138,0.35) 0 4px, transparent 4px 8px),
+    repeating-linear-gradient(0deg, rgba(163,177,138,0.35) 0 4px, transparent 4px 8px),
+    linear-gradient(180deg, rgba(255,255,255,0.36), rgba(255,255,255,0.28));
+}
+
+/* confetti washi — playful flecks */
+.sticky--tape-confetti .sticky__tape {
+  background:
+    radial-gradient(circle at 4px 4px, rgba(116,164,214,0.7) 1.4px, transparent 1.8px) 0 0 / 16px 16px,
+    radial-gradient(circle at 12px 9px, rgba(224,110,145,0.65) 1.2px, transparent 1.6px) 0 0 / 16px 16px,
+    radial-gradient(circle at 8px 13px, rgba(212,175,55,0.65) 1.2px, transparent 1.6px) 0 0 / 16px 16px,
+    linear-gradient(180deg, rgba(255,255,255,0.38), rgba(255,255,255,0.30));
+}
+
+/* ---- date tag — hangs by a thread from the note's corner --- */
 .sticky__date {
   position: absolute;
-  right: 10px;
-  bottom: -9px;
+  bottom: -34px;
+  right: 14px;
   z-index: 3;
-  padding: 2px 8px 3px;
+  padding: 2px 9px 3px;
   font-family: var(--font-ui);
   font-size: 0.6rem;
   letter-spacing: 0.05em;
@@ -533,9 +566,234 @@ button {
   background: #efe9db;
   border-radius: 1px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  transform: rotate(-2deg);
-  clip-path: polygon(4% 0%, 100% 2%, 98% 92%, 2% 100%);
+  transform: rotate(3deg);
+  transform-origin: top center;
+  clip-path: polygon(3% 0%, 100% 2%, 97% 94%, 2% 100%);
   pointer-events: none;
+  animation: date-sway 8s ease-in-out infinite;
+}
+
+/* the thread holding the tag */
+.sticky__date::before {
+  content: '';
+  position: absolute;
+  top: -13px;
+  right: 12px;
+  width: 1px;
+  height: 13px;
+  background: var(--thread);
+}
+
+/* a tiny knot where thread meets tag */
+.sticky__date::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: 10px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #b7ae9c;
+}
+
+@keyframes date-sway {
+  0%, 100% { transform: rotate(2.2deg); }
+  50%      { transform: rotate(4deg); }
+}
+
+/* maximize button on note hover */
+.sticky__zoom {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  color: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.sticky:hover .sticky__zoom,
+.sticky:focus-within .sticky__zoom {
+  opacity: 1;
+}
+
+.sticky__zoom:hover {
+  color: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.07);
+}
+
+/* ---- maximize overlay — a note held up close ---------------- */
+.note-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 8, 9, 0.72);
+  backdrop-filter: blur(10px);
+  animation: overlay-in var(--dur-med) var(--ease-out);
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.note-overlay__paper {
+  position: relative;
+  width: min(560px, calc(100vw - 64px));
+  height: min(560px, calc(100vh - 120px));
+  border-radius: 2px;
+  box-shadow: var(--shadow-paper-lifted), 0 30px 80px rgba(0, 0, 0, 0.5);
+  animation: paper-lift var(--dur-slow) var(--ease-land);
+  display: flex;
+  flex-direction: column;
+  padding: 44px 28px 28px;
+}
+
+@keyframes paper-lift {
+  from { opacity: 0; transform: translateY(24px) scale(0.92) rotate(-2deg); }
+  to   { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+}
+
+.note-overlay__tape {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 96px;
+  height: 28px;
+  clip-path: polygon(
+    2% 10%, 7% 0%, 93% 3%, 98% 12%,
+    100% 50%, 97% 90%, 91% 100%,
+    7% 95%, 1% 87%, 0% 45%
+  );
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* overlay tape carries the pattern itself */
+.note-overlay__tape.sticky--tape-plain {
+  background: linear-gradient(180deg, rgba(255,255,255,0.38), rgba(255,255,255,0.30) 45%, rgba(255,255,255,0.34));
+}
+.note-overlay__tape.sticky--tape-diagonal {
+  background: repeating-linear-gradient(45deg,
+    rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 5px,
+    rgba(201,168,106,0.4) 5px, rgba(201,168,106,0.4) 10px);
+}
+.note-overlay__tape.sticky--tape-dots {
+  background:
+    radial-gradient(circle at 6px 6px, rgba(201,168,106,0.55) 1.8px, transparent 2.2px) 0 0 / 12px 12px,
+    linear-gradient(180deg, rgba(255,255,255,0.36), rgba(255,255,255,0.28));
+}
+.note-overlay__tape.sticky--tape-grid {
+  background:
+    repeating-linear-gradient(0deg, rgba(201,168,106,0.3) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(90deg, rgba(201,168,106,0.3) 0 1px, transparent 1px 7px),
+    linear-gradient(180deg, rgba(255,255,255,0.34), rgba(255,255,255,0.26));
+}
+.note-overlay__tape.sticky--tape-hearts {
+  background:
+    radial-gradient(circle at 5px 5px, rgba(224,110,145,0.75) 1.6px, transparent 2px) 0 0 / 14px 14px,
+    radial-gradient(circle at 12px 12px, rgba(224,110,145,0.75) 1.6px, transparent 2px) 0 0 / 14px 14px,
+    linear-gradient(180deg, rgba(255,255,255,0.38), rgba(255,255,255,0.30));
+}
+.note-overlay__tape.sticky--tape-stars {
+  background:
+    radial-gradient(circle at 3px 3px, rgba(212,175,55,0.8) 1.2px, transparent 1.6px) 0 0 / 12px 12px,
+    radial-gradient(circle at 9px 7px, rgba(212,175,55,0.6) 1px, transparent 1.4px) 0 0 / 12px 12px,
+    linear-gradient(180deg, rgba(255,255,255,0.38), rgba(255,255,255,0.30));
+}
+.note-overlay__tape.sticky--tape-checker {
+  background:
+    repeating-linear-gradient(90deg, rgba(163,177,138,0.35) 0 4px, transparent 4px 8px),
+    repeating-linear-gradient(0deg, rgba(163,177,138,0.35) 0 4px, transparent 4px 8px),
+    linear-gradient(180deg, rgba(255,255,255,0.36), rgba(255,255,255,0.28));
+}
+.note-overlay__tape.sticky--tape-confetti {
+  background:
+    radial-gradient(circle at 4px 4px, rgba(116,164,214,0.7) 1.4px, transparent 1.8px) 0 0 / 16px 16px,
+    radial-gradient(circle at 12px 9px, rgba(224,110,145,0.65) 1.2px, transparent 1.6px) 0 0 / 16px 16px,
+    radial-gradient(circle at 8px 13px, rgba(212,175,55,0.65) 1.2px, transparent 1.6px) 0 0 / 16px 16px,
+    linear-gradient(180deg, rgba(255,255,255,0.38), rgba(255,255,255,0.30));
+}
+
+.note-overlay__body {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: var(--font-note);
+  font-size: 1.7rem;
+  line-height: 1.5;
+  color: var(--note-ink, #3d3320);
+}
+
+.note-overlay__date {
+  align-self: flex-end;
+  padding: 2px 10px 3px;
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: var(--tag-ink);
+  background: #efe9db;
+  border-radius: 1px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transform: rotate(-2deg);
+  clip-path: polygon(3% 0%, 100% 2%, 97% 94%, 2% 100%);
+}
+
+.note-overlay__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.45);
+  z-index: 2;
+}
+
+.note-overlay__close:hover {
+  color: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* ---- fog cursor — a soft mist that follows you -------------- */
+.fog-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 90;
+  background: radial-gradient(
+    circle,
+    rgba(226, 232, 240, 0.05) 0%,
+    rgba(226, 232, 240, 0.03) 35%,
+    transparent 70%
+  );
+  transform: translate(-100px, -100px);
+  mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fog-cursor { display: none; }
 }
 
 .sticky__body {
@@ -600,4 +858,7 @@ button {
   .wall__calm { animation: none; opacity: 0.4; }
   .sticky--new { animation: none; }
   .wall__hint { animation: none; }
+  .sticky__date { animation: none; }
+  .note-overlay { animation: none; }
+  .note-overlay__paper { animation: none; }
 }
