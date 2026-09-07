@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "project": {
+    "name": "Black Wall Sticky Note World",
+    "productType": "creative journaling canvas",
+    "stack": ["Vite", "React", "TypeScript", "CSS variables", "Zustand"]
+  },
+  "sources": {
+    "tokens": ["web/src/styles/tokens.css", "web/src/domain/types.ts"],
+    "components": ["web/src/components/RoomTag.tsx", "web/src/components/StickyNote.tsx"],
+    "assets": [],
+    "instructions": [
+      "AGENTS.md"
+    ]
+  },
+  "design": {
+    "colorMode": "dark",
+    "colors": {"wall": "matte black", "accent": "warm gold", "paper": "restrained warm palette"},
+    "typography": {"ui": "Inter", "title": "Caveat", "notes": "selectable handwriting"},
+    "spacing": {"base": "8px"},
+    "radius": {"default": "small, material-first"},
+    "shadows": {"paper": "soft layered shadow"},
+    "motion": {"principle": "physical, short, reduced-motion safe"},
+    "density": "sparse"
+  },
+  "components": {
+    "installed": [],
+    "preferredPrimitives": ["native buttons", "native inputs", "DOM positioned notes"],
+    "patterns": ["hanging room tags", "sticky paper", "thread-hung dates"]
+  },
+  "constraints": {
+    "must": ["preserve black wall stage", "visible focus", "reduced-motion support", "single primary add action"],
+    "avoid": ["generic dashboard chrome", "random component-library styling", "bounce easing", "decorative grid noise"]
+  },
+  "decisions": [],
+  "evidence": [
+    {
+      "fact": "project.instructions",
+      "source": "AGENTS.md"
+    }
+  ],
+  "generatedAt": "2026-09-07T16:52:36.690Z"
+}

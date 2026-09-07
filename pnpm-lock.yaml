@@ -1,0 +1,24 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    devDependencies:
+      '@21st-dev/cli':
+        specifier: ^1.17.0
+        version: 1.17.0
+
+packages:
+
+  '@21st-dev/cli@1.17.0':
+    resolution: {integrity: sha512-6GLjeoEOh8AcBV+ocEGPhLCtyaUgajKt/uxJVWylwxL8OX28w10+AR/xFChCKdte+AsBlp3e8Ep37uMynyBMHg==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+snapshots:
+
+  '@21st-dev/cli@1.17.0': {}

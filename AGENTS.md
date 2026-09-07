@@ -12,8 +12,19 @@ Peaceful dark gallery: lobby of hanging room tags → matte black room walls →
 | `system-design` | Architecture, data, API, auth, sync, stages |
 | `ui-design` | Visual/UX, tokens, components, motion |
 | `quality-review` | Review, critique, ship gate |
+| `design-taste-frontend` | Anti-slop direction, variance, motion, density |
+| `impeccable` | UI audit, extract, polish, accessibility, production quality |
+| `ui-ux-pro-max` | Design-system research and stack-aware recommendations |
 
 Do **not** load all skills at once. Prefer one domain skill + token-efficiency habits.
+
+## Design resource workflow
+
+- Read `PRODUCT.md` and `DESIGN.md` before UI changes.
+- Use 21st.dev to search first, then install only a component that fits the existing wall language.
+- Use React Bits as source inspiration or copy one component at a time; it is not a runtime dependency.
+- Use Framer Motion only for interactions that CSS cannot express cleanly. Respect reduced motion.
+- Run Impeccable/21st review after a visual slice; resolve warnings that affect users and record intentional exceptions.
 
 ## Narration while building (required — not a separate skill)
 
