@@ -48,11 +48,26 @@ function overlaps(
   x: number, y: number, w: number, h: number,
   others: Sticky[], pad = 24,
 ): boolean {
-  return others.some(
-    (s) =>
-      x < s.x + s.w + pad && x + w + pad > s.x &&
-      y < s.y + s.h + pad && y + h + pad > s.y,
-  );
+  // CSS rotates around the center, so reserve the largest likely visual
+  // footprint instead of checking only the unrotated layout box.
+  const inflate = 1.25;
+  const candidateW = w * inflate;
+  const candidateH = h * inflate;
+  const candidateX = x + (w - candidateW) / 2;
+  const candidateY = y + (h - candidateH) / 2;
+
+  return others.some((s) => {
+    const existingW = s.w * inflate;
+    const existingH = s.h * inflate;
+    const existingX = s.x + (s.w - existingW) / 2;
+    const existingY = s.y + (s.h - existingH) / 2;
+    return (
+      candidateX < existingX + existingW + pad &&
+      candidateX + candidateW + pad > existingX &&
+      candidateY < existingY + existingH + pad &&
+      candidateY + candidateH + pad > existingY
+    );
+  });
 }
 
 /**
@@ -70,7 +85,7 @@ function organicSpawn(
   const n = others.length;
   const GOLDEN = Math.PI * (3 - Math.sqrt(5)); // ~137.5°
 
-  for (let attempt = 0; attempt < 40; attempt += 1) {
+  for (let attempt = 0; attempt < 80; attempt += 1) {
     const i = n + attempt;
     const r = 90 + Math.sqrt(i + 1) * 120 + rand(-30, 30);
     const a = i * GOLDEN + rand(-0.5, 0.5);
@@ -82,10 +97,24 @@ function organicSpawn(
       return { x: clampedX, y: clampedY };
     }
   }
-  // Fallback: anywhere free-ish.
+
+  // Deterministic fallback: scan a loose grid before allowing any overlap.
+  const step = Math.max(28, Math.min(noteW, noteH) * 0.42);
+  for (let y = 48; y <= wall.h - noteH - 16; y += step) {
+    for (let x = 16; x <= wall.w - noteW - 16; x += step) {
+      if (!overlaps(x, y, noteW, noteH, others)) return { x, y };
+    }
+  }
+
+  // A full wall should grow rather than silently stack notes. The caller's
+  // wall is scrollable, so this remains visible and recoverable.
+  const lowest = others.reduce(
+    (max, sticky) => Math.max(max, sticky.y + sticky.h),
+    wall.h,
+  );
   return {
-    x: rand(24, Math.max(48, wall.w - noteW - 24)),
-    y: rand(48, Math.max(72, wall.h - noteH - 24)),
+    x: Math.max(16, wall.w - noteW - 16),
+    y: lowest + 48,
   };
 }
 
