@@ -22,6 +22,7 @@ This is the recovery map for the project. Every meaningful slice records its com
 | `31554d4` | Room instrument chrome: aligned capsule actions, title breathing room, mobile toolbar containment | Build/lint clean, mobile overflow regression caught and fixed |
 | `cb961a0` | Sticky placement collision fix: rotation-aware footprint, deterministic grid fallback, full-height fallback spacing | 5 repeated runs, 12 notes each, zero bounding-box overlaps |
 | `437540f` | Deterministic aligned wall slots: row-major placement, 320px rhythm, ResizeObserver canvas growth | Desktop 0 overlaps / 2 rows, mobile stack growth, build/lint clean |
+| `59ec044` | Symbolic torch cursor: constellation glyph, orbiting sparks, writing quill state over sticky notes | 6/6 browser checks, 11 notes with zero overlap, build/lint clean |
 
 ## Current Slice
 
