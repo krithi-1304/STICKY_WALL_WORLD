@@ -18,6 +18,7 @@ This is the recovery map for the project. Every meaningful slice records its com
 | `be43408` | Ranked fuzzy room search | 9/9 browser checks, zero page errors |
 | `8338269` | Design engineering harness: Taste, Impeccable, UI/UX Pro Max, 21st context, Framer Motion | Build and lint clean |
 | `659e251` | Night Archive atmosphere: story copy, sparse Framer Motion motes, reduced-motion fallback, audit cleanup | 7/7 browser checks, zero page errors, build/lint clean |
+| `5e259fc` | Lobby threshold: archive stamp, moonlight focus, ritual empty state, aligned room shelf, room count | 7/7 browser checks, mobile overflow check, zero page errors |
 
 ## Current Slice
 
