@@ -645,17 +645,17 @@ button {
 /* ---- date tag — hangs by a thread from the note's corner --- */
 .sticky__date {
   position: absolute;
-  bottom: -34px;
-  right: 14px;
+  bottom: -40px;
+  right: 16px;
   z-index: 3;
-  padding: 2px 9px 3px;
-  font-family: var(--font-ui);
-  font-size: 0.6rem;
-  letter-spacing: 0.05em;
+  padding: 3px 10px 4px;
+  font-family: var(--font-title);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
   color: var(--tag-ink);
-  background: #efe9db;
-  border-radius: 1px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(180deg, #fffaf0, #eee3cf);
+  border-radius: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255,255,255,0.7);
   transform: rotate(3deg);
   transform-origin: top center;
   clip-path: polygon(3% 0%, 100% 2%, 97% 94%, 2% 100%);
@@ -667,28 +667,30 @@ button {
 .sticky__date::before {
   content: '';
   position: absolute;
-  top: -13px;
-  right: 12px;
-  width: 1px;
-  height: 13px;
-  background: var(--thread);
+  top: -18px;
+  right: 13px;
+  width: 2px;
+  height: 18px;
+  background: linear-gradient(90deg, transparent, #b8aa8e 45%, #8d806b 55%, transparent);
+  transform: rotate(3deg);
 }
 
 /* a tiny knot where thread meets tag */
 .sticky__date::after {
   content: '';
   position: absolute;
-  top: -2px;
+  top: -21px;
   right: 10px;
-  width: 4px;
-  height: 4px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #b7ae9c;
+  background: radial-gradient(circle at 30% 25%, #f4d88e, #b98c42 70%);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255,255,255,0.4);
 }
 
 @keyframes date-sway {
-  0%, 100% { transform: rotate(2.2deg); }
-  50%      { transform: rotate(4deg); }
+  0%, 100% { transform: rotate(2deg); }
+  50%      { transform: rotate(5deg); }
 }
 
 /* maximize button on note hover */
