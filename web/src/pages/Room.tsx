@@ -185,9 +185,6 @@ export function Room() {
         </div>
       </div>
 
-      {/* soft mist that follows the pointer — presence without noise */}
-      <div className="fog-cursor" ref={fogRef} aria-hidden="true" />
-
       <div
         className="wall"
         ref={wallRef}
