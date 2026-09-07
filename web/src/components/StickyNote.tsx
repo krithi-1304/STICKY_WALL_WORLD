@@ -190,7 +190,6 @@ export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle }: 
                 value={sticky.body}
                 placeholder="Write…"
                 maxLength={STICKY_LIMITS.maxBodyLength}
-                autoFocus
                 style={{ fontFamily: font.stack }}
                 onChange={(e) => updateSticky(sticky.id, { body: e.target.value })}
               />

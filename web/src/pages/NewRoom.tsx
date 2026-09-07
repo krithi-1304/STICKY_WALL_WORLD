@@ -37,7 +37,6 @@ export function NewRoom() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Late night thoughts"
-            autoFocus
             maxLength={60}
             style={inputStyle}
           />

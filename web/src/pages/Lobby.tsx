@@ -13,7 +13,8 @@ export function Lobby() {
   return (
     <main className="lobby mist">
       <header className="lobby__header">
-        <h1 className="lobby__title">The Black Wall</h1>
+        <p className="lobby__eyebrow">The Night Archive</p>
+        <h1 className="lobby__title">Rooms for thoughts that stay.</h1>
         <p className="lobby__subtitle">Choose a room. Hang a thought.</p>
         {rooms.length > 0 && (
           <label className="lobby__search">

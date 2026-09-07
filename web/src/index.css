@@ -60,6 +60,22 @@ button {
   flex-direction: column;
 }
 
+.world-atmosphere {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-wall);
+  overflow: hidden;
+}
+
+.world-atmosphere__mote {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 18px rgba(201, 168, 106, 0.35);
+}
+
 /* ============================================================
    Mist — the gallery reveals itself through fog
    ============================================================ */
@@ -96,6 +112,14 @@ button {
   color: var(--bw-text);
   letter-spacing: 0.01em;
   margin: 0 0 var(--sp-2);
+}
+
+.lobby__eyebrow {
+  margin: 0 0 var(--sp-2);
+  color: var(--accent);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .lobby__subtitle {

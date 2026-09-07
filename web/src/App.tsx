@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Lobby } from './pages/Lobby';
 import { NewRoom } from './pages/NewRoom';
 import { Room } from './pages/Room';
+import { WorldAtmosphere } from './components/WorldAtmosphere';
 
 export function App() {
   const torchRef = useRef<HTMLDivElement>(null);
@@ -27,6 +28,7 @@ export function App() {
   return (
     <BrowserRouter>
       <div className="app">
+        <WorldAtmosphere />
         <div ref={torchRef} className="torch" aria-hidden="true" />
         <Routes>
           <Route path="/" element={<Lobby />} />
