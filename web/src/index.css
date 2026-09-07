@@ -1087,3 +1087,88 @@ button {
   .note-overlay { animation: none; }
   .note-overlay__paper { animation: none; }
 }
+
+/* Night Archive room chrome: instrument panel, not a toolbar strip. */
+.room__topbar {
+  min-height: 72px;
+  padding: var(--sp-3) clamp(var(--sp-4), 4vw, var(--sp-8));
+  background: rgba(11, 11, 12, 0.72);
+  border-bottom-color: rgba(201, 168, 106, 0.12);
+}
+
+.room__back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 var(--sp-3);
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.room__back:hover,
+.room__back:focus-visible {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--bw-line-strong);
+}
+
+.room__title {
+  max-width: min(36vw, 420px);
+  font-size: clamp(1.35rem, 2.6vw, 2rem);
+  letter-spacing: 0.01em;
+}
+
+.room__actions {
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.room__actions .icon-btn {
+  min-width: 36px;
+  height: 34px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--bw-text-dim);
+  font-size: 0.78rem;
+}
+
+.room__actions .icon-btn:hover,
+.room__actions .icon-btn:focus-visible {
+  color: var(--bw-text);
+  background: rgba(201, 168, 106, 0.12);
+}
+
+.font-pick {
+  margin-right: 2px;
+  border: 0;
+  background: rgba(0, 0, 0, 0.14);
+}
+
+@media (max-width: 720px) {
+  .room__topbar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--sp-2);
+  }
+
+  .room__title {
+    position: static;
+    max-width: 100%;
+    transform: none;
+    text-align: center;
+  }
+
+  .room__actions {
+    width: 44vw;
+    min-width: 0;
+    max-width: 44vw;
+    overflow-x: auto;
+    justify-self: end;
+  }
+
+  .room__actions .icon-btn { flex: 0 0 auto; }
+}
