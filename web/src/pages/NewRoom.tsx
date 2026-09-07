@@ -1,19 +1,25 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useWall } from '../state/wall';
+import { PIN_SYMBOLS, symbolForName } from '../domain/symbols';
 
-const SYMBOLS = ['✷', '◈', '☾', '❋', '⌂', '✿', '◎', '☼'];
+const SYMBOLS: string[] = [...PIN_SYMBOLS];
 
-/** Create a room — name it, pick a symbol, hang it. */
+/** Create a room — name it, the symbol picks itself, hang it. */
 export function NewRoom() {
   const createRoom = useWall((s) => s.createRoom);
   const navigate = useNavigate();
   const [name, setName] = useState('');
-  const [symbol, setSymbol] = useState(SYMBOLS[0]);
+  const [symbol, setSymbol] = useState('');
+  const [symbolTouched, setSymbolTouched] = useState(false);
+
+  // The symbol emerges from the name — like the room's spirit mark.
+  const suggested = symbolForName(name || '');
+  const activeSymbol = symbolTouched && symbol ? symbol : suggested;
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const room = createRoom({ name, symbol });
+    const room = createRoom({ name, symbol: activeSymbol });
     navigate(`/r/${room.slug}`);
   }
 
@@ -38,17 +44,19 @@ export function NewRoom() {
         </label>
 
         <fieldset style={fieldStyle}>
-          <legend style={labelStyle}>Symbol</legend>
+          <legend style={labelStyle}>
+            Symbol — picks itself from the name
+          </legend>
           <div style={symbolGridStyle}>
             {SYMBOLS.map((s) => (
               <button
                 key={s}
                 type="button"
-                onClick={() => setSymbol(s)}
-                aria-pressed={symbol === s}
+                onClick={() => { setSymbol(s); setSymbolTouched(true); }}
+                aria-pressed={activeSymbol === s}
                 style={{
                   ...symbolBtnStyle,
-                  ...(symbol === s ? symbolBtnActiveStyle : {}),
+                  ...(activeSymbol === s ? symbolBtnActiveStyle : {}),
                 }}
               >
                 {s}

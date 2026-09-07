@@ -102,22 +102,24 @@ button {
   padding-top: var(--sp-2);
 }
 
-/* the string the tags hang from */
+/* the string the tags hang from — warm flax, gently lit */
 .lobby__rail::before {
   content: '';
   position: absolute;
   top: 0;
   left: 1%;
   right: 1%;
-  height: 1px;
+  height: 1.5px;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--thread) 6%,
-    var(--thread) 94%,
+    #7d7565 6%,
+    #a89c82 50%,
+    #7d7565 94%,
     transparent 100%
   );
-  opacity: 0.55;
+  opacity: 0.65;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
 }
 
 /* varied hang heights — a wall, not a menu */
@@ -161,9 +163,15 @@ button {
 }
 
 .room-tag__thread {
-  width: 1px;
+  width: 1.5px;
   height: 52px;
-  background: linear-gradient(var(--thread), transparent 92%);
+  /* flax thread — fades as it falls toward the pin */
+  background: linear-gradient(
+    180deg,
+    rgba(138, 133, 120, 0.15) 0%,
+    #a89c82 55%,
+    #8a8578 100%
+  );
 }
 
 .room-tag__tag {
@@ -183,22 +191,74 @@ button {
 .room-tag:hover .room-tag__tag,
 .room-tag:focus-visible .room-tag__tag {
   transform: translateY(3px);
-  box-shadow: var(--shadow-paper);
+  /* warm light in the room's own color — torch falls on the pin */
+  box-shadow:
+    var(--shadow-paper),
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 0 34px 2px var(--pin-glow, rgba(201, 168, 106, 0.35));
 }
 
-/* the pin at the top of the tag */
+/* ---- the pushpin: colored head + needle, catches the light -- */
+.room-tag__pin {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  margin-bottom: -4px;
+  z-index: 3;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.0) 26%),
+    radial-gradient(circle at 60% 70%, var(--pin-deep, #a8763e) 0%, var(--pin-head, #d9a45f) 72%);
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.55),
+    0 0 12px var(--pin-glow, rgba(201, 168, 106, 0.25)),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.28);
+  transition: box-shadow var(--dur-med) var(--ease-out),
+              transform var(--dur-med) var(--ease-out);
+}
+
+/* the needle under the head, piercing the tag */
+.room-tag__pin::after {
+  content: '';
+  position: absolute;
+  top: 78%;
+  left: 50%;
+  width: 2px;
+  height: 7px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #c9c2b4, #8d867a);
+  border-radius: 1px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* pin lights up when the room is touched */
+.room-tag:hover .room-tag__pin,
+.room-tag:focus-visible .room-tag__pin {
+  transform: scale(1.18);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.6),
+    0 0 22px 4px var(--pin-glow, rgba(201, 168, 106, 0.45)),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.28);
+}
+
+/* glass sheen on the tag paper — light slides across it */
 .room-tag__tag::before {
   content: '';
   position: absolute;
-  top: -6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #5a5548, #2c2921);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255,255,255,0.15);
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(255, 255, 255, 0.05) 28%,
+    transparent 46%
+  );
+  opacity: 0.75;
+  transition: opacity var(--dur-med) var(--ease-out);
 }
+
+.room-tag:hover .room-tag__tag::before { opacity: 1; }
 
 .room-tag__symbol {
   display: block;
@@ -216,21 +276,36 @@ button {
   white-space: nowrap;
 }
 
+/* New-room card — frosted glass invitation */
 .room-tag--new .room-tag__tag {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.04);
   border: 1px dashed var(--bw-line-strong);
   color: var(--bw-text-dim);
   box-shadow: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .room-tag--new .room-tag__tag::before {
-  background: var(--bw-line-strong);
-  box-shadow: none;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 40%
+  );
+}
+
+.room-tag--new .room-tag__pin {
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255,255,255,0.7) 0%, transparent 30%),
+    var(--bw-ash);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .room-tag--new:hover .room-tag__tag {
   border-color: var(--accent);
   color: var(--accent);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 30px rgba(201, 168, 106, 0.18);
 }
 
 /* ============================================================
