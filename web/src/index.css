@@ -98,12 +98,43 @@ button {
   padding: var(--sp-16) var(--sp-8) var(--sp-12);
   background:
     radial-gradient(1200px 500px at 50% -10%, #1a1a1e 0%, var(--bw-black) 60%);
+  position: relative;
+  isolation: isolate;
+}
+
+.lobby__moon {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  width: min(46vw, 620px);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,106,0.08), transparent 66%);
+  filter: blur(3px);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .lobby__header {
   text-align: center;
   margin-bottom: var(--sp-16);
+  position: relative;
+  z-index: 2;
 }
+
+.lobby__stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-6);
+  color: var(--bw-text-faint);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.lobby__stamp span { color: var(--accent); font-size: 0.85rem; }
 
 .lobby__title {
   font-family: var(--font-title);
@@ -126,7 +157,9 @@ button {
   color: var(--bw-text-dim);
   font-size: 0.95rem;
   margin: 0;
-  font-style: italic;
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  font-style: normal;
 }
 
 .lobby__search {
@@ -214,8 +247,45 @@ button {
 .lobby__empty {
   text-align: center;
   color: var(--bw-text-dim);
-  padding: var(--sp-16) 0;
+  padding: var(--sp-8) 0 var(--sp-16);
+  position: relative;
+  z-index: 2;
 }
+
+.lobby__empty-kicker {
+  margin: 0 0 var(--sp-2);
+  color: var(--bw-text);
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+}
+
+.lobby__empty-copy {
+  max-width: 280px;
+  margin: 0 auto var(--sp-8);
+  color: var(--bw-text-dim);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.lobby__shelf {
+  position: relative;
+  z-index: 2;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.lobby__shelf-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 var(--sp-2) var(--sp-4);
+  color: var(--bw-text-faint);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.lobby__shelf-heading span:last-child { color: var(--accent); }
 
 /* ---- Room tag (thread + pin + tag) ------------------------ */
 .room-tag {

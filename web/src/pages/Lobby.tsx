@@ -12,10 +12,12 @@ export function Lobby() {
 
   return (
     <main className="lobby mist">
+      <div className="lobby__moon" aria-hidden="true" />
       <header className="lobby__header">
+        <div className="lobby__stamp"><span>✦</span> archive / 01</div>
         <p className="lobby__eyebrow">The Night Archive</p>
         <h1 className="lobby__title">Rooms for thoughts that stay.</h1>
-        <p className="lobby__subtitle">Choose a room. Hang a thought.</p>
+        <p className="lobby__subtitle">A quiet place to leave something behind.</p>
         {rooms.length > 0 && (
           <label className="lobby__search">
             <span className="lobby__search-icon" aria-hidden="true">⌕</span>
@@ -33,6 +35,8 @@ export function Lobby() {
 
       {rooms.length === 0 ? (
         <div className="lobby__empty">
+          <p className="lobby__empty-kicker">Start with a small ritual</p>
+          <p className="lobby__empty-copy">Give a room to the thought you keep returning to.</p>
           <div className="lobby__rail">
             <RoomTag isNew />
           </div>
@@ -43,11 +47,17 @@ export function Lobby() {
           <button type="button" onClick={() => setQuery('')}>Show every room</button>
         </div>
       ) : (
-        <div className="lobby__rail">
-          {visibleRooms.map((room) => (
-            <RoomTag key={room.id} room={room} />
-          ))}
-          <RoomTag isNew />
+        <div className="lobby__shelf">
+          <div className="lobby__shelf-heading">
+            <span>Your rooms</span>
+            <span>{visibleRooms.length.toString().padStart(2, '0')} kept</span>
+          </div>
+          <div className="lobby__rail">
+            {visibleRooms.map((room) => (
+              <RoomTag key={room.id} room={room} />
+            ))}
+            <RoomTag isNew />
+          </div>
         </div>
       )}
     </main>
