@@ -17,12 +17,13 @@ This is the recovery map for the project. Every meaningful slice records its com
 | `f6bfc34` | Refined thread-hung date tags | TypeScript, lint, build, browser audit |
 | `be43408` | Ranked fuzzy room search | 9/9 browser checks, zero page errors |
 | `8338269` | Design engineering harness: Taste, Impeccable, UI/UX Pro Max, 21st context, Framer Motion | Build and lint clean |
+| `659e251` | Night Archive atmosphere: story copy, sparse Framer Motion motes, reduced-motion fallback, audit cleanup | 7/7 browser checks, zero page errors, build/lint clean |
 
 ## Current Slice
 
 | Status | Commit | Scope |
 |---|---|---|
-| In progress | not committed | Night Archive atmosphere and virtual-world motion layer |
+| Next | not started | Room-world atmosphere, intentional scene transitions, and richer artifact relationships |
 
 ## Verification Contract
 
