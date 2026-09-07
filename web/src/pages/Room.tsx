@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useWall, selectRoomBySlug, selectStickiesForRoom } from '../state/wall';
@@ -26,6 +26,7 @@ export function Room() {
   const updateRoom = useWall((s) => s.updateRoom);
 
   const wallRef = useRef<HTMLDivElement>(null);
+  const [wallBounds, setWallBounds] = useState({ w: 900, h: 600 });
   const [newId, setNewId] = useState<string | null>(null);
   const [chromeVisible, setChromeVisible] = useState(true);
   const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -33,6 +34,16 @@ export function Room() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [marquee, setMarquee] = useState<Marquee | null>(null);
   const marqueeActive = useRef(false);
+
+  useLayoutEffect(() => {
+    const element = wallRef.current;
+    if (!element) return;
+    const updateBounds = () => setWallBounds({ w: element.clientWidth, h: element.clientHeight });
+    updateBounds();
+    const observer = new ResizeObserver(updateBounds);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
   const fogRef = useRef<HTMLDivElement>(null);
 
   // Fog drifts behind the pointer — eased, never instant.
@@ -153,6 +164,12 @@ export function Room() {
       }
     : undefined;
 
+  const wallWidth = wallBounds.w;
+  const wallHeight = wallBounds.h;
+  const wallColumns = Math.max(1, Math.floor((wallWidth - 48) / 320));
+  const wallRows = Math.ceil(stickies.length / wallColumns);
+  const wallContentHeight = Math.max(wallHeight, 56 + wallRows * 320 + 56);
+
   return (
     <main className="room">
       <div className={`room__topbar${chromeVisible ? '' : ' room__topbar--dim'}`}>
@@ -192,7 +209,7 @@ export function Room() {
         onPointerMove={onWallPointerMove}
         onPointerUp={onWallPointerUp}
       >
-        <div className="wall__inner">
+        <div className="wall__inner" style={{ minHeight: wallContentHeight }}>
           {stickies.length === 0 && (
             <>
               <p className="wall__hint">Pin your first note</p>

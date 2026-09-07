@@ -70,52 +70,35 @@ function overlaps(
   });
 }
 
-/**
- * Place a new note organically: golden-angle scatter from the wall's
- * visual center, retried until it lands without overlapping.
- */
+/** Place a note in the next aligned slot, skipping occupied slots. */
 function organicSpawn(
   wall: { w: number; h: number },
   others: Sticky[],
   noteW: number,
   noteH: number,
 ): { x: number; y: number } {
-  const cx = wall.w / 2;
-  const cy = wall.h / 2;
-  const n = others.length;
-  const GOLDEN = Math.PI * (3 - Math.sqrt(5)); // ~137.5°
+  const slot = 320;
+  const columns = Math.max(1, Math.floor((wall.w - 48) / slot));
+  const totalWidth = columns * slot;
+  const startX = Math.max(16, (wall.w - totalWidth) / 2);
+  const startY = 56;
 
-  for (let attempt = 0; attempt < 80; attempt += 1) {
-    const i = n + attempt;
-    const r = 90 + Math.sqrt(i + 1) * 120 + rand(-30, 30);
-    const a = i * GOLDEN + rand(-0.5, 0.5);
-    const x = cx + Math.cos(a) * r * 1.35 - noteW / 2;
-    const y = cy + Math.sin(a) * r * 0.8 - noteH / 2;
-    const clampedX = Math.max(16, Math.min(wall.w - noteW - 16, x));
-    const clampedY = Math.max(40, Math.min(wall.h - noteH - 16, y));
-    if (!overlaps(clampedX, clampedY, noteW, noteH, others)) {
-      return { x: clampedX, y: clampedY };
-    }
+  // Row-major order gives the user a predictable next place to look.
+  for (let index = 0; index < 200; index += 1) {
+    const column = index % columns;
+    const row = Math.floor(index / columns);
+    const x = Math.max(16, startX + column * slot + (slot - noteW) / 2);
+    const y = startY + row * slot + (slot - noteH) / 2;
+    if (!overlaps(x, y, noteW, noteH, others)) return { x, y };
   }
 
-  // Deterministic fallback: scan a loose grid before allowing any overlap.
-  const step = Math.max(28, Math.min(noteW, noteH) * 0.42);
-  for (let y = 48; y <= wall.h - noteH - 16; y += step) {
-    for (let x = 16; x <= wall.w - noteW - 16; x += step) {
-      if (!overlaps(x, y, noteW, noteH, others)) return { x, y };
-    }
-  }
-
-  // A full wall should grow rather than silently stack notes. The caller's
-  // wall is scrollable, so this remains visible and recoverable.
+  // The quota is 200 notes. If every slot is occupied, continue below the
+  // wall with full note-height clearance instead of stacking a note.
   const lowest = others.reduce(
     (max, sticky) => Math.max(max, sticky.y + sticky.h),
     wall.h,
   );
-  return {
-    x: Math.max(16, wall.w - noteW - 16),
-    y: lowest + 48,
-  };
+  return { x: Math.max(16, startX), y: lowest + 48 };
 }
 
 export const useWall = create<WallStore>((set, get) => ({
