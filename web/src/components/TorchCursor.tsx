@@ -38,7 +38,15 @@ export function TorchCursor() {
         <span className="torch-cursor__halo" />
         <span className="torch-cursor__ring" />
         <span className="torch-cursor__dot" />
-        <span className="torch-cursor__glyph">{writing ? '✎' : '✦'}</span>
+        <span className="torch-cursor__glyph">
+          {writing ? '✎' : (
+            <svg viewBox="0 0 32 32" aria-hidden="true">
+              <path d="M7 5h11l7 7v5H7z" />
+              <path d="M7 5v22h7V5" />
+              <path d="M18 12h7l5 4-5 4h-7z" />
+            </svg>
+          )}
+        </span>
       </span>
     </motion.div>
   );

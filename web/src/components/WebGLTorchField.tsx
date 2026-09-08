@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 interface Props {
   active: boolean;
+  lit: boolean;
 }
 
 const vertexSource = `
@@ -14,6 +15,7 @@ const fragmentSource = `
   uniform vec2 uResolution;
   uniform vec2 uPointer;
   uniform float uTime;
+  uniform float uLight;
 
   void main() {
     vec2 uv = gl_FragCoord.xy / uResolution;
@@ -29,7 +31,8 @@ const fragmentSource = `
     float amberField = smoothstep(0.48, 0.0, distance(uv, pointer + vec2(0.02, -0.01)));
     float blueField = smoothstep(0.58, 0.0, distance(uv, vec2(0.82, 0.72) - drift));
     vec3 color = violet * violetField * 0.30 + amber * amberField * 0.52 + blue * blueField * 0.20;
-    float alpha = (violetField * 0.08 + amberField * 0.20 + blueField * 0.06) * torch;
+    float ambient = violetField * 0.08 + amberField * 0.20 + blueField * 0.06;
+    float alpha = (ambient * uLight) + (torch * (0.30 + ambient * 0.9));
     gl_FragColor = vec4(color, alpha);
   }
 `;
@@ -43,7 +46,7 @@ function compileShader(gl: WebGLRenderingContext, type: number, source: string) 
 }
 
 /** WebGL-only light field. Notes and controls remain accessible DOM. */
-export function WebGLTorchField({ active }: Props) {
+export function WebGLTorchField({ active, lit }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -75,6 +78,7 @@ export function WebGLTorchField({ active }: Props) {
     const resolution = gl.getUniformLocation(program, 'uResolution');
     const pointer = gl.getUniformLocation(program, 'uPointer');
     const time = gl.getUniformLocation(program, 'uTime');
+    const light = gl.getUniformLocation(program, 'uLight');
     const pointerPosition = { x: 0, y: 0 };
     let frame = 0;
     const started = performance.now();
@@ -102,6 +106,7 @@ export function WebGLTorchField({ active }: Props) {
         gl.uniform2f(resolution, canvas.width, canvas.height);
         gl.uniform2f(pointer, pointerPosition.x, pointerPosition.y);
         gl.uniform1f(time, (now - started) / 1000);
+        gl.uniform1f(light, lit ? 1 : 0);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       }
       frame = requestAnimationFrame(render);
@@ -122,7 +127,7 @@ export function WebGLTorchField({ active }: Props) {
       gl.deleteShader(vertex);
       gl.deleteShader(fragment);
     };
-  }, [active]);
+  }, [active, lit]);
 
   return <canvas ref={canvasRef} className={`webgl-torch-field${active ? ' webgl-torch-field--active' : ''}`} aria-hidden="true" />;
 }

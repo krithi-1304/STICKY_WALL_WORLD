@@ -88,10 +88,21 @@ body {
 .torch-cursor__glyph {
   position: relative;
   z-index: 2;
-  color: #f4d58e;
+  color: #dceeff;
   font-size: 0.9rem;
-  text-shadow: 0 0 10px rgba(255, 215, 137, 0.9);
+  text-shadow: 0 0 10px rgba(155, 207, 255, 0.95);
   animation: torch-glyph 2.8s ease-in-out infinite;
+}
+
+.torch-cursor__glyph svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  fill: rgba(220, 238, 255, 0.16);
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
 }
 
 .torch-cursor--writing .torch-cursor__glyph {

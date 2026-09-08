@@ -34,7 +34,6 @@ export function Room() {
   const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [viewMode, setViewMode] = useState<'words' | 'notes'>('words');
   const [lightOn, setLightOn] = useState(false);
   const [marquee, setMarquee] = useState<Marquee | null>(null);
   const marqueeActive = useRef(false);
@@ -68,6 +67,8 @@ export function Room() {
   }, []);
 
   if (!room) return <Navigate to="/" replace />;
+
+  const viewMode = lightOn ? 'notes' : 'words';
 
   const wallSize = () => {
     const el = wallRef.current;
@@ -118,7 +119,7 @@ export function Room() {
   }
 
   function onOpenWordNote(id: string) {
-    setViewMode('notes');
+    setLightOn(true);
     setNewId(id);
     window.setTimeout(() => setNewId(null), 500);
   }
@@ -193,24 +194,6 @@ export function Room() {
               </button>
             ))}
           </div>
-          <div className="view-switch" role="group" aria-label="Room view">
-            <button
-              className="view-switch__button"
-              aria-pressed={viewMode === 'words'}
-              onClick={() => setViewMode('words')}
-              title="Dark word constellation view"
-            >
-              Words
-            </button>
-            <button
-              className="view-switch__button"
-              aria-pressed={viewMode === 'notes'}
-              onClick={() => setViewMode('notes')}
-              title="Written note view"
-            >
-              Notes
-            </button>
-          </div>
           <button
             className={`wall-switch${lightOn ? ' wall-switch--on' : ''}`}
             type="button"
@@ -238,7 +221,7 @@ export function Room() {
         onPointerMove={onWallPointerMove}
         onPointerUp={onWallPointerUp}
       >
-        <WebGLTorchField active={viewMode === 'words' && lightOn} />
+        <WebGLTorchField active lit={lightOn} />
         <div className="wall__inner" style={{ minHeight: wallContentHeight }}>
           {stickies.length === 0 && (
             <>
