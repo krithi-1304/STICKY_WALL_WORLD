@@ -35,11 +35,10 @@ export function TorchCursor() {
       aria-hidden="true"
     >
       <span className="torch-cursor__core">
+        <span className="torch-cursor__halo" />
+        <span className="torch-cursor__ring" />
+        <span className="torch-cursor__dot" />
         <span className="torch-cursor__glyph">{writing ? '✎' : '✦'}</span>
-        <span className="torch-cursor__orbit torch-cursor__orbit--one" />
-        <span className="torch-cursor__orbit torch-cursor__orbit--two" />
-        <span className="torch-cursor__spark torch-cursor__spark--one">·</span>
-        <span className="torch-cursor__spark torch-cursor__spark--two">·</span>
       </span>
     </motion.div>
   );
