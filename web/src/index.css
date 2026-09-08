@@ -681,6 +681,23 @@ button {
     var(--bw-charcoal);
 }
 
+.webgl-torch-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-med) var(--ease-out);
+}
+
+.webgl-torch-field--active { opacity: 1; }
+.wall:has(.webgl-torch-field[data-webgl-ready='false'])::before {
+  opacity: 0.95;
+  background: radial-gradient(circle at 50% 42%, rgba(201,168,106,0.12), transparent 44%);
+}
+
 .wall::before {
   content: '';
   position: absolute;

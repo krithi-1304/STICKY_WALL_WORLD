@@ -4,6 +4,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useWall, selectRoomBySlug, selectStickiesForRoom } from '../state/wall';
 import { StickyNote } from '../components/StickyNote';
 import { HAND_FONTS } from '../domain/types';
+import { WebGLTorchField } from '../components/WebGLTorchField';
 
 const CALM_WORDS = ['breathe', 'slow', 'here', 'enough', 'softly', 'still'];
 
@@ -223,6 +224,7 @@ export function Room() {
         onPointerMove={onWallPointerMove}
         onPointerUp={onWallPointerUp}
       >
+        <WebGLTorchField active={viewMode === 'words'} />
         <div className="wall__inner" style={{ minHeight: wallContentHeight }}>
           {stickies.length === 0 && (
             <>
