@@ -22,6 +22,7 @@ export function Room() {
   const addSticky = useWall((s) => s.addSticky);
   const tidyRoom = useWall((s) => s.tidyRoom);
   const sortRoom = useWall((s) => s.sortRoom);
+  const deleteSticky = useWall((s) => s.deleteSticky);
   const deleteStickies = useWall((s) => s.deleteStickies);
   const updateRoom = useWall((s) => s.updateRoom);
 
@@ -121,8 +122,17 @@ export function Room() {
 
   function onDeleteSelected() {
     if (selected.size === 0) return;
-    deleteStickies([...selected]);
+    deleteStickies([...selected], wallSize());
     setSelected(new Set());
+  }
+
+  function onDeleteSticky(id: string) {
+    deleteSticky(id, wallSize());
+    setSelected((previous) => {
+      const next = new Set(previous);
+      next.delete(id);
+      return next;
+    });
   }
 
   // --- marquee: drag on empty wall gathers notes -------------------------
@@ -224,6 +234,7 @@ export function Room() {
               fontId={room.fontId}
               selected={selected.has(sticky.id)}
               onSelectToggle={onSelectToggle}
+              onDelete={onDeleteSticky}
             />
           ))}
           {marqueeStyle && <div className="wall__marquee" style={marqueeStyle} />}

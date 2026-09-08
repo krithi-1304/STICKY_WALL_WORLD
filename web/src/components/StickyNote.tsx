@@ -10,6 +10,7 @@ interface Props {
   fontId: string;
   selected: boolean;
   onSelectToggle: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -23,9 +24,8 @@ function formatDate(ts: number): string {
  * A sticky note — real paper, washi tape, a date tag hanging by thread.
  * Drag to move · click ↗ to hold it up close · shift-click to select.
  */
-export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle }: Props) {
+export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle, onDelete }: Props) {
   const updateSticky = useWall((s) => s.updateSticky);
-  const deleteSticky = useWall((s) => s.deleteSticky);
   const ref = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
   const [maximized, setMaximized] = useState(false);
@@ -100,7 +100,7 @@ export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle }: 
     if (e.key === 'Delete' || e.key === 'Backspace') {
       if ((e.target as HTMLElement).tagName !== 'TEXTAREA') {
         e.preventDefault();
-        deleteSticky(sticky.id);
+        onDelete(sticky.id);
       }
     }
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
@@ -160,7 +160,7 @@ export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle }: 
         <button
           className="sticky__delete"
           aria-label="Remove note"
-          onClick={() => deleteSticky(sticky.id)}
+        onClick={() => onDelete(sticky.id)}
         >
           ×
         </button>

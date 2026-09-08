@@ -12,8 +12,8 @@ interface WallStore {
   deleteRoom: (roomId: string) => void;
   addSticky: (roomId: string, wall: { w: number; h: number }) => Sticky | null;
   updateSticky: (id: string, patch: Partial<Sticky>) => void;
-  deleteSticky: (id: string) => void;
-  deleteStickies: (ids: string[]) => void;
+  deleteSticky: (id: string, wall?: { w: number; h: number }) => void;
+  deleteStickies: (ids: string[], wall?: { w: number; h: number }) => void;
   /** Arrange a room's notes into a loose organic grid. */
   tidyRoom: (roomId: string, wall: { w: number; h: number }) => void;
   /** Sort notes by date into a soft grid. dir: 'asc' oldest-first, 'desc' newest-first. */
@@ -201,25 +201,25 @@ export const useWall = create<WallStore>((set, get) => ({
       return next;
     }),
 
-  deleteSticky: (id) =>
+  deleteSticky: (id, wall) =>
     set((s) => {
+      const removed = s.stickies.find((st) => st.id === id);
       const next = {
         rooms: s.rooms,
         stickies: s.stickies.filter((st) => st.id !== id),
       };
-      saveWorld(next);
-      return next;
+      return removed && wall ? layoutRoom(next, removed.roomId, wall, 'asc', true) : saveAndReturn(next);
     }),
 
-  deleteStickies: (ids) =>
+  deleteStickies: (ids, wall) =>
     set((s) => {
       const drop = new Set(ids);
+      const roomId = s.stickies.find((st) => drop.has(st.id))?.roomId;
       const next = {
         rooms: s.rooms,
         stickies: s.stickies.filter((st) => !drop.has(st.id)),
       };
-      saveWorld(next);
-      return next;
+      return roomId && wall ? layoutRoom(next, roomId, wall, 'asc', true) : saveAndReturn(next);
     }),
 
   tidyRoom: (roomId, wall) =>
@@ -239,28 +239,25 @@ function layoutRoom(
   roomId: string,
   wall: { w: number; h: number },
   dir: 'asc' | 'desc',
+  preserveRotation = false,
 ) {
   const inRoom = s.stickies
     .filter((st) => st.roomId === roomId && !st.archived)
     .sort((a, b) => (dir === 'asc' ? a.createdAt - b.createdAt : b.createdAt - a.createdAt));
   if (inRoom.length === 0) return s;
 
-  // Loose grid: columns sized to the widest note, gentle jitter per cell.
-  const gap = 40;
-  const colW = Math.max(...inRoom.map((st) => st.w)) + gap;
-  const cols = Math.max(1, Math.floor((wall.w - 80) / colW));
-  const totalW = cols * colW - gap;
-  const startX = Math.max(40, (wall.w - totalW) / 2);
-  const rowH = Math.max(...inRoom.map((st) => st.h));
+  const slot = 320;
+  const cols = Math.max(1, Math.floor((wall.w - 48) / slot));
+  const startX = Math.max(16, (wall.w - cols * slot) / 2);
 
   const arranged = new Map<string, Partial<Sticky>>();
   inRoom.forEach((st, i) => {
     const col = i % cols;
     const row = Math.floor(i / cols);
     arranged.set(st.id, {
-      x: Math.round(startX + col * colW + rand(-7, 7)),
-      y: Math.round(72 + row * (rowH + gap) + rand(-6, 6)),
-      rotation: clampRotation(rand(-7, 7)),
+      x: Math.round(startX + col * slot + (slot - st.w) / 2),
+      y: Math.round(72 + row * slot + (slot - st.h) / 2),
+      rotation: preserveRotation ? st.rotation : clampRotation(rand(-7, 7)),
       updatedAt: now(),
     });
   });
@@ -271,6 +268,11 @@ function layoutRoom(
   const next = { rooms: s.rooms, stickies };
   saveWorld(next);
   return next;
+}
+
+function saveAndReturn(state: { rooms: Room[]; stickies: Sticky[] }) {
+  saveWorld(state);
+  return state;
 }
 
 /** Selectors */
