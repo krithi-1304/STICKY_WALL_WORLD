@@ -28,6 +28,7 @@ This is the recovery map for the project. Every meaningful slice records its com
 | `6f1f006` | Removed the obsolete room-level fog listener so the ink-lantern is the only pointer layer | Build/lint clean |
 | `6810244` | Dark Words room mode: translucent floating cards, fallen word patterns, Notes mode, click-to-open editing | 8/9 immediate-flow checks, delayed focus verified, build/lint clean |
 | `758fdbb` | WebGL torch field behind dark Words mode with DOM notes preserved, Notes-mode fade, and canvas fallback | 8/8 WebGL/mobile checks, zero page errors, build/lint clean |
+| `d7b158c` | Physical room light switch: dark default, WebGL bloom when on, lit word-card response, mobile-safe control | Toggle/keyboard/WebGL/mobile checks passed |
 
 ## Current Slice
 
