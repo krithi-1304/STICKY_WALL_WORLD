@@ -23,6 +23,7 @@ This is the recovery map for the project. Every meaningful slice records its com
 | `cb961a0` | Sticky placement collision fix: rotation-aware footprint, deterministic grid fallback, full-height fallback spacing | 5 repeated runs, 12 notes each, zero bounding-box overlaps |
 | `437540f` | Deterministic aligned wall slots: row-major placement, 320px rhythm, ResizeObserver canvas growth | Desktop 0 overlaps / 2 rows, mobile stack growth, build/lint clean |
 | `59ec044` | Symbolic torch cursor: constellation glyph, orbiting sparks, writing quill state over sticky notes | 6/6 browser checks, 11 notes with zero overlap, build/lint clean |
+| `349f4d0` | Delete UX: survivor notes compact into aligned slots; native cursor preserved while symbolic torch remains supportive | 7/7 single-delete/cursor checks, bulk delete verified, build/lint clean |
 
 ## Current Slice
 
