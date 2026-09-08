@@ -923,6 +923,29 @@ button {
 .sticky--word-mode .sticky__body { visibility: hidden; }
 .sticky--word-mode .sticky__date { color: #d8cbb3; background: rgba(32, 29, 27, 0.9); }
 
+/* The flashlight reveals the complete artifact under its beam. */
+.room--dark .sticky--word-mode:hover,
+.room--dark .sticky--word-mode:focus-within {
+  background: var(--note-paper) !important;
+  border-color: rgba(255, 236, 184, 0.65);
+  box-shadow: 0 16px 42px rgba(0,0,0,0.58), 0 0 42px rgba(255, 210, 125, 0.24);
+}
+
+.room--dark .sticky--word-mode:hover .sticky__body,
+.room--dark .sticky--word-mode:focus-within .sticky__body {
+  visibility: visible;
+  color: #3d3320 !important;
+  z-index: 4;
+}
+
+.room--dark .sticky--word-mode:hover .sticky__word-cloud,
+.room--dark .sticky--word-mode:focus-within .sticky__word-cloud {
+  opacity: 0.08;
+}
+
+.room--dark .sticky--word-mode:hover .sticky__tape,
+.room--dark .sticky--word-mode:focus-within .sticky__tape { opacity: 0.9; }
+
 .sticky__word-cloud {
   position: absolute;
   inset: 28px 10px 20px;

@@ -139,6 +139,7 @@ export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle, on
           height: sticky.h,
           zIndex: dragging ? 60 : sticky.zIndex,
           background: wordMode ? 'rgba(14, 13, 14, 0.82)' : color.paper,
+          ['--note-paper' as string]: color.paper,
           ['--note-ink' as string]: wordMode ? '#eee8dc' : color.ink,
           ['--tape-tilt' as string]: `${sticky.tapeTilt}deg`,
           transform: `rotate(${sticky.rotation + (dragging ? swing : 0)}deg) scale(${dragging ? 1.03 : 1})`,
