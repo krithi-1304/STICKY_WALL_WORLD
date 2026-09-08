@@ -33,6 +33,7 @@ export function Room() {
   const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [viewMode, setViewMode] = useState<'words' | 'notes'>('words');
   const [marquee, setMarquee] = useState<Marquee | null>(null);
   const marqueeActive = useRef(false);
 
@@ -114,6 +115,12 @@ export function Room() {
     });
   }
 
+  function onOpenWordNote(id: string) {
+    setViewMode('notes');
+    setNewId(id);
+    window.setTimeout(() => setNewId(null), 500);
+  }
+
   // --- marquee: drag on empty wall gathers notes -------------------------
   function onWallPointerDown(e: React.PointerEvent) {
     if ((e.target as HTMLElement).closest('.sticky')) return;
@@ -184,6 +191,24 @@ export function Room() {
               </button>
             ))}
           </div>
+          <div className="view-switch" role="group" aria-label="Room view">
+            <button
+              className="view-switch__button"
+              aria-pressed={viewMode === 'words'}
+              onClick={() => setViewMode('words')}
+              title="Dark word constellation view"
+            >
+              Words
+            </button>
+            <button
+              className="view-switch__button"
+              aria-pressed={viewMode === 'notes'}
+              onClick={() => setViewMode('notes')}
+              title="Written note view"
+            >
+              Notes
+            </button>
+          </div>
           <button className="icon-btn" onClick={() => onSort('asc')} title="Sort: oldest first">↑ old</button>
           <button className="icon-btn" onClick={() => onSort('desc')} title="Sort: newest first">↓ new</button>
           <button className="icon-btn" onClick={onTidy} title="Tidy the wall">Tidy</button>
@@ -214,6 +239,8 @@ export function Room() {
               selected={selected.has(sticky.id)}
               onSelectToggle={onSelectToggle}
               onDelete={onDeleteSticky}
+              viewMode={viewMode}
+              onOpen={onOpenWordNote}
             />
           ))}
           {marqueeStyle && <div className="wall__marquee" style={marqueeStyle} />}

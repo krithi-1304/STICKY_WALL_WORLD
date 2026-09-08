@@ -11,6 +11,8 @@ interface Props {
   selected: boolean;
   onSelectToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  viewMode: 'words' | 'notes';
+  onOpen: (id: string) => void;
 }
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -24,7 +26,7 @@ function formatDate(ts: number): string {
  * A sticky note — real paper, washi tape, a date tag hanging by thread.
  * Drag to move · click ↗ to hold it up close · shift-click to select.
  */
-export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle, onDelete }: Props) {
+export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle, onDelete, viewMode, onOpen }: Props) {
   const updateSticky = useWall((s) => s.updateSticky);
   const ref = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -35,6 +37,8 @@ export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle, on
 
   const color = STICKY_COLORS.find((c) => c.id === sticky.color) ?? STICKY_COLORS[0];
   const font = HAND_FONTS.find((f) => f.id === fontId) ?? HAND_FONTS[0];
+  const wordMode = viewMode === 'words';
+  const words = sticky.body.trim().split(/\s+/).filter(Boolean).slice(0, 18);
 
   useEffect(() => {
     if (isNew) {
@@ -84,6 +88,10 @@ export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle, on
     setSwing(0);
   }
 
+  function onClick(e: React.MouseEvent) {
+    if (wordMode && !(e.target as HTMLElement).closest('button, textarea')) onOpen(sticky.id);
+  }
+
   function onKeyDown(e: React.KeyboardEvent) {
     const step = e.shiftKey ? 10 : 1;
     const moves: Record<string, [number, number]> = {
@@ -115,6 +123,7 @@ export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle, on
         ref={ref}
         className={
           `sticky sticky--tape-${sticky.tape}` +
+          `${wordMode ? ' sticky--word-mode' : ''}` +
           `${dragging ? ' sticky--dragging' : ''}` +
           `${isNew ? ' sticky--new' : ''}` +
           `${selected ? ' sticky--selected' : ''}`
@@ -129,17 +138,40 @@ export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle, on
           width: sticky.w,
           height: sticky.h,
           zIndex: dragging ? 60 : sticky.zIndex,
-          background: color.paper,
-          ['--note-ink' as string]: color.ink,
+          background: wordMode ? 'rgba(14, 13, 14, 0.82)' : color.paper,
+          ['--note-ink' as string]: wordMode ? '#eee8dc' : color.ink,
           ['--tape-tilt' as string]: `${sticky.tapeTilt}deg`,
           transform: `rotate(${sticky.rotation + (dragging ? swing : 0)}deg) scale(${dragging ? 1.03 : 1})`,
         }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
+        onClick={onClick}
         onKeyDown={onKeyDown}
       >
         <span className="sticky__tape" />
+        {wordMode && (
+          <span className="sticky__word-cloud" aria-label={sticky.body || 'Empty note'}>
+            {words.length > 0 ? words.map((word, index) => {
+              const column = index % 3;
+              const row = Math.floor(index / 3);
+              const tilt = ((index * 17) % 11) - 5;
+              return (
+                <span
+                  key={`${word}-${index}`}
+                  className="sticky__word"
+                  style={{
+                    left: `${18 + column * 31}%`,
+                    top: `${18 + row * 15}%`,
+                    transform: `rotate(${tilt}deg)`,
+                  }}
+                >
+                  {word}
+                </span>
+              );
+            }) : <span className="sticky__word sticky__word--empty">A quiet space</span>}
+          </span>
+        )}
         <textarea
           className="sticky__body"
           value={sticky.body}
