@@ -45,27 +45,6 @@ export function Room() {
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
-  const fogRef = useRef<HTMLDivElement>(null);
-
-  // Fog drifts behind the pointer — eased, never instant.
-  useEffect(() => {
-    const el = fogRef.current;
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    let raf = 0;
-    const onMove = (e: PointerEvent) => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        el.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
-      });
-    };
-    window.addEventListener('pointermove', onMove);
-    return () => {
-      window.removeEventListener('pointermove', onMove);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
-
   // One calm word per visit — chosen once, lazily.
   const [calmWord] = useState(
     () => CALM_WORDS[Math.floor(Math.random() * CALM_WORDS.length)],
