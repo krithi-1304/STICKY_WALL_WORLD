@@ -698,6 +698,89 @@ button {
   background: radial-gradient(circle at 50% 42%, rgba(201,168,106,0.12), transparent 44%);
 }
 
+.room--dark .wall {
+  background-color: #09090a;
+}
+
+.room--lit .wall {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(201,168,106,0.10), transparent 48%),
+    var(--bw-charcoal);
+}
+
+.room--lit .sticky--word-mode {
+  border-color: rgba(231, 188, 112, 0.42);
+  background: rgba(42, 34, 31, 0.82) !important;
+  box-shadow: 0 14px 38px rgba(0,0,0,0.48), 0 0 26px rgba(222, 166, 82, 0.16);
+}
+
+.room--lit .sticky--word-mode .sticky__word {
+  color: #f9dfaa;
+  text-shadow: 0 0 16px rgba(249, 223, 170, 0.35);
+}
+
+/* A physical wall switch: off is a dark plate, on catches a warm edge light. */
+.wall-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 3px 8px 3px 4px;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 999px;
+  color: var(--bw-text-faint);
+  background: rgba(0,0,0,0.2);
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.wall-switch:hover,
+.wall-switch:focus-visible {
+  color: var(--bw-text);
+  border-color: rgba(201,168,106,0.35);
+}
+
+.wall-switch--on {
+  color: #f2d18b;
+  border-color: rgba(242, 209, 139, 0.48);
+  box-shadow: 0 0 18px rgba(242, 209, 139, 0.14);
+}
+
+.wall-switch__plate {
+  position: relative;
+  display: block;
+  width: 25px;
+  height: 32px;
+  border-radius: 5px;
+  background: linear-gradient(145deg, #292626, #121112);
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,0.08), 1px 2px 4px rgba(0,0,0,0.5);
+}
+
+.wall-switch__lever {
+  position: absolute;
+  top: 5px;
+  left: 7px;
+  width: 11px;
+  height: 19px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #6f6860, #c3b9a6, #716a61);
+  box-shadow: 0 2px 3px rgba(0,0,0,0.55);
+  transform: rotate(14deg) translateY(3px);
+  transform-origin: center;
+  transition: transform var(--dur-med) var(--ease-out), background var(--dur-med) var(--ease-out);
+}
+
+.wall-switch--on .wall-switch__lever {
+  transform: rotate(-14deg) translateY(-2px);
+  background: linear-gradient(90deg, #ad7b35, #ffe0a1, #ad7b35);
+}
+
+.wall-switch__label {
+  min-width: 25px;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .wall::before {
   content: '';
   position: absolute;

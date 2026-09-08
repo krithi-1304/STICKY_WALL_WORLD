@@ -35,6 +35,7 @@ export function Room() {
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState<'words' | 'notes'>('words');
+  const [lightOn, setLightOn] = useState(false);
   const [marquee, setMarquee] = useState<Marquee | null>(null);
   const marqueeActive = useRef(false);
 
@@ -168,7 +169,7 @@ export function Room() {
   const wallContentHeight = Math.max(wallHeight, 56 + wallRows * 320 + 56);
 
   return (
-    <main className="room">
+    <main className={`room ${lightOn ? 'room--lit' : 'room--dark'}`}>
       <div className={`room__topbar${chromeVisible ? '' : ' room__topbar--dim'}`}>
         <Link to="/" className="room__back">← Lobby</Link>
         <h2 className="room__title">{room.name}</h2>
@@ -210,6 +211,19 @@ export function Room() {
               Notes
             </button>
           </div>
+          <button
+            className={`wall-switch${lightOn ? ' wall-switch--on' : ''}`}
+            type="button"
+            aria-pressed={lightOn}
+            aria-label={lightOn ? 'Turn room light off' : 'Turn room light on'}
+            title={lightOn ? 'Turn light off' : 'Turn light on'}
+            onClick={() => setLightOn((current) => !current)}
+          >
+            <span className="wall-switch__plate" aria-hidden="true">
+              <span className="wall-switch__lever" />
+            </span>
+            <span className="wall-switch__label">{lightOn ? 'lit' : 'dark'}</span>
+          </button>
           <button className="icon-btn" onClick={() => onSort('asc')} title="Sort: oldest first">↑ old</button>
           <button className="icon-btn" onClick={() => onSort('desc')} title="Sort: newest first">↓ new</button>
           <button className="icon-btn" onClick={onTidy} title="Tidy the wall">Tidy</button>
@@ -224,7 +238,7 @@ export function Room() {
         onPointerMove={onWallPointerMove}
         onPointerUp={onWallPointerUp}
       >
-        <WebGLTorchField active={viewMode === 'words'} />
+        <WebGLTorchField active={viewMode === 'words' && lightOn} />
         <div className="wall__inner" style={{ minHeight: wallContentHeight }}>
           {stickies.length === 0 && (
             <>
