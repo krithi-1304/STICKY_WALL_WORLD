@@ -700,6 +700,90 @@ button {
   padding: 2px;
 }
 
+.writing-picker,
+.room-tools { position: relative; }
+
+.writing-picker__trigger,
+.room-tools__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 11px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.035);
+  color: var(--bw-text-dim);
+  white-space: nowrap;
+}
+
+.writing-picker__trigger:hover,
+.room-tools__trigger:hover,
+.writing-picker__trigger:focus-visible,
+.room-tools__trigger:focus-visible {
+  color: var(--bw-text);
+  border-color: rgba(201,168,106,0.45);
+}
+
+.writing-picker__eyebrow { font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--bw-text-faint); }
+.writing-picker__selected { font-size: 1.05rem; color: var(--bw-text); }
+.writing-picker__chevron,
+.room-tools__trigger span { color: var(--accent); font-size: 0.85rem; }
+
+.writing-picker__menu,
+.room-tools__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: var(--z-chrome);
+  min-width: 260px;
+  padding: 6px;
+  border: 1px solid rgba(201,168,106,0.22);
+  border-radius: 14px;
+  background: rgba(20,18,17,0.96);
+  box-shadow: 0 18px 48px rgba(0,0,0,0.55);
+  backdrop-filter: blur(16px);
+}
+
+.writing-picker__option,
+.room-tools__menu button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 9px;
+  color: var(--bw-text-dim);
+  text-align: left;
+}
+
+.room-tools__menu button { display: block; font-size: 0.82rem; }
+.writing-picker__option:hover,
+.writing-picker__option[aria-selected='true'],
+.room-tools__menu button:hover { background: rgba(201,168,106,0.12); color: var(--bw-text); }
+.writing-picker__option-name { color: var(--bw-text); font-size: 1.05rem; }
+.writing-picker__option-sample { color: var(--bw-text-faint); font-size: 0.78rem; }
+
+.wall__light-burst {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 45%, rgba(255,230,171,0.35), transparent 54%);
+  animation: light-burst 900ms var(--ease-out) both;
+}
+
+@keyframes light-burst {
+  0% { opacity: 0; transform: scale(0.76); }
+  22% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wall__light-burst { animation: none; opacity: 0; }
+}
+
 .view-switch {
   display: inline-flex;
   gap: 2px;

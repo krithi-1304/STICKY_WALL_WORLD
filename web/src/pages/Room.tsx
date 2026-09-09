@@ -3,8 +3,9 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useWall, selectRoomBySlug, selectStickiesForRoom } from '../state/wall';
 import { StickyNote } from '../components/StickyNote';
-import { HAND_FONTS } from '../domain/types';
 import { WebGLTorchField } from '../components/WebGLTorchField';
+import { WritingStylePicker } from '../components/WritingStylePicker';
+import { RoomToolsMenu } from '../components/RoomToolsMenu';
 
 const CALM_WORDS = ['breathe', 'slow', 'here', 'enough', 'softly', 'still'];
 
@@ -36,6 +37,7 @@ export function Room() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [lightOn, setLightOn] = useState(false);
   const [focusedId, setFocusedId] = useState<string | null>(null);
+  const [lightPulse, setLightPulse] = useState(false);
   const [marquee, setMarquee] = useState<Marquee | null>(null);
   const marqueeActive = useRef(false);
 
@@ -175,7 +177,7 @@ export function Room() {
   const wallContentHeight = Math.max(wallHeight, 56 + wallRows * 320 + 56);
 
   return (
-    <main className={`room ${lightOn ? 'room--lit' : 'room--dark'}`}>
+    <main className={`room ${lightOn ? 'room--lit' : 'room--dark'}${lightPulse ? ' room--light-pulse' : ''}`}>
       <div className={`room__topbar${chromeVisible ? '' : ' room__topbar--dim'}`}>
         <Link to="/" className="room__back">← Lobby</Link>
         <h2 className="room__title">{room.name}</h2>
@@ -185,20 +187,7 @@ export function Room() {
               🗑 {selected.size}
             </button>
           )}
-          <div className="font-pick" role="group" aria-label="Note handwriting">
-            {HAND_FONTS.map((f) => (
-              <button
-                key={f.id}
-                className="font-pick__btn"
-                style={{ fontFamily: f.stack }}
-                aria-pressed={room.fontId === f.id}
-                title={f.label}
-                onClick={() => updateRoom(room.id, { fontId: f.id })}
-              >
-                Aa
-              </button>
-            ))}
-          </div>
+          <WritingStylePicker value={room.fontId} onChange={(fontId) => updateRoom(room.id, { fontId })} />
           <button
             className={`wall-switch${lightOn ? ' wall-switch--on' : ''}`}
             type="button"
@@ -207,7 +196,12 @@ export function Room() {
             title={lightOn ? 'Turn light off' : 'Turn light on'}
             onClick={() => {
               setLightOn((current) => {
-                if (current) setFocusedId(null);
+                if (current) {
+                  setFocusedId(null);
+                } else {
+                  setLightPulse(true);
+                  window.setTimeout(() => setLightPulse(false), 900);
+                }
                 return !current;
               });
             }}
@@ -217,10 +211,7 @@ export function Room() {
             </span>
             <span className="wall-switch__label">{lightOn ? 'lit' : 'dark'}</span>
           </button>
-          <button className="icon-btn" onClick={() => onSort('asc')} title="Sort: oldest first">↑ old</button>
-          <button className="icon-btn" onClick={() => onSort('desc')} title="Sort: newest first">↓ new</button>
-          <button className="icon-btn" onClick={onTidy} title="Tidy the wall">Tidy</button>
-          <button className="icon-btn" onClick={onAdd} aria-label="Add sticky note" title="Pin a note">+</button>
+          <RoomToolsMenu onAdd={onAdd} onTidy={onTidy} onSort={onSort} />
         </div>
       </div>
 
@@ -232,6 +223,7 @@ export function Room() {
         onPointerUp={onWallPointerUp}
       >
         <WebGLTorchField active lit={lightOn} />
+        {lightPulse && <span className="wall__light-burst" aria-hidden="true" />}
         <div className="wall__inner" style={{ minHeight: wallContentHeight }}>
           {stickies.length === 0 && (
             <>
