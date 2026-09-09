@@ -8,6 +8,12 @@ export function TorchCursor() {
   const y = useMotionValue(-100);
   const springX = useSpring(x, { stiffness: 120, damping: 24, mass: 0.6 });
   const springY = useSpring(y, { stiffness: 120, damping: 24, mass: 0.6 });
+  const trailX1 = useSpring(springX, { stiffness: 72, damping: 22, mass: 0.7 });
+  const trailY1 = useSpring(springY, { stiffness: 72, damping: 22, mass: 0.7 });
+  const trailX2 = useSpring(trailX1, { stiffness: 55, damping: 20, mass: 0.8 });
+  const trailY2 = useSpring(trailY1, { stiffness: 55, damping: 20, mass: 0.8 });
+  const trailX3 = useSpring(trailX2, { stiffness: 42, damping: 18, mass: 0.9 });
+  const trailY3 = useSpring(trailY2, { stiffness: 42, damping: 18, mass: 0.9 });
   const overNote = useRef(false);
   const [writing, setWriting] = useState(false);
 
@@ -29,11 +35,15 @@ export function TorchCursor() {
   if (reducedMotion) return null;
 
   return (
-    <motion.div
-      className={`torch-cursor${writing ? ' torch-cursor--writing' : ''}`}
-      style={{ x: springX, y: springY }}
-      aria-hidden="true"
-    >
+    <>
+      <motion.span className="torch-cursor__trail torch-cursor__trail--one" style={{ left: trailX1, top: trailY1 }} aria-hidden="true" />
+      <motion.span className="torch-cursor__trail torch-cursor__trail--two" style={{ left: trailX2, top: trailY2 }} aria-hidden="true" />
+      <motion.span className="torch-cursor__trail torch-cursor__trail--three" style={{ left: trailX3, top: trailY3 }} aria-hidden="true" />
+      <motion.div
+        className={`torch-cursor${writing ? ' torch-cursor--writing' : ''}`}
+        style={{ x: springX, y: springY }}
+        aria-hidden="true"
+      >
       <span className="torch-cursor__core">
         <span className="torch-cursor__halo" />
         <span className="torch-cursor__ring" />
@@ -41,13 +51,13 @@ export function TorchCursor() {
         <span className="torch-cursor__glyph">
           {writing ? '✎' : (
             <svg viewBox="0 0 32 32" aria-hidden="true">
-              <path d="M7 5h11l7 7v5H7z" />
-              <path d="M7 5v22h7V5" />
-              <path d="M18 12h7l5 4-5 4h-7z" />
+              <path d="M16 3l2.2 8.8L27 14l-8.8 2.2L16 25l-2.2-8.8L5 14l8.8-2.2z" />
+              <circle cx="27" cy="25" r="1.8" />
             </svg>
           )}
         </span>
       </span>
-    </motion.div>
+      </motion.div>
+    </>
   );
 }
