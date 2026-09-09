@@ -14,6 +14,8 @@ export function TorchCursor() {
   const trailY2 = useSpring(trailY1, { stiffness: 55, damping: 20, mass: 0.8 });
   const trailX3 = useSpring(trailX2, { stiffness: 42, damping: 18, mass: 0.9 });
   const trailY3 = useSpring(trailY2, { stiffness: 42, damping: 18, mass: 0.9 });
+  const trailX4 = useSpring(trailX3, { stiffness: 32, damping: 16, mass: 1 });
+  const trailY4 = useSpring(trailY3, { stiffness: 32, damping: 16, mass: 1 });
   const overNote = useRef(false);
   const [writing, setWriting] = useState(false);
 
@@ -39,6 +41,7 @@ export function TorchCursor() {
       <motion.span className="torch-cursor__trail torch-cursor__trail--one" style={{ left: trailX1, top: trailY1 }} aria-hidden="true" />
       <motion.span className="torch-cursor__trail torch-cursor__trail--two" style={{ left: trailX2, top: trailY2 }} aria-hidden="true" />
       <motion.span className="torch-cursor__trail torch-cursor__trail--three" style={{ left: trailX3, top: trailY3 }} aria-hidden="true" />
+      <motion.span className="torch-cursor__trail torch-cursor__trail--four" style={{ left: trailX4, top: trailY4 }} aria-hidden="true" />
       <motion.div
         className={`torch-cursor${writing ? ' torch-cursor--writing' : ''}`}
         style={{ x: springX, y: springY }}

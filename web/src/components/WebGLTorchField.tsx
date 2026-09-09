@@ -16,6 +16,11 @@ const fragmentSource = `
   uniform vec2 uPointer;
   uniform float uTime;
   uniform float uLight;
+  uniform vec2 uVelocity;
+
+  float hash(vec2 value) {
+    return fract(sin(dot(value, vec2(127.1, 311.7))) * 43758.5453);
+  }
 
   void main() {
     vec2 uv = gl_FragCoord.xy / uResolution;
@@ -32,7 +37,18 @@ const fragmentSource = `
     float blueField = smoothstep(0.58, 0.0, distance(uv, vec2(0.82, 0.72) - drift));
     vec3 color = violet * violetField * 0.30 + amber * amberField * 0.52 + blue * blueField * 0.20;
     float ambient = violetField * 0.08 + amberField * 0.20 + blueField * 0.06;
-    float alpha = (ambient * uLight) + (torch * (0.30 + ambient * 0.9));
+    float speed = clamp(length(uVelocity) * 0.018, 0.0, 1.0);
+    float rippleDistance = distance(uv, pointer);
+    float ripple = sin(rippleDistance * 92.0 - uTime * 3.2) * exp(-rippleDistance * 9.0) * speed;
+    vec2 direction = length(uVelocity) > 0.001 ? normalize(uVelocity) : vec2(0.0);
+    vec2 wakePosition = pointer - direction * 0.08;
+    float wake = smoothstep(0.18, 0.0, distance(uv, wakePosition)) * speed;
+    vec2 glitterCell = floor(uv * 92.0);
+    float glitterSeed = hash(glitterCell);
+    float glitter = step(0.992, glitterSeed) * speed * (0.45 + 0.55 * sin(uTime * 5.0 + glitterSeed * 30.0));
+    vec3 motionColor = vec3(0.35, 0.72, 1.0) * glitter + vec3(1.0, 0.52, 0.25) * (wake + ripple * 0.25);
+    float alpha = (ambient * uLight) + (torch * (0.30 + ambient * 0.9)) + glitter * 0.7 + wake * 0.14;
+    color += motionColor;
     gl_FragColor = vec4(color, alpha);
   }
 `;
@@ -79,8 +95,12 @@ export function WebGLTorchField({ active, lit }: Props) {
     const pointer = gl.getUniformLocation(program, 'uPointer');
     const time = gl.getUniformLocation(program, 'uTime');
     const light = gl.getUniformLocation(program, 'uLight');
+    const velocity = gl.getUniformLocation(program, 'uVelocity');
     const pointerPosition = { x: 0, y: 0 };
+    const pointerVelocity = { x: 0, y: 0 };
+    let previousPointer = { x: 0, y: 0 };
     let frame = 0;
+    const animate = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const started = performance.now();
 
     const resize = () => {
@@ -94,6 +114,9 @@ export function WebGLTorchField({ active, lit }: Props) {
       const rect = canvas.getBoundingClientRect();
       pointerPosition.x = Math.max(0, Math.min(canvas.width, (event.clientX - rect.left) * (canvas.width / rect.width)));
       pointerPosition.y = Math.max(0, Math.min(canvas.height, (rect.bottom - event.clientY) * (canvas.height / rect.height)));
+      pointerVelocity.x = pointerPosition.x - previousPointer.x;
+      pointerVelocity.y = pointerPosition.y - previousPointer.y;
+      previousPointer = { x: pointerPosition.x, y: pointerPosition.y };
     };
     const render = (now: number) => {
       if (active) {
@@ -107,16 +130,19 @@ export function WebGLTorchField({ active, lit }: Props) {
         gl.uniform2f(pointer, pointerPosition.x, pointerPosition.y);
         gl.uniform1f(time, (now - started) / 1000);
         gl.uniform1f(light, lit ? 1 : 0);
+        gl.uniform2f(velocity, pointerVelocity.x, pointerVelocity.y);
+        pointerVelocity.x *= 0.88;
+        pointerVelocity.y *= 0.88;
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       }
-      frame = requestAnimationFrame(render);
+      if (animate) frame = requestAnimationFrame(render);
     };
 
     resize();
     canvas.dataset.webglReady = 'true';
     window.addEventListener('resize', resize);
     window.addEventListener('pointermove', move);
-    frame = requestAnimationFrame(render);
+    render(performance.now());
 
     return () => {
       cancelAnimationFrame(frame);
