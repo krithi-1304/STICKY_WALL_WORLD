@@ -31,6 +31,7 @@ This is the recovery map for the project. Every meaningful slice records its com
 | `d7b158c` | Physical room light switch: dark default, WebGL bloom when on, lit word-card response, mobile-safe control | Toggle/keyboard/WebGL/mobile checks passed |
 | `8dbcf1f` | Simplified room mental model: one physical light switch, dark word world when off, normal notes when on, white-blue flashlight SVG cursor | 7/7 browser checks, zero page errors, build/lint clean |
 | `ed58dfd` | Dark-beam reveal: flashlight hover exposes the complete paper, handwriting, tape, and date without turning on the room | 6/6 beam interaction checks, zero page errors |
+| `a80ef74` | Pinterest lobby refinement: tactile thread knot, larger symbol palette, create-from-search action, and deeper black-wall color fields | 5/5 search/icon checks, zero page errors, build/lint clean |
 
 ## Current Slice
 
