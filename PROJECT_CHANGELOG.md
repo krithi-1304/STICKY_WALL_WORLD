@@ -26,6 +26,7 @@ This is the recovery map for the project. Every meaningful slice records its com
 | `349f4d0` | Delete UX: survivor notes compact into aligned slots; native cursor preserved while symbolic torch remains supportive | 7/7 single-delete/cursor checks, bulk delete verified, build/lint clean |
 | `a8affdc` | Cursor refinement: smaller ink-lantern halo, precise focus point, quill state over sticky notes | Cursor state browser check, native cursor preserved, build/lint clean |
 | `fc39fad` | Cursor sparkle trail and simplified firefly/flashlight mark | Cursor movement and sticky-hover behavior verified |
+| `03e0840` | Sparkle lake wake: delayed cursor particles, motion ripples, GPU glitter, and reduced-motion static fallback | 6/6 cursor/WebGL/reduced-motion checks, build/lint clean |
 | `6f1f006` | Removed the obsolete room-level fog listener so the ink-lantern is the only pointer layer | Build/lint clean |
 | `6810244` | Dark Words room mode: translucent floating cards, fallen word patterns, Notes mode, click-to-open editing | 8/9 immediate-flow checks, delayed focus verified, build/lint clean |
 | `758fdbb` | WebGL torch field behind dark Words mode with DOM notes preserved, Notes-mode fade, and canvas fallback | 8/8 WebGL/mobile checks, zero page errors, build/lint clean |
