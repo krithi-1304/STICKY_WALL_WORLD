@@ -31,6 +31,7 @@ This is the recovery map for the project. Every meaningful slice records its com
 | `6810244` | Dark Words room mode: translucent floating cards, fallen word patterns, Notes mode, click-to-open editing | 8/9 immediate-flow checks, delayed focus verified, build/lint clean |
 | `758fdbb` | WebGL torch field behind dark Words mode with DOM notes preserved, Notes-mode fade, and canvas fallback | 8/8 WebGL/mobile checks, zero page errors, build/lint clean |
 | `ed7ed87` | Room state model: Night dark artifacts, Lantern falling words with ambient light, Reading one focused note, plus updated to-do list | 8/8 state-flow checks, zero page errors, build/lint clean |
+| `7de9ddc` | Room UI refinement: named writing picker, compact tools menu, physical switch bloom, and less overloaded toolbar | Toolbar/light-flow checks, zero page errors, build/lint clean |
 | `d7b158c` | Physical room light switch: dark default, WebGL bloom when on, lit word-card response, mobile-safe control | Toggle/keyboard/WebGL/mobile checks passed |
 | `8dbcf1f` | Simplified room mental model: one physical light switch, dark word world when off, normal notes when on, white-blue flashlight SVG cursor | 7/7 browser checks, zero page errors, build/lint clean |
 | `ed58dfd` | Dark-beam reveal: flashlight hover exposes the complete paper, handwriting, tape, and date without turning on the room | 6/6 beam interaction checks, zero page errors |
