@@ -8,6 +8,8 @@
 export const PIN_SYMBOLS = [
   '✷', '◈', '☾', '❋', '⌂', '✿', '◎', '☼',
   '❀', '✽', '✧', '⟡', '✺', '❁', '⌘', '❖',
+  '☁', '☘', '♧', '♢', '⚘', '☽', '✹', '✾',
+  '✤', '❂', '☄', '◌', '⬡', '⌁', '♒', '✸',
 ] as const;
 
 /** Pick a symbol from a room name — stable across sessions. */

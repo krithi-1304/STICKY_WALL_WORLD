@@ -1,14 +1,25 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWall } from '../state/wall';
 import { RoomTag } from '../components/RoomTag';
 import { searchRooms } from '../domain/search';
+import { symbolForName } from '../domain/symbols';
 
 /** Lobby: a dark wall of hanging room tags, revealed through mist. */
 export function Lobby() {
   const rooms = useWall((s) => s.rooms);
+  const createRoom = useWall((s) => s.createRoom);
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const sorted = [...rooms].sort((a, b) => b.updatedAt - a.updatedAt);
   const visibleRooms = searchRooms(sorted, query);
+
+  function createFromSearch() {
+    const name = query.trim();
+    if (!name) return;
+    const room = createRoom({ name, symbol: symbolForName(name) });
+    navigate(`/r/${room.slug}`);
+  }
 
   return (
     <main className="lobby mist">
@@ -44,7 +55,12 @@ export function Lobby() {
       ) : visibleRooms.length === 0 ? (
         <div className="lobby__empty lobby__empty--search" role="status">
           <p>No room feels like “{query}” yet.</p>
-          <button type="button" onClick={() => setQuery('')}>Show every room</button>
+          <div className="lobby__empty-actions">
+            <button type="button" className="lobby__create-search" onClick={createFromSearch}>
+              Create “{query}” <span aria-hidden="true">↗</span>
+            </button>
+            <button type="button" onClick={() => setQuery('')}>Show every room</button>
+          </div>
         </div>
       ) : (
         <div className="lobby__shelf">
