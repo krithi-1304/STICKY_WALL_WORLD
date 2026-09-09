@@ -11,7 +11,7 @@ interface Props {
   selected: boolean;
   onSelectToggle: (id: string) => void;
   onDelete: (id: string) => void;
-  viewMode: 'words' | 'notes';
+  viewMode: 'night' | 'lantern' | 'reading';
   onOpen: (id: string) => void;
 }
 
@@ -37,7 +37,8 @@ export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle, on
 
   const color = STICKY_COLORS.find((c) => c.id === sticky.color) ?? STICKY_COLORS[0];
   const font = HAND_FONTS.find((f) => f.id === fontId) ?? HAND_FONTS[0];
-  const wordMode = viewMode === 'words';
+  const wordMode = viewMode !== 'reading';
+  const lanternMode = viewMode === 'lantern';
   const words = sticky.body.trim().split(/\s+/).filter(Boolean).slice(0, 18);
 
   useEffect(() => {
@@ -124,6 +125,7 @@ export function StickyNote({ sticky, isNew, fontId, selected, onSelectToggle, on
         className={
           `sticky sticky--tape-${sticky.tape}` +
           `${wordMode ? ' sticky--word-mode' : ''}` +
+          `${lanternMode ? ' sticky--lantern' : ''}` +
           `${dragging ? ' sticky--dragging' : ''}` +
           `${isNew ? ' sticky--new' : ''}` +
           `${selected ? ' sticky--selected' : ''}`

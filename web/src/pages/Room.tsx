@@ -35,6 +35,7 @@ export function Room() {
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [lightOn, setLightOn] = useState(false);
+  const [focusedId, setFocusedId] = useState<string | null>(null);
   const [marquee, setMarquee] = useState<Marquee | null>(null);
   const marqueeActive = useRef(false);
 
@@ -68,7 +69,7 @@ export function Room() {
 
   if (!room) return <Navigate to="/" replace />;
 
-  const viewMode = lightOn ? 'notes' : 'words';
+  const viewMode = focusedId ? 'reading' : lightOn ? 'lantern' : 'night';
 
   const wallSize = () => {
     const el = wallRef.current;
@@ -79,6 +80,8 @@ export function Room() {
     if (!room) return;
     const sticky = addSticky(room.id, wallSize());
     if (sticky) {
+      setLightOn(true);
+      setFocusedId(sticky.id);
       setNewId(sticky.id);
       setTimeout(() => setNewId(null), 400);
     }
@@ -120,6 +123,7 @@ export function Room() {
 
   function onOpenWordNote(id: string) {
     setLightOn(true);
+    setFocusedId(id);
     setNewId(id);
     window.setTimeout(() => setNewId(null), 500);
   }
@@ -127,6 +131,7 @@ export function Room() {
   // --- marquee: drag on empty wall gathers notes -------------------------
   function onWallPointerDown(e: React.PointerEvent) {
     if ((e.target as HTMLElement).closest('.sticky')) return;
+    setFocusedId(null);
     const wall = wallRef.current!.getBoundingClientRect();
     marqueeActive.current = true;
     const x = e.clientX - wall.left;
@@ -200,7 +205,12 @@ export function Room() {
             aria-pressed={lightOn}
             aria-label={lightOn ? 'Turn room light off' : 'Turn room light on'}
             title={lightOn ? 'Turn light off' : 'Turn light on'}
-            onClick={() => setLightOn((current) => !current)}
+            onClick={() => {
+              setLightOn((current) => {
+                if (current) setFocusedId(null);
+                return !current;
+              });
+            }}
           >
             <span className="wall-switch__plate" aria-hidden="true">
               <span className="wall-switch__lever" />
@@ -238,7 +248,7 @@ export function Room() {
               selected={selected.has(sticky.id)}
               onSelectToggle={onSelectToggle}
               onDelete={onDeleteSticky}
-              viewMode={viewMode}
+              viewMode={focusedId === sticky.id ? 'reading' : viewMode === 'reading' ? 'lantern' : viewMode}
               onOpen={onOpenWordNote}
             />
           ))}

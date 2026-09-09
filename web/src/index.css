@@ -1041,6 +1041,23 @@ button {
   color: rgba(238, 232, 220, 0.38);
 }
 
+/* Lantern state: words drift down the paper like illuminated fragments. */
+.sticky--lantern .sticky__word {
+  animation: word-fall 5.5s ease-in-out infinite;
+}
+
+.sticky--lantern .sticky__word:nth-child(2n) { animation-delay: -1.8s; }
+.sticky--lantern .sticky__word:nth-child(3n) { animation-delay: -3.2s; }
+
+@keyframes word-fall {
+  0%, 100% { opacity: 0.42; transform: translateY(-3px) rotate(-2deg); }
+  50% { opacity: 1; transform: translateY(8px) rotate(2deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticky--lantern .sticky__word { animation: none; opacity: 0.85; }
+}
+
 .sticky--selected {
   outline: 1.5px solid rgba(201, 168, 106, 0.85);
   outline-offset: 3px;
