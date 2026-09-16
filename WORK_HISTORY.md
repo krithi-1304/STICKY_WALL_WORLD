@@ -20,6 +20,7 @@ The Git history contains the earlier product slices, in order:
 - Lobby search creation and archive thread/icon refinements.
 - Room controls and light-burst refinements.
 - Pinterest reference-led material pass: transparent glass room switch and a short 3D room-tag hover wobble. The pearly bubble-letter experiment was reverted; the earlier glass title remains.
+- Black sea atmosphere and tactile interactions: low-contrast animated water rings and glyphs in the lobby, match flame and smoke on room light-on, a small match-flame cursor, glass treatment across navigation controls, room-name hover echo, room deletion with confirmation, and a quiet throttled two-note chime on room hover.
 
 Some experimental lobby redesign work was intentionally rolled back before this title slice. The preserved lobby is the prior hanging-tag design.
 
@@ -28,6 +29,12 @@ Some experimental lobby redesign work was intentionally rolled back before this 
 - `web/src/pages/Lobby.tsx` — wraps the existing title words in spans and adds an accessible `aria-label`.
 - `web/src/index.css` — adds the title’s 3D perspective, glass panels, hover transitions, shadows, highlight, sparkle, the glass room switch, room-tag wobble, and reduced-motion rules.
 - `AGENTS.md` — records the installed skill routing and token-efficient working habits.
+
+## Usability review
+
+The primary path is clear: lobby → create or open a room → pin a note. Search remains keyboard accessible, room tags remain large click targets, and deletion is separated from the room-opening link with a native confirmation. Room deletion also removes its notes through the existing single store write path.
+
+The next product improvements to consider are share/edit keys for public links, an explicit sound preference if chimes become frequent, and an undo affordance after deletion. Those belong to the Keys and Echoes stages and should be designed before adding a backend.
 
 ## Commit and rollback map
 
@@ -39,6 +46,7 @@ The changes are split into small commits:
 4. `03db781 feat: match lobby title to pearly bubble reference` — experimental bubble-letter treatment.
 5. `535e992 Revert "feat: match lobby title to pearly bubble reference"` — removes that experiment and restores the prior title.
 6. `1c249f8 feat: add glass room switch and tag hover motion` — reference-led room switch and room-tag hover motion.
+7. `1d5aa68 feat: shape black sea atmosphere and tactile room interactions` — black-water lobby, match-light reveal, glass chrome, cursor flame, room-name hover, delete action, and chime.
 
 To remove only the title treatment while keeping the documentation:
 
@@ -67,6 +75,12 @@ git revert 1c249f8
 ```
 
 The latest title state is preserved by `535e992` reverting the experimental bubble-letter commit; `d46e20f` remains the title-depth refinement underneath it.
+
+To remove the black-sea interaction pass while retaining the prior title and switch work:
+
+```sh
+git revert 1d5aa68
+```
 
 ## Validation
 
