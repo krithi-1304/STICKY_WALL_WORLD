@@ -1925,3 +1925,79 @@ button {
   .lobby__title:hover .lobby__title-word::before,
   .lobby__title:focus-visible .lobby__title-word::before { opacity: 0; transform: none; }
 }
+
+/* Reference-led material pass: transparent glass, physical controls, soft wobble. */
+.room-tag__tag {
+  transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out), background 220ms var(--ease-out), border-color 220ms var(--ease-out);
+}
+
+@keyframes room-tag-hover-wobble {
+  0% { transform: rotate(var(--tag-rot, 0deg)) translate3d(0, 0, 0) scale(1); }
+  24% { transform: rotate(calc(var(--tag-rot, 0deg) - 3deg)) translate3d(-2px, -8px, 16px) scale(1.025, 1.035); }
+  48% { transform: rotate(calc(var(--tag-rot, 0deg) + 2.2deg)) translate3d(2px, -5px, 10px) scale(0.99, 1.02); }
+  72% { transform: rotate(calc(var(--tag-rot, 0deg) - 1deg)) translate3d(-1px, -7px, 13px) scale(1.014, 1.02); }
+  100% { transform: rotate(var(--tag-rot, 0deg)) translate3d(0, -4px, 8px) scale(1.01); }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .room-tag:hover,
+  .room-tag:focus-visible {
+    animation: room-tag-hover-wobble 780ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    z-index: 4;
+  }
+
+  .room-tag:hover .room-tag__tag,
+  .room-tag:focus-visible .room-tag__tag {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.045) 48%, rgba(255, 255, 255, 0.1)),
+      rgba(230, 225, 214, 0.76);
+    -webkit-backdrop-filter: blur(11px) saturate(120%);
+    backdrop-filter: blur(11px) saturate(120%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.42),
+      inset 0 -8px 16px rgba(74, 63, 43, 0.08),
+      0 18px 34px rgba(0, 0, 0, 0.34),
+      0 0 28px var(--pin-glow, rgba(201, 168, 106, 0.22));
+  }
+}
+
+/* The room light switch becomes a small glass object with a tactile lever. */
+.wall-switch {
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  width: 48px;
+  min-height: 58px;
+  padding: 5px 6px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 17px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.015)),
+    rgba(8, 9, 10, 0.44);
+  -webkit-backdrop-filter: blur(12px) saturate(125%);
+  backdrop-filter: blur(12px) saturate(125%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 5px 15px rgba(0,0,0,0.28);
+  transition: transform 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 220ms var(--ease-out);
+}
+
+.wall-switch:hover,
+.wall-switch:focus-visible { transform: translateY(-2px); border-color: rgba(255,255,255,0.42); box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 9px 22px rgba(0,0,0,0.34), 0 0 18px rgba(201,168,106,0.13); }
+.wall-switch--on { border-color: rgba(242, 209, 139, 0.62); box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 0 22px rgba(242,209,139,0.2), 0 8px 20px rgba(0,0,0,0.3); }
+.wall-switch__plate { width: 24px; height: 35px; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; background: linear-gradient(160deg, rgba(255,255,255,0.13), rgba(255,255,255,0.025)); box-shadow: inset 0 2px 4px rgba(0,0,0,0.46), 0 2px 5px rgba(0,0,0,0.35); }
+.wall-switch__lever { top: 5px; left: 6px; width: 10px; height: 18px; border-radius: 999px; background: linear-gradient(90deg, #776f65, #e0d2b8 48%, #716960); box-shadow: 0 2px 4px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.5); transition: transform 300ms var(--ease-out), background 300ms var(--ease-out), box-shadow 300ms var(--ease-out); }
+.wall-switch--on .wall-switch__lever { background: linear-gradient(90deg, #a76b2c, #ffe9a9 48%, #a76b2c); box-shadow: 0 2px 4px rgba(0,0,0,0.5), 0 0 10px rgba(255,218,133,0.7), inset 0 1px 1px rgba(255,255,255,0.65); }
+.wall-switch__label { min-width: 0; color: rgba(236,234,230,0.64); font-size: 0.48rem; letter-spacing: 0.13em; line-height: 1; }
+.wall-switch--on .wall-switch__label { color: #f2d18b; }
+
+@media (max-width: 720px) {
+  .wall-switch { width: 44px; min-height: 54px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .room-tag:hover,
+  .room-tag:focus-visible { animation: none; }
+  .wall-switch,
+  .wall-switch__lever { transition: none; }
+}
