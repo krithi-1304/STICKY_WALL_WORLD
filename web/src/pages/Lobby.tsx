@@ -27,7 +27,13 @@ export function Lobby() {
       <header className="lobby__header">
         <div className="lobby__stamp"><span>✦</span> archive / 01</div>
         <p className="lobby__eyebrow">The Night Archive</p>
-        <h1 className="lobby__title">Rooms for thoughts that stay.</h1>
+        <h1 className="lobby__title" aria-label="Rooms for thoughts that stay.">
+          <span className="lobby__title-word">Rooms</span>{' '}
+          <span className="lobby__title-word">for</span>{' '}
+          <span className="lobby__title-word">thoughts</span>{' '}
+          <span className="lobby__title-word">that</span>{' '}
+          <span className="lobby__title-word lobby__title-word--accent">stay.</span>
+        </h1>
         <p className="lobby__subtitle">A quiet place to leave something behind.</p>
         {rooms.length > 0 && (
           <label className="lobby__search">
