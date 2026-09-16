@@ -180,7 +180,7 @@ export function Room() {
     <main className={`room ${lightOn ? 'room--lit' : 'room--dark'}${lightPulse ? ' room--light-pulse' : ''}`}>
       <div className={`room__topbar${chromeVisible ? '' : ' room__topbar--dim'}`}>
         <Link to="/" className="room__back">← Lobby</Link>
-        <h2 className="room__title">{room.name}</h2>
+        <h2 className="room__title" data-room-name={room.name}>{room.name}</h2>
         <div className="room__actions">
           {selected.size > 0 && (
             <button className="icon-btn" onClick={onDeleteSelected} title="Delete selected">
@@ -224,6 +224,7 @@ export function Room() {
       >
         <WebGLTorchField active lit={lightOn} />
         {lightPulse && <span className="wall__light-burst" aria-hidden="true" />}
+        {lightPulse && <span className="match-light-reveal" aria-hidden="true"><span className="match-light-reveal__flame" /><span className="match-light-reveal__smoke match-light-reveal__smoke--one" /><span className="match-light-reveal__smoke match-light-reveal__smoke--two" /></span>}
         <div className="wall__inner" style={{ minHeight: wallContentHeight }}>
           {stickies.length === 0 && (
             <>

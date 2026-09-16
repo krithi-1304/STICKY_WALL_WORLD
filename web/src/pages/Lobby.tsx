@@ -9,6 +9,7 @@ import { symbolForName } from '../domain/symbols';
 export function Lobby() {
   const rooms = useWall((s) => s.rooms);
   const createRoom = useWall((s) => s.createRoom);
+  const deleteRoom = useWall((s) => s.deleteRoom);
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const sorted = [...rooms].sort((a, b) => b.updatedAt - a.updatedAt);
@@ -19,6 +20,11 @@ export function Lobby() {
     if (!name) return;
     const room = createRoom({ name, symbol: symbolForName(name) });
     navigate(`/r/${room.slug}`);
+  }
+
+  function removeRoom(roomName: string, roomId: string) {
+    const confirmed = window.confirm(`Delete “${roomName}” and everything inside it? This cannot be undone.`);
+    if (confirmed) deleteRoom(roomId);
   }
 
   return (
@@ -76,7 +82,7 @@ export function Lobby() {
           </div>
           <div className="lobby__rail">
             {visibleRooms.map((room) => (
-              <RoomTag key={room.id} room={room} />
+              <RoomTag key={room.id} room={room} onDelete={() => removeRoom(room.name, room.id)} />
             ))}
             <RoomTag isNew />
           </div>

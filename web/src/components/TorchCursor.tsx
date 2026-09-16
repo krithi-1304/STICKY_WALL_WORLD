@@ -51,6 +51,7 @@ export function TorchCursor() {
         <span className="torch-cursor__halo" />
         <span className="torch-cursor__ring" />
         <span className="torch-cursor__dot" />
+        <span className="torch-cursor__match-flame" aria-hidden="true" />
         <span className="torch-cursor__glyph">
           {writing ? '✎' : (
             <svg viewBox="0 0 32 32" aria-hidden="true">
