@@ -18,6 +18,15 @@ Peaceful dark gallery: lobby of hanging room tags → matte black room walls →
 
 Do **not** load all skills at once. Prefer one domain skill + token-efficiency habits.
 
+### Installed workflow and usage efficiency
+
+- Start visual work with `design-taste-frontend`; use `ui-animation` only for motion tasks.
+- Use `impeccable` for focused critique/polish, or `web-design-guidelines` for interface/accessibility review. Avoid duplicate full audits of the same unchanged slice.
+- `token-efficiency`, `impeccable`, and `web-design-guidelines` are user-level skills under `~/.codex/skills`; the two existing design/motion skills are project-local.
+- The other skill names above are desired capabilities, not confirmed installations. If unavailable, use the matching installed skill or a direct review; do not repeatedly search for missing skills.
+- Define a small acceptance checklist, search before reading whole files, reuse existing components, and run relevant checks once after changes stabilize. Do not skip required validation to reduce usage.
+- Keep updates concise. Record durable decisions in existing docs so later work can resume without repeating discovery.
+
 ## Design resource workflow
 
 - Read `PRODUCT.md` and `DESIGN.md` before UI changes.
