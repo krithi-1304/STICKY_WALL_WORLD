@@ -32,28 +32,28 @@ Some experimental lobby redesign work was intentionally rolled back before this 
 
 The changes are split into small commits:
 
-1. `docs: record project work history and workflow` — this file and the durable `AGENTS.md` guidance.
-2. `feat: add glass 3d hover title to lobby` — the lobby title markup and CSS only.
+1. `d49d465 docs: record project work history and workflow` — this file and the durable `AGENTS.md` guidance.
+2. `7da357f feat: add glass 3d hover title to lobby` — the lobby title markup and CSS only.
 
 To remove only the title treatment while keeping the documentation:
 
 ```sh
-git revert <title-commit>
+git revert 7da357f
 ```
 
 To remove the documentation/workflow commit as well:
 
 ```sh
-git revert <workflow-commit>
+git revert d49d465
 ```
 
 To return to the preserved product baseline before both commits:
 
 ```sh
-git revert <title-commit> <workflow-commit>
+git revert 7da357f d49d465
 ```
 
-Use `git log --oneline -5` to see the exact commit IDs after the commits are created. `git revert` makes a new inverse commit, so the history stays recoverable.
+`git revert` makes a new inverse commit, so the history stays recoverable.
 
 ## Validation
 
@@ -62,4 +62,3 @@ The current slice passes:
 - `npm run build` in `web/`
 - `npm run lint` in `web/`
 - `git diff --check`
-
