@@ -1880,3 +1880,48 @@ button {
 
   .room__actions .icon-btn { flex: 0 0 auto; }
 }
+
+/* Lobby title: lighter glass and a more believable floating lift. */
+.lobby__title-word::before {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.012) 60%),
+    rgba(199, 224, 216, 0.018);
+  border-color: rgba(255, 255, 255, 0.11);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -8px 18px rgba(153, 187, 179, 0.02),
+    0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lobby__title:hover .lobby__title-word,
+  .lobby__title:focus-visible .lobby__title-word {
+    transform: translate3d(0, -13px, 42px) rotate(-1.5deg) rotateX(11deg) rotateY(-2deg);
+    transition-duration: 420ms;
+    transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+    text-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.76),
+      0 4px 0 rgba(151, 184, 175, 0.7),
+      0 8px 0 rgba(91, 121, 114, 0.46),
+      0 18px 0 rgba(53, 76, 71, 0.2),
+      0 27px 25px rgba(0, 0, 0, 0.3);
+  }
+
+  .lobby__title:hover .lobby__title-word::before,
+  .lobby__title:focus-visible .lobby__title-word::before {
+    opacity: 0.68;
+    transform: translateZ(-12px) scale(1.06) rotate(-2deg);
+  }
+
+  .lobby__title:hover .lobby__title-word:nth-child(2) { transform: translate3d(0, -16px, 49px) rotate(2deg) rotateX(13deg) rotateY(2deg); }
+  .lobby__title:hover .lobby__title-word:nth-child(3) { transform: translate3d(0, -11px, 39px) rotate(-2deg) rotateX(9deg) rotateY(-3deg); }
+  .lobby__title:hover .lobby__title-word:nth-child(4) { transform: translate3d(0, -15px, 46px) rotate(1deg) rotateX(12deg); }
+  .lobby__title:hover .lobby__title-word:nth-child(5) { transform: translate3d(0, -18px, 54px) rotate(3deg) rotateX(14deg) rotateY(2deg) scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lobby__title:hover .lobby__title-word,
+  .lobby__title:focus-visible .lobby__title-word { transform: none !important; transition: color 120ms ease; }
+  .lobby__title:hover .lobby__title-word::before,
+  .lobby__title:focus-visible .lobby__title-word::before { opacity: 0; transform: none; }
+}
