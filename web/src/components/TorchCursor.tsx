@@ -36,10 +36,16 @@ export function TorchCursor() {
   }, []);
   return <div ref={ref} className="match-cursor" data-visible="false" aria-hidden="true">
     <span className="match-cursor__glow" />
+    <span className="match-cursor__aura" />
     <span className="match-cursor__wood" /><span className="match-cursor__head" />
     <span className="match-cursor__flame"><span /></span>
+    <span className="match-cursor__tongue match-cursor__tongue--gold" />
+    <span className="match-cursor__tongue match-cursor__tongue--blue" />
     <span className="match-cursor__smoke match-cursor__smoke--1" />
     <span className="match-cursor__smoke match-cursor__smoke--2" />
     <span className="match-cursor__smoke match-cursor__smoke--3" />
+    <span className="match-cursor__spark match-cursor__spark--1" />
+    <span className="match-cursor__spark match-cursor__spark--2" />
+    <span className="match-cursor__spark match-cursor__spark--3" />
   </div>;
 }

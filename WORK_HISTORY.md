@@ -4,6 +4,16 @@ This file records the work completed in the repository and the current rollback 
 
 ## Current state
 
+### September 17 — stronger fire and colored atmosphere
+
+Follow-up reference: https://in.pinterest.com/pin/571816483961203348/. Inspected the supplied pin's thumbnail (gold flame with blue/pink smoke) and retrieved its video; this implementation interprets the visual direction rather than claiming frame-matched motion.
+
+- Increased the cursor flame to 66px with a bright core, independently moving gold/blue tongues, a larger wooden match, colored smoke rising 128px, and drifting sparks.
+- Added a feathered pointer glow and blue/rose/amber background light with slowly drifting vapor over the existing water. Preserved gallery layout, text, controls, and paper.
+- Added no dependencies. The cursor remains hidden while editing, on touch, and under reduced motion; background vapor becomes static with reduced motion.
+- Validation: production build, lint, and Chromium interaction suite, including flame-layer presence and background/reduced-motion checks. Desktop screenshot reviewed for flame visibility and text legibility. Physical device/GPU performance remains unverified.
+- Rollback this follow-up independently using the commit titled `feat: intensify match flame and colored atmosphere`.
+
 ### September 17 follow-through — requested task checklist
 
 The recent requests are treated as refinements of the existing hanging-room gallery. Message timestamps are not available, so this checklist uses the recent reference-led prompts and the latest instruction to preserve the concept.
