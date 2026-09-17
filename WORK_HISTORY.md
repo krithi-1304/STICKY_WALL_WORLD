@@ -4,6 +4,21 @@ This file records the work completed in the repository and the current rollback 
 
 ## Current state
 
+### September 17 — illuminated hanging gallery
+
+References inspected: pins `862509766163278050` (paper and fairy lights), `1072701204979237493` (rows of clipped cards), and `658792251712168155` (brown cards with colorful clips). The existing gallery remains the layout and product concept.
+
+- Added curved brown cords with twisted highlights, glass bulbs and metal sockets, wood-grain heart clips, paper corners, and softly colored cards. Hover/focus catches a brighter colored light; controls have glass highlights and depth.
+- Every visible bulb is clickable, with a 44px target, a 1.6-second brighter glow and light spill. Card-strand bulbs illuminate their card; the lobby subtitle catches warm reflected light. Keyboard users enter a strand once and use Left/Right/Home/End to choose bulbs.
+- Lobby links and non-destructive buttons emit a brief rainbow flame. The effect lives outside routes so navigation is immediate; only one burst exists at a time. Deletion deliberately has no celebratory flame. Reduced motion removes flame travel and bulb pulsing while retaining immediate light feedback.
+- Room chimes now derive pitches, intervals, timing, and decay from room identity. Opt-in sound and remembered mute remain. Browser tests recorded different oscillator frequencies for two rooms; this is not a physical-speaker listening test.
+- Replaced vague supporting copy with instructions about creating rooms and pinning thoughts, literal room counts, and clear empty/search states. The title is preserved; the browser-local storage notice remains accurate.
+- Fixed deletion focus recovery, stale search after deleting the final room, long search-copy wrapping, and bulb hit-area overflow on small screens. Reduced bulb density on narrow screens. Fixed motion-preference changes interrupting keyboard-triggered flames.
+
+Validation: build, lint, original archive regression suite, and `node qa/gallery-interactions.cjs`. New checks cover ten rooms, a 60-character name, long searches, 320/390/768/1024/1440px layouts without horizontal lobby overflow, light activation/expiry, keyboard bulb selection, rainbow cleanup across navigation, distinct chime pitches, reduced motion, and emulated touch taps. Reviewed desktop/mobile screenshots. No external responsiveness score is claimed; physical devices and Safari/Firefox remain untested. Direct review used the previously loaded motion/Impeccable guidance and preserved the requested glass/material treatment as an intentional design choice.
+
+Rollback: revert the commit titled `feat: add interactive fairy lights and colorful hanging cards` to remove this slice together. No production dependencies were added.
+
 ### September 17 — stronger fire and colored atmosphere
 
 Follow-up reference: https://in.pinterest.com/pin/571816483961203348/. Inspected the supplied pin's thumbnail (gold flame with blue/pink smoke) and retrieved its video; this implementation interprets the visual direction rather than claiming frame-matched motion.

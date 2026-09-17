@@ -5,6 +5,7 @@ import { RoomTag } from '../components/RoomTag';
 import { searchRooms } from '../domain/search';
 import { symbolForName } from '../domain/symbols';
 import { useSound } from '../domain/chime';
+import { FairyLights } from '../components/FairyLights';
 
 /** Lobby: a dark wall of hanging room tags, revealed through mist. */
 export function Lobby() {
@@ -26,16 +27,20 @@ export function Lobby() {
 
   function removeRoom(roomName: string, roomId: string) {
     const confirmed = window.confirm(`Delete “${roomName}” and everything inside it? This cannot be undone.`);
-    if (confirmed) deleteRoom(roomId);
+    if (confirmed) {
+      deleteRoom(roomId);
+      if (rooms.length === 1) setQuery('');
+      requestAnimationFrame(() => document.querySelector<HTMLElement>('.lobby input, .lobby .room-tag')?.focus());
+    }
   }
 
   return (
     <main className="lobby mist lobby--archive">
+      <FairyLights />
       <div className="archive-water" aria-hidden="true"><span /><span /><span /></div>
       <div className="lobby__moon" aria-hidden="true" />
       <header className="lobby__header">
-        <div className="lobby__stamp"><span>✦</span> archive / 01</div>
-        <p className="lobby__eyebrow">The Night Archive</p>
+        <p className="lobby__eyebrow">Your personal note wall</p>
         <h1 className="lobby__title" aria-label="Rooms for thoughts that stay.">
           <span className="lobby__title-word">Rooms</span>{' '}
           <span className="lobby__title-word">for</span>{' '}
@@ -43,7 +48,7 @@ export function Lobby() {
           <span className="lobby__title-word">that</span>{' '}
           <span className="lobby__title-word lobby__title-word--accent">stay.</span>
         </h1>
-        <p className="lobby__subtitle">A quiet place to leave something behind.</p>
+        <p className="lobby__subtitle">Create a room. Pin your thoughts. Pick up where you left off.</p>
         <div className="lobby__preferences"><span>Saved in this browser · Not shared online</span><button type="button" aria-pressed={sound.enabled} onClick={sound.toggle}>Chimes {sound.enabled ? 'on' : 'off'}</button></div>
         {rooms.length > 0 && (
           <label className="lobby__search">
@@ -63,18 +68,18 @@ export function Lobby() {
 
       {rooms.length === 0 ? (
         <div className="lobby__empty">
-          <p className="lobby__empty-kicker">Start with a small ritual</p>
-          <p className="lobby__empty-copy">Give a room to the thought you keep returning to.</p>
+          <p className="lobby__empty-kicker">A room for your first notes</p>
+          <p className="lobby__empty-copy">Keep ideas, journal entries, or lists together in their own space.</p>
           <div className="lobby__rail">
             <RoomTag isNew />
           </div>
         </div>
       ) : visibleRooms.length === 0 ? (
         <div className="lobby__empty lobby__empty--search" role="status">
-          <p>No room feels like “{query}” yet.</p>
+          <p>No rooms match “{query}”.</p>
           <div className="lobby__empty-actions">
             <button type="button" className="lobby__create-search" onClick={createFromSearch}>
-              Create “{query}” <span aria-hidden="true">↗</span>
+              Create room “{query}” <span aria-hidden="true">↗</span>
             </button>
             <button type="button" onClick={() => setQuery('')}>Show every room</button>
           </div>
@@ -83,7 +88,7 @@ export function Lobby() {
         <div className="lobby__shelf">
           <div className="lobby__shelf-heading">
             <span>Your rooms</span>
-            <span>{visibleRooms.length.toString().padStart(2, '0')} kept</span>
+            <span>{visibleRooms.length} {query.trim() ? 'found' : visibleRooms.length === 1 ? 'room' : 'rooms'}</span>
           </div>
           <div className="lobby__rail">
             {visibleRooms.map((room) => (

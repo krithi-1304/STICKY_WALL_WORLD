@@ -4,6 +4,7 @@ import { NewRoom } from './pages/NewRoom';
 import { Room } from './pages/Room';
 import { WorldAtmosphere } from './components/WorldAtmosphere';
 import { TorchCursor } from './components/TorchCursor';
+import { RainbowFlame } from './components/RainbowFlame';
 
 export function App() {
   return (
@@ -11,6 +12,7 @@ export function App() {
       <div className="app">
         <WorldAtmosphere />
         <TorchCursor />
+        <RainbowFlame />
         <Routes>
           <Route path="/" element={<Lobby />} />
           <Route path="/new" element={<NewRoom />} />
