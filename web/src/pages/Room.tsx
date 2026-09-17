@@ -6,6 +6,7 @@ import { StickyNote } from '../components/StickyNote';
 import { WebGLTorchField } from '../components/WebGLTorchField';
 import { WritingStylePicker } from '../components/WritingStylePicker';
 import { RoomToolsMenu } from '../components/RoomToolsMenu';
+import { RoomName } from '../components/RoomName';
 
 const CALM_WORDS = ['breathe', 'slow', 'here', 'enough', 'softly', 'still'];
 
@@ -38,8 +39,11 @@ export function Room() {
   const [lightOn, setLightOn] = useState(false);
   const [focusedId, setFocusedId] = useState<string | null>(null);
   const [lightPulse, setLightPulse] = useState(false);
+  const pulseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [marquee, setMarquee] = useState<Marquee | null>(null);
   const marqueeActive = useRef(false);
+
+  useEffect(() => () => { if (pulseTimer.current) clearTimeout(pulseTimer.current); }, []);
 
   useLayoutEffect(() => {
     const element = wallRef.current;
@@ -63,8 +67,12 @@ export function Room() {
     }
     wake();
     window.addEventListener('pointermove', wake);
+    window.addEventListener('keydown', wake);
+    window.addEventListener('pointerdown', wake);
     return () => {
       window.removeEventListener('pointermove', wake);
+      window.removeEventListener('keydown', wake);
+      window.removeEventListener('pointerdown', wake);
       if (idleTimer.current) clearTimeout(idleTimer.current);
     };
   }, []);
@@ -115,6 +123,7 @@ export function Room() {
   }
 
   function onDeleteSticky(id: string) {
+    if (focusedId === id) setFocusedId(null);
     deleteSticky(id, wallSize());
     setSelected((previous) => {
       const next = new Set(previous);
@@ -134,6 +143,8 @@ export function Room() {
   function onWallPointerDown(e: React.PointerEvent) {
     if ((e.target as HTMLElement).closest('.sticky')) return;
     setFocusedId(null);
+    if (e.pointerType === 'touch' || e.button !== 0) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
     const wall = wallRef.current!.getBoundingClientRect();
     marqueeActive.current = true;
     const x = e.clientX - wall.left;
@@ -180,7 +191,7 @@ export function Room() {
     <main className={`room ${lightOn ? 'room--lit' : 'room--dark'}${lightPulse ? ' room--light-pulse' : ''}`}>
       <div className={`room__topbar${chromeVisible ? '' : ' room__topbar--dim'}`}>
         <Link to="/" className="room__back">← Lobby</Link>
-        <h2 className="room__title" data-room-name={room.name}>{room.name}</h2>
+        <h2 className="room__title" title={room.name}><RoomName name={room.name} /></h2>
         <div className="room__actions">
           {selected.size > 0 && (
             <button className="icon-btn" onClick={onDeleteSelected} title="Delete selected">
@@ -195,15 +206,11 @@ export function Room() {
             aria-label={lightOn ? 'Turn room light off' : 'Turn room light on'}
             title={lightOn ? 'Turn light off' : 'Turn light on'}
             onClick={() => {
-              setLightOn((current) => {
-                if (current) {
-                  setFocusedId(null);
-                } else {
-                  setLightPulse(true);
-                  window.setTimeout(() => setLightPulse(false), 900);
-                }
-                return !current;
-              });
+              if (pulseTimer.current) clearTimeout(pulseTimer.current);
+              setLightOn(!lightOn);
+              setLightPulse(!lightOn);
+              if (lightOn) setFocusedId(null);
+              else pulseTimer.current = setTimeout(() => setLightPulse(false), 1500);
             }}
           >
             <span className="wall-switch__plate" aria-hidden="true">
@@ -221,6 +228,7 @@ export function Room() {
         onPointerDown={onWallPointerDown}
         onPointerMove={onWallPointerMove}
         onPointerUp={onWallPointerUp}
+        onPointerCancel={onWallPointerUp}
       >
         <WebGLTorchField active lit={lightOn} />
         {lightPulse && <span className="wall__light-burst" aria-hidden="true" />}

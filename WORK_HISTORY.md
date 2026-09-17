@@ -4,6 +4,39 @@ This file records the work completed in the repository and the current rollback 
 
 ## Current state
 
+### September 17 follow-through — requested task checklist
+
+The recent requests are treated as refinements of the existing hanging-room gallery. Message timestamps are not available, so this checklist uses the recent reference-led prompts and the latest instruction to preserve the concept.
+
+- [x] Preserve the black walls, hanging room tags, handwritten lobby title, and paper notes. Retain the existing transparent floating-title treatment and glass switch.
+- [x] Replace the decorative cursor with a wooden lit match, flickering flame, warm glow, and three animated smoke curls. Keep the precise native pointer; hide decoration over text fields, on touch, and with reduced motion.
+- [x] Complete the light-on ignition/smoke animation and cancel it correctly during rapid toggles or navigation.
+- [x] Give room names a small particle hover effect while preserving readable text; fix the old rule that prevented room-heading hover.
+- [x] Add brown thread and heart-marked clips, with a short settling shake on the inner tag so the clickable link stays still.
+- [x] Keep subtle dark-water reflections below the gallery and glass highlights on controls. Paper remains readable rather than turning every surface transparent.
+- [x] Make Delete visible and touch-sized. Confirm before deleting a room and its notes through the existing store action.
+- [x] Provide opt-in chimes with a remembered preference, rate limiting, and one reused audio context.
+- [x] Explain browser-local storage in the lobby. Keep search and room creation discoverable.
+- [x] Correct water overflow, narrow-screen toolbar layout, and stale room-heading positioning. Wake controls on keyboard/touch activity and clear note focus after deletion.
+
+### Review and limits
+
+The black-water reference works as restrained atmosphere behind the hanging gallery; stronger movement would compete with writing. The original visual concept is preserved. References informed material and motion direction; exact video timing has not been verified.
+
+Impeccable's launcher returned permission denied, so review used the installed audit guidance, project PRODUCT/DESIGN documents, source inspection, and Chromium interaction checks. This is not a full accessibility certification. Intentional exceptions: existing gallery copy/typography is preserved; requested glass and decorative motion remain; the 720ms paper settle and 1.4s ignition never delay actions. Reduced motion disables the added ambient effects.
+
+Remaining product work, separate from this visual pass:
+
+1. **Sharing and privacy:** rooms are still local to this browser, not publicly shared or encrypted. Real shared secrets require persistence, access/edit keys, expiration, and deletion rules before presenting them as private online rooms.
+2. **Recovery:** export/import and undo or trash would help users recover deleted notes and protect against cleared browser storage. Current deletion confirms and is permanent.
+3. **Broader validation:** physical touch devices, Safari/Firefox, assistive technology, and low-end GPU performance still need dedicated coverage. Current responsive evidence is Chromium viewport emulation.
+
+The automated regression script is `qa/archive-interactions.cjs`; run the Vite server on port 5173, then `node qa/archive-interactions.cjs`. It uses an isolated browser session and writes screenshots to a temporary directory, without modifying the user's saved rooms.
+
+Validation: production build and lint pass. Chromium checks cover room creation, note writing and reload persistence, animated cursor smoke, light timing and rapid toggles, sound preference persistence, search recovery, 1440/768/390/320px layouts, reduced motion, and both canceled and confirmed cascading deletion. The wall remains a scrollable canvas; smaller screens preserve saved note positions.
+
+Rollback for this follow-through: the implementation, regression script, and checklist are grouped in the commit titled `fix: complete matchstick and gallery interactions`. Revert that commit to return to the prior gallery state; do not reset or discard saved browser data. Older rollback commands below describe their historical slices and are not a substitute for reverting the newest dependent change first.
+
 The committed product baseline is `627cdcd` (`docs: record room controls refinement`). The lobby and room experience at that commit are the preserved design: hanging room tags, a quiet dark gallery, search, room symbols, torchlight, sticky notes, and room controls.
 
 The current product includes a glass 3D hover treatment on the existing lobby title, “Rooms for thoughts that stay.” It keeps the title text and layout, but wraps each word so the words can lift independently. The effect includes frosted translucent panels, milky pastel lettering, layered depth shadows, a highlight streak, and a small sparkle. It is CSS-only and has a reduced-motion fallback. A later reference-led pass adds the room light’s compact glass switch and a short room-tag wobble that settles on hover.

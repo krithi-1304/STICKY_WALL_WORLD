@@ -4,9 +4,11 @@ import { useWall } from '../state/wall';
 import { RoomTag } from '../components/RoomTag';
 import { searchRooms } from '../domain/search';
 import { symbolForName } from '../domain/symbols';
+import { useSound } from '../domain/chime';
 
 /** Lobby: a dark wall of hanging room tags, revealed through mist. */
 export function Lobby() {
+  const sound = useSound();
   const rooms = useWall((s) => s.rooms);
   const createRoom = useWall((s) => s.createRoom);
   const deleteRoom = useWall((s) => s.deleteRoom);
@@ -28,7 +30,8 @@ export function Lobby() {
   }
 
   return (
-    <main className="lobby mist">
+    <main className="lobby mist lobby--archive">
+      <div className="archive-water" aria-hidden="true"><span /><span /><span /></div>
       <div className="lobby__moon" aria-hidden="true" />
       <header className="lobby__header">
         <div className="lobby__stamp"><span>✦</span> archive / 01</div>
@@ -41,6 +44,7 @@ export function Lobby() {
           <span className="lobby__title-word lobby__title-word--accent">stay.</span>
         </h1>
         <p className="lobby__subtitle">A quiet place to leave something behind.</p>
+        <div className="lobby__preferences"><span>Saved in this browser · Not shared online</span><button type="button" aria-pressed={sound.enabled} onClick={sound.toggle}>Chimes {sound.enabled ? 'on' : 'off'}</button></div>
         {rooms.length > 0 && (
           <label className="lobby__search">
             <span className="lobby__search-icon" aria-hidden="true">⌕</span>
@@ -50,6 +54,7 @@ export function Lobby() {
               placeholder="Find a room…"
               aria-label="Search rooms"
               type="search"
+              maxLength={60}
             />
             {query && <span className="lobby__search-count">{visibleRooms.length}</span>}
           </label>

@@ -1,0 +1,87 @@
+const { chromium } = require('../web/node_modules/playwright');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+
+(async () => {
+  const artifacts = fs.mkdtempSync('/private/tmp/black-wall-qa-');
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  try {
+    await page.goto('http://127.0.0.1:5173');
+    await page.getByRole('link', { name: 'Create a new room' }).click();
+    await page.getByRole('textbox', { name: 'Room name' }).fill('Quiet secrets');
+    await page.getByRole('button', { name: 'Hang it up' }).click();
+    const light = page.getByRole('button', { name: 'Turn room light on' });
+    await light.click();
+    await page.waitForTimeout(1000);
+    assert.equal(await page.locator('.match-light-reveal').count(), 1, 'smoke remains mounted until finished');
+    await page.waitForTimeout(600);
+    assert.equal(await page.locator('.match-light-reveal').count(), 0);
+    await page.getByRole('button', { name: 'Turn room light off' }).click();
+    await light.click();
+    await page.getByRole('button', { name: 'Turn room light off' }).click();
+    assert.equal(await page.locator('.match-light-reveal').count(), 0, 'rapid off cancels reveal');
+    await page.getByRole('button', { name: /Tools/ }).click();
+    await page.getByRole('menuitem', { name: /Pin note/ }).click();
+    await page.getByPlaceholder('Write…').fill('A saved thought, only in this test browser.');
+    await page.getByPlaceholder('Write…').hover();
+    assert.equal(await page.locator('.match-cursor').getAttribute('data-visible'), 'false');
+    await page.mouse.move(600, 150);
+    await page.waitForTimeout(100);
+    assert.equal(await page.locator('.match-cursor').getAttribute('data-visible'), 'true');
+    const smoke = page.locator('.match-cursor__smoke').first();
+    const before = await smoke.evaluate(e => getComputedStyle(e).transform);
+    await page.waitForTimeout(200);
+    assert.notEqual(await smoke.evaluate(e => getComputedStyle(e).transform), before);
+    await page.screenshot({ path: `${artifacts}/room-desktop.png` });
+    await page.reload();
+    const data = await page.evaluate(() => JSON.parse(localStorage.getItem('black-wall:v1')));
+    assert.equal(data.stickies[0].body, 'A saved thought, only in this test browser.');
+    await page.getByRole('link', { name: '← Lobby', exact: true }).click();
+    const tag = page.getByRole('link', { name: 'Open Quiet secrets' });
+    await tag.hover();
+    await page.waitForTimeout(250);
+    assert.notEqual(await tag.locator('.room-tag__tag').evaluate(e => getComputedStyle(e).transform), 'none');
+    await page.getByRole('button', { name: 'Chimes off' }).click();
+    await tag.hover();
+    await page.reload();
+    assert.equal(await page.getByRole('button', { name: 'Chimes on' }).getAttribute('aria-pressed'), 'true');
+    await page.getByRole('button', { name: 'Chimes on' }).click();
+    await page.getByRole('searchbox').fill('zzzzzz');
+    await page.getByRole('button', { name: 'Show every room' }).click();
+    await page.screenshot({ path: `${artifacts}/lobby-desktop.png` });
+    for (const width of [768, 390, 320]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.waitForTimeout(1700); // Let the existing lobby mist entrance settle before visual capture.
+      assert.equal(await page.locator('.lobby').evaluate(e => e.scrollWidth > e.clientWidth), false, `lobby overflow ${width}`);
+      const remove = page.getByRole('button', { name: 'Delete Quiet secrets' });
+      assert.ok((await remove.boundingBox()).height >= 44);
+      await page.screenshot({ path: `${artifacts}/lobby-${width}.png` });
+      await tag.click();
+      assert.equal(await page.locator('.room__topbar').evaluate(e => e.scrollWidth > e.clientWidth), false, `toolbar overflow ${width}`);
+      await page.getByRole('note').scrollIntoViewIfNeeded();
+      const paper = await page.getByRole('note').boundingBox();
+      assert.ok(paper.x >= -2 && paper.x + paper.width <= width + 2, 'canvas can scroll desktop paper fully into view');
+      await page.screenshot({ path: `${artifacts}/room-${width}.png` });
+      await page.getByRole('link', { name: '← Lobby', exact: true }).click();
+    }
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await tag.focus();
+    assert.equal(await tag.locator('.room-tag__tag').evaluate(e => getComputedStyle(e).animationName), 'none');
+    assert.equal(await page.locator('.match-cursor').evaluate(e => getComputedStyle(e).display), 'none');
+    page.once('dialog', d => d.dismiss());
+    await page.getByRole('button', { name: 'Delete Quiet secrets' }).click();
+    assert.equal(await tag.count(), 1);
+    page.once('dialog', d => d.accept());
+    await page.getByRole('button', { name: 'Delete Quiet secrets' }).click();
+    assert.equal(await tag.count(), 0);
+    await page.reload();
+    const deleted = await page.evaluate(() => JSON.parse(localStorage.getItem('black-wall:v1')));
+    assert.equal(deleted.rooms.length, 0);
+    assert.equal(deleted.stickies.length, 0);
+    assert.deepEqual(errors, []);
+    console.log(`PASS: creation, writing, persistence, cursor/smoke, light timing, rapid toggles, chime preference, search, desktop/tablet/mobile layout, reduced motion, cancel/delete cascade. Screenshots: ${artifacts}`);
+  } finally { await browser.close(); }
+})().catch(e => { console.error(e); process.exit(1); });
