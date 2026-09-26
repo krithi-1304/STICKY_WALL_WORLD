@@ -1,3 +1,4 @@
+import type { PrivateContent } from './privateContent';
 /**
  * Black Wall — domain model (S0 → S1 ready).
  * Keep these shapes stable; they map 1:1 to future DB tables.
@@ -37,6 +38,10 @@ export const STICKY_COLORS = [
 export type StickyColorId = (typeof STICKY_COLORS)[number]['id'];
 
 export interface Sticky {
+  locked?: PrivateContent;
+  attachments?: Attachment[];
+  offsetX?: number;
+  offsetY?: number;
   id: string;
   roomId: string;
   /** Position on the wall, in wall coordinates (px from wall origin). */
@@ -58,7 +63,17 @@ export interface Sticky {
   updatedAt: number;
 }
 
+export interface Attachment {
+  id: string;
+  name: string;
+  type: 'image/jpeg' | 'image/png' | 'image/webp' | 'audio/mpeg' | 'audio/wav' | 'audio/ogg' | 'audio/webm' | 'video/mp4' | 'video/webm';
+  data: string;
+  bytes: number;
+  duration: number;
+}
+
 export interface Room {
+  locked?: PrivateContent;
   id: string;
   slug: string;
   name: string;

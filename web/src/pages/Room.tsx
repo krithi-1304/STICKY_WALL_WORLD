@@ -1,261 +1,67 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { SteelBinding, ItemControls } from '../components/ItemPrivacy';
+import type { Sticky } from '../domain/types';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
-import { useWall, selectRoomBySlug, selectStickiesForRoom } from '../state/wall';
-import { StickyNote } from '../components/StickyNote';
-import { WebGLTorchField } from '../components/WebGLTorchField';
-import { WritingStylePicker } from '../components/WritingStylePicker';
-import { RoomToolsMenu } from '../components/RoomToolsMenu';
-import { RoomName } from '../components/RoomName';
-
-const CALM_WORDS = ['breathe', 'slow', 'here', 'enough', 'softly', 'still'];
-
-interface Marquee {
-  x0: number;
-  y0: number;
-  x1: number;
-  y1: number;
-}
-
-/** A room: black wall, title, + to pin. Drag empty wall to gather notes. */
+import { selectRoomBySlug, selectStickiesForRoom, useWall } from '../state/wall';
+import { DiaryNote } from '../components/DiaryNote';
+import { NoteEditor } from '../components/NoteEditor';
+import { ReleaseDialog } from '../components/ReleaseDialog';
+import { reducedMotion } from '../domain/motion';
+import { playRitualSound, useSound } from '../domain/chime';
 export function Room() {
-  const { slug = '' } = useParams();
-  const room = useWall(selectRoomBySlug(slug));
-  const stickies = useWall(useShallow(selectStickiesForRoom(room?.id ?? '')));
-  const addSticky = useWall((s) => s.addSticky);
-  const tidyRoom = useWall((s) => s.tidyRoom);
-  const sortRoom = useWall((s) => s.sortRoom);
-  const deleteSticky = useWall((s) => s.deleteSticky);
-  const deleteStickies = useWall((s) => s.deleteStickies);
-  const updateRoom = useWall((s) => s.updateRoom);
-
-  const wallRef = useRef<HTMLDivElement>(null);
-  const [wallBounds, setWallBounds] = useState({ w: 900, h: 600 });
-  const [newId, setNewId] = useState<string | null>(null);
-  const [chromeVisible, setChromeVisible] = useState(true);
-  const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [lightOn, setLightOn] = useState(false);
-  const [focusedId, setFocusedId] = useState<string | null>(null);
-  const [lightPulse, setLightPulse] = useState(false);
-  const pulseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [marquee, setMarquee] = useState<Marquee | null>(null);
-  const marqueeActive = useRef(false);
-
-  useEffect(() => () => { if (pulseTimer.current) clearTimeout(pulseTimer.current); }, []);
-
-  useLayoutEffect(() => {
-    const element = wallRef.current;
-    if (!element) return;
-    const updateBounds = () => setWallBounds({ w: element.clientWidth, h: element.clientHeight });
-    updateBounds();
-    const observer = new ResizeObserver(updateBounds);
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-  // One calm word per visit — chosen once, lazily.
-  const [calmWord] = useState(
-    () => CALM_WORDS[Math.floor(Math.random() * CALM_WORDS.length)],
-  );
-
-  useEffect(() => {
-    function wake() {
-      setChromeVisible(true);
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-      idleTimer.current = setTimeout(() => setChromeVisible(false), 2500);
-    }
-    wake();
-    window.addEventListener('pointermove', wake);
-    window.addEventListener('keydown', wake);
-    window.addEventListener('pointerdown', wake);
-    return () => {
-      window.removeEventListener('pointermove', wake);
-      window.removeEventListener('keydown', wake);
-      window.removeEventListener('pointerdown', wake);
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-    };
-  }, []);
-
-  if (!room) return <Navigate to="/" replace />;
-
-  const viewMode = focusedId ? 'reading' : lightOn ? 'lantern' : 'night';
-
-  const wallSize = () => {
-    const el = wallRef.current;
-    return { w: el ? el.clientWidth : 900, h: el ? el.clientHeight : 600 };
-  };
-
-  function onAdd() {
-    if (!room) return;
-    const sticky = addSticky(room.id, wallSize());
-    if (sticky) {
-      setLightOn(true);
-      setFocusedId(sticky.id);
-      setNewId(sticky.id);
-      setTimeout(() => setNewId(null), 400);
-    }
+  const {slug=''}=useParams(); const room=useWall(selectRoomBySlug(slug));
+  const notes=useWall(useShallow(selectStickiesForRoom(room?.id??'')));
+  const [piled,setPiled]=useState<Set<string>>(()=>new Set());
+  const [light,setLight]=useState(true);const [near,setNear]=useState<string|null>(null);const [opened,setOpened]=useState<string|null>(null);
+  const [release,setRelease]=useState<string|null>(null);const [renaming,setRenaming]=useState(false);const [message,setMessage]=useState('');
+  const [ignition,setIgnition]=useState(0);
+  const [igniting,setIgniting]=useState(false);
+  const ignitionTimer=useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const [falling,setFalling]=useState<{note:Sticky;index:number}|null>(null);
+  const [origin,setOrigin]=useState<DOMRect|null>(null);
+  useEffect(()=>()=>clearTimeout(ignitionTimer.current),[]);
+  function toggleLight(){
+    clearTimeout(ignitionTimer.current);setNear(null);
+    if(light||igniting){setLight(false);setIgniting(false);return;}
+    void playRitualSound('light');
+    if(reducedMotion()){setLight(true);return;}
+    setIgnition(n=>n+1);setIgniting(true);
+    ignitionTimer.current=setTimeout(()=>{setLight(true);setIgniting(false);},340);
   }
+  function finishRelease(){setFalling(null);}
 
-  function onTidy() {
-    if (!room) return;
-    tidyRoom(room.id, wallSize());
-  }
-
-  function onSort(dir: 'asc' | 'desc') {
-    if (!room) return;
-    sortRoom(room.id, wallSize(), dir);
-  }
-
-  function onSelectToggle(id: string) {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }
-
-  function onDeleteSelected() {
-    if (selected.size === 0) return;
-    deleteStickies([...selected], wallSize());
-    setSelected(new Set());
-  }
-
-  function onDeleteSticky(id: string) {
-    if (focusedId === id) setFocusedId(null);
-    deleteSticky(id, wallSize());
-    setSelected((previous) => {
-      const next = new Set(previous);
-      next.delete(id);
-      return next;
-    });
-  }
-
-  function onOpenWordNote(id: string) {
-    setLightOn(true);
-    setFocusedId(id);
-    setNewId(id);
-    window.setTimeout(() => setNewId(null), 500);
-  }
-
-  // --- marquee: drag on empty wall gathers notes -------------------------
-  function onWallPointerDown(e: React.PointerEvent) {
-    if ((e.target as HTMLElement).closest('.sticky')) return;
-    setFocusedId(null);
-    if (e.pointerType === 'touch' || e.button !== 0) return;
-    e.currentTarget.setPointerCapture(e.pointerId);
-    const wall = wallRef.current!.getBoundingClientRect();
-    marqueeActive.current = true;
-    const x = e.clientX - wall.left;
-    const y = e.clientY - wall.top;
-    setMarquee({ x0: x, y0: y, x1: x, y1: y });
-    if (!e.shiftKey) setSelected(new Set());
-  }
-
-  function onWallPointerMove(e: React.PointerEvent) {
-    if (!marqueeActive.current || !marquee) return;
-    const wall = wallRef.current!.getBoundingClientRect();
-    const next = { ...marquee, x1: e.clientX - wall.left, y1: e.clientY - wall.top };
-    setMarquee(next);
-
-    const [mx0, mx1] = [Math.min(next.x0, next.x1), Math.max(next.x0, next.x1)];
-    const [my0, my1] = [Math.min(next.y0, next.y1), Math.max(next.y0, next.y1)];
-    const hit = stickies
-      .filter((s) => s.x < mx1 && s.x + s.w > mx0 && s.y < my1 && s.y + s.h > my0)
-      .map((s) => s.id);
-    setSelected(new Set(hit));
-  }
-
-  function onWallPointerUp() {
-    marqueeActive.current = false;
-    setMarquee(null);
-  }
-
-  const marqueeStyle = marquee
-    ? {
-        left: Math.min(marquee.x0, marquee.x1),
-        top: Math.min(marquee.y0, marquee.y1),
-        width: Math.abs(marquee.x1 - marquee.x0),
-        height: Math.abs(marquee.y1 - marquee.y0),
-      }
-    : undefined;
-
-  const wallWidth = wallBounds.w;
-  const wallHeight = wallBounds.h;
-  const wallColumns = Math.max(1, Math.floor((wallWidth - 48) / 320));
-  const wallRows = Math.ceil(stickies.length / wallColumns);
-  const wallContentHeight = Math.max(wallHeight, 56 + wallRows * 320 + 56);
-
-  return (
-    <main className={`room ${lightOn ? 'room--lit' : 'room--dark'}${lightPulse ? ' room--light-pulse' : ''}`}>
-      <div className={`room__topbar${chromeVisible ? '' : ' room__topbar--dim'}`}>
-        <Link to="/" className="room__back">← Lobby</Link>
-        <h2 className="room__title" title={room.name}><RoomName name={room.name} /></h2>
-        <div className="room__actions">
-          {selected.size > 0 && (
-            <button className="icon-btn" onClick={onDeleteSelected} title="Delete selected">
-              🗑 {selected.size}
-            </button>
-          )}
-          <WritingStylePicker value={room.fontId} onChange={(fontId) => updateRoom(room.id, { fontId })} />
-          <button
-            className={`wall-switch${lightOn ? ' wall-switch--on' : ''}`}
-            type="button"
-            aria-pressed={lightOn}
-            aria-label={lightOn ? 'Turn room light off' : 'Turn room light on'}
-            title={lightOn ? 'Turn light off' : 'Turn light on'}
-            onClick={() => {
-              if (pulseTimer.current) clearTimeout(pulseTimer.current);
-              setLightOn(!lightOn);
-              setLightPulse(!lightOn);
-              if (lightOn) setFocusedId(null);
-              else pulseTimer.current = setTimeout(() => setLightPulse(false), 1500);
-            }}
-          >
-            <span className="wall-switch__plate" aria-hidden="true">
-              <span className="wall-switch__lever" />
-            </span>
-            <span className="wall-switch__label">{lightOn ? 'lit' : 'dark'}</span>
-          </button>
-          <RoomToolsMenu onAdd={onAdd} onTidy={onTidy} onSort={onSort} />
-        </div>
-      </div>
-
-      <div
-        className="wall"
-        ref={wallRef}
-        onPointerDown={onWallPointerDown}
-        onPointerMove={onWallPointerMove}
-        onPointerUp={onWallPointerUp}
-        onPointerCancel={onWallPointerUp}
-      >
-        <WebGLTorchField active lit={lightOn} />
-        {lightPulse && <span className="wall__light-burst" aria-hidden="true" />}
-        {lightPulse && <span className="match-light-reveal" aria-hidden="true"><span className="match-light-reveal__flame" /><span className="match-light-reveal__smoke match-light-reveal__smoke--one" /><span className="match-light-reveal__smoke match-light-reveal__smoke--two" /></span>}
-        <div className="wall__inner" style={{ minHeight: wallContentHeight }}>
-          {stickies.length === 0 && (
-            <>
-              <p className="wall__hint">Pin your first note</p>
-              <span className="wall__calm" style={{ top: '30%', left: '20%' }}>{calmWord}</span>
-            </>
-          )}
-          {stickies.map((sticky) => (
-            <StickyNote
-              key={sticky.id}
-              sticky={sticky}
-              isNew={sticky.id === newId}
-              fontId={room.fontId}
-              selected={selected.has(sticky.id)}
-              onSelectToggle={onSelectToggle}
-              onDelete={onDeleteSticky}
-              viewMode={focusedId === sticky.id ? 'reading' : viewMode === 'reading' ? 'lantern' : viewMode}
-              onOpen={onOpenWordNote}
-            />
-          ))}
-          {marqueeStyle && <div className="wall__marquee" style={marqueeStyle} />}
-        </div>
-      </div>
-    </main>
-  );
+  const wall=useRef<HTMLDivElement>(null);const glow=useRef<HTMLDivElement>(null);const frame=useRef(0);const sound=useSound();
+  const close=useCallback(()=>{if(opened)setPiled(previous=>new Set([...previous,opened]));setOpened(null);},[opened]);
+  useEffect(()=>{document.documentElement.dataset.cursor=light?'wand':'match';return()=>{delete document.documentElement.dataset.cursor;cancelAnimationFrame(frame.current);};},[light]);
+  if(!room)return <Navigate to="/" replace/>;
+  if(room.locked)return <main className="diary-room"><header className="diary-bar glass"><Link to="/">← Lobby</Link><h1>A room kept close</h1></header><section className="locked-room vault-panel glass"><div className="room-lock-seal"><SteelBinding/></div><h2>This room is locked</h2><p>Its notes have their own layer of encryption.</p><ItemControls scope={{kind:'room',id:room.id}}/></section></main>;
+  const visibleNotes=[...notes];if(falling)visibleNotes.splice(Math.min(falling.index,visibleNotes.length),0,falling.note);
+  const current=notes.find(note=>note.id===opened&&!note.locked);
+  function add(){const note=useWall.getState().addSticky(room!.id,{w:wall.current?.clientWidth??900,h:600});if(note)setOpened(note.id);else setMessage('This room is full. Keep a new thought in another room.');}
+  return <main className={`diary-room ${light?'light-on':'light-off'}${igniting?' is-igniting':''}`}>
+    <header className="diary-bar glass"><Link to="/">← Lobby</Link>
+      {renaming?<input aria-label="Room name" defaultValue={room.name} maxLength={60} autoFocus onBlur={e=>{const name=e.target.value.trim();if(name)useWall.getState().updateRoom(room.id,{name});setRenaming(false);}} onKeyDown={e=>{if(e.key==='Enter')e.currentTarget.blur();if(e.key==='Escape')setRenaming(false);}}/>:<h1><button onClick={()=>setRenaming(true)} title="Rename room">{room.name}</button></h1>}
+      <div className="diary-actions"><button className={`diary-switch ${light?'is-on':''}`} aria-pressed={light||igniting} aria-label={light||igniting?'Turn room light off':'Turn room light on'} onClick={toggleLight}><span aria-hidden="true"/>{light?'Light on':'Light off'}</button><button data-sound-toggle title={sound.enabled ? "Turn chimes off" : "Turn chimes on"} aria-pressed={sound.enabled} onClick={sound.toggle}>Chimes {sound.enabled?'on':'off'}</button><button onClick={add}>Pin a thought</button><ItemControls scope={{kind:'room',id:room.id}}/></div>
+    </header>
+    <p className="room-guidance">{light?'Open a note to write. Move it by its tape.': 'Bring the match close to read. You can also tap or focus any note.'}</p>
+    {message&&<p role="status">{message}</p>}
+    <div className="diary-wall" ref={wall} onPointerMove={e=>{
+      if(light||e.pointerType!=='mouse')return;
+      const x=e.clientX,y=e.clientY;cancelAnimationFrame(frame.current);
+      frame.current=requestAnimationFrame(()=>{
+        if(glow.current){const r=wall.current!.getBoundingClientRect();glow.current.style.transform=`translate(${x-r.left+wall.current!.scrollLeft}px,${y-r.top+wall.current!.scrollTop}px)`;glow.current.style.opacity='1';}
+        let nearest:string|null=null;let distance=210;
+        wall.current?.querySelectorAll<HTMLElement>('[data-note-id]').forEach(el=>{const r=el.getBoundingClientRect();const d=Math.hypot(x-r.left-r.width/2,y-r.top-r.height/2);if(d<distance){distance=d;nearest=el.dataset.noteId??null;}});
+        setNear(nearest);
+      });
+    }} onPointerLeave={()=>{cancelAnimationFrame(frame.current);setNear(null);if(glow.current)glow.current.style.opacity='0';}}>
+      <div ref={glow} className="room-lamplight" aria-hidden="true"/>
+      {['left','center','right'].map(position=><div key={position} className={`room-pendant room-pendant--${position}`} aria-hidden="true"><span className="room-pendant__cord"/><span className="room-pendant__shade"/><span className="room-pendant__bulb"/>{position==='center'&&ignition>0&&(light||igniting)&&<span key={ignition} className="lamp-match"><span className="lamp-match__wood"/><span className="lamp-match__head"/><span className="lamp-match__flame"/></span>}</div>)}
+      {notes.length===0&&<div className="empty-wall"><h2>A space of your own</h2><p>Pin a thought. It can be a sentence, a list, or a day you want to remember.</p><button onClick={add}>Pin your first note</button></div>}
+      {visibleNotes.map(note=><DiaryNote key={note.id} note={note} lit={light||near===note.id||opened===note.id} piled={piled.has(note.id)&&opened!==note.id} falling={falling?.note.id===note.id} onFallen={finishRelease} onOpen={rect=>{setOrigin(rect);setPiled(previous=>{const next=new Set(previous);next.delete(note.id);return next;});setOpened(note.id);}} onRelease={()=>setRelease(note.id)}/>)}
+    </div>
+    {current&&<NoteEditor key={current.id} note={current} origin={origin} onClose={close} onRelease={()=>setRelease(current.id)} onNext={direction=>{const readable=notes.filter(n=>!n.locked);const index=readable.findIndex(n=>n.id===opened);const next=readable[(index+direction+readable.length)%readable.length]?.id;setPiled(previous=>{const result=new Set(previous);if(opened)result.add(opened);if(next&&next!==opened)result.delete(next);return result;});setOrigin(null);setOpened(next===opened?null:next??null);}}/>}
+    {release&&<ReleaseDialog label="Let this note leave your wall?" onCancel={()=>setRelease(null)} onRelease={()=>{const id=release;if(opened===id)setOpened(null);setRelease(null);const note=notes.find(n=>n.id===id);if(note&&!reducedMotion())setFalling({note,index:notes.indexOf(note)});useWall.getState().deleteSticky(id);}}/>}
+  </main>;
 }

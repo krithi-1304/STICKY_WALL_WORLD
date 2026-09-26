@@ -1,3 +1,29 @@
+## Latest — temporary unlock views
+
+Unlock now opens a read-only private view while the saved item stays encrypted. Closing/hiding preserves the lock. Editing requires explicitly selecting “Remove this lock so I can edit.” Nested note locks remain concealed within a room preview. This supersedes the earlier unlock-removes-lock default. Individual-letter piles remain unchanged.
+
+## Current handoff — September 20, individual letters and lock fixes
+
+The user corrected word piles to LETTER piles. `PileText` preserves normal wrapping but each grapheme falls separately and remains on the paper. Fixed navigation opening blank editors for encrypted notes; close the editor before committing a note lock, and make the heart seal/full locked note clickable. Requested clarification on the remaining unspecified lock expectation; existing unlock still removes the extra lock. See latest WORK_HISTORY.md validation.
+
+## Current handoff — September 19, word piles and steel locks
+
+Latest changes: words settle visibly inside each note and reassemble on reopening; crossed steel cables with centered heart locks; consistent control typography; material-specific opt-in hover sounds and click depth; sea reflections/parallax. Audio/photo/video size and duration caps are removed throughout upload, encrypted storage, backup, item locks and shared files. Three attachments per note remains. See the newest WORK_HISTORY.md entry for verification and remaining device/browser limits.
+
+## Latest implementation — physical interactions, attachments, sharing and locks
+
+Completed: lamp approach/contact/retreat and two companion lights; spatial note/card opening; gravity close/delete and falling letters; glass/tactile enhancement of existing surfaces; photos and dedicated audio/video/link controls; protected snapshot links/files for note/room/space; encrypted heart locks for rooms and notes. All five Chromium QA suites, build, lint and whitespace checks pass. See latest WORK_HISTORY.md entry for scope/limits. No deployment: localhost links work only on this device; a reachable host is needed for other recipients. Lock passphrases have no reset. Physical-device, Safari/Firefox and independent security review remain before public release.
+
+## Current handoff — September 18, 2026
+
+User confirmed recovery complete. Recovery and restored title/fairy-light/flame changes are applied. Normal preview: http://127.0.0.1:5173; alternate preview: http://127.0.0.1:5182. Each address has its own browser storage: use the address containing the latest notes, or restore the latest encrypted backup deliberately. The temporary recovery control and already-applied patch have been removed. Next: physical-device and Safari/Firefox checks; no further redesign requested.
+
+## Current handoff — September 17, 2026
+
+Use `BUILD_SPEC.md` and the latest section of `WORK_HISTORY.md`. The lists below are historical requests, not a fresh implementation queue. The local encrypted archive and diary journey are implemented. The resumed pass fixed stale-tab data loss, modal editor focus/layering, panic access inside dialogs, deletion target size, and added the overhead lamp/strike and movement-driven smoke. No accounts or public sharing are part of this version.
+
+Next: physical-device and Safari/Firefox validation, then reference-specific visual review. Do not claim all bugs are eliminated or exact Pinterest fidelity. Preserve the current implementation until a concrete defect or approved visual change is identified.
+
 --User usability test
 --UI Principles
 --UX Principles
@@ -50,7 +76,7 @@ When I hover on a room, the torch light effect and it should look colorful, and 
 [ ] Full integration test + visual audit continue this first then do rest 
 
 
-autoarrange when new note is creqted 
+autoarrange when new note is created
 
 Auto arrange not working in rooms
 

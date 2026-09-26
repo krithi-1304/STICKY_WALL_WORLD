@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { playRitualSound } from '../domain/chime';
 
 /** Each glass bulb has a generous hit area; its light never blocks the cards. */
 export function FairyLights({ small = false }: { small?: boolean }) {
@@ -17,7 +18,7 @@ export function FairyLights({ small = false }: { small?: boolean }) {
   }}>
     <svg aria-hidden="true" viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M0 3 Q50 32 100 3" /><path className="fairy-lights__twist" d="M0 3 Q50 32 100 3" /></svg>
     {bulbs.map((x, i) => <button key={x} type="button" className="fairy-lights__bulb" tabIndex={focused === i ? 0 : -1} onFocus={() => setFocused(i)} aria-label={`Illuminate fairy light ${i + 1}`} style={{ left: `${x}%`, top: `${3 + .0058 * x * (100 - x)}px`, animationDelay: `${-i * .7}s` }} data-lit={lit === i} onClick={() => {
-      clearTimeout(timer.current); setLit(i); timer.current = setTimeout(() => setLit(null), 1600);
+      clearTimeout(timer.current); setLit(i); void playRitualSound('light'); timer.current = setTimeout(() => setLit(null), 1600);
     }}><span aria-hidden="true" /></button>)}
   </div>;
 }

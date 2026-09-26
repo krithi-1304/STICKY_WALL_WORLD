@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { loadWorld, saveWorld } from '../domain/storage';
-import { slugify, uniqueSlug } from '../domain/slug';
-import { STICKY_COLORS, STICKY_LIMITS } from '../domain/types';
+import { uniqueSlug } from '../domain/slug';
+import { STICKY_LIMITS } from '../domain/types';
 import type { HandFontId, Room, Sticky, StickyColorId, TapeStyle } from '../domain/types';
 
 interface WallStore {
@@ -20,7 +20,6 @@ interface WallStore {
   sortRoom: (roomId: string, wall: { w: number; h: number }, dir: 'asc' | 'desc') => void;
 }
 
-const persisted = loadWorld();
 
 const uid = () => crypto.randomUUID();
 const now = () => Date.now();
@@ -28,8 +27,8 @@ const clampRotation = (deg: number) =>
   Math.max(STICKY_LIMITS.minRotation, Math.min(STICKY_LIMITS.maxRotation, deg));
 const rand = (min: number, max: number) => min + Math.random() * (max - min);
 
-const COLOR_IDS = STICKY_COLORS.map((c) => c.id) as StickyColorId[];
-const TAPE_IDS: TapeStyle[] = ['plain', 'dots', 'diagonal', 'grid', 'hearts', 'stars', 'checker', 'confetti'];
+const COLOR_IDS: StickyColorId[] = ['rose', 'sage', 'cream'];
+const TAPE_IDS: TapeStyle[] = ['plain'];
 
 function pickColor(existing: Sticky[]): StickyColorId {
   return COLOR_IDS[existing.length % COLOR_IDS.length] as StickyColorId;
@@ -102,14 +101,13 @@ function organicSpawn(
 }
 
 export const useWall = create<WallStore>((set, get) => ({
-  rooms: persisted.rooms,
-  stickies: persisted.stickies,
+  ...loadWorld(),
 
   createRoom: ({ name, symbol }) => {
     const trimmed = name.trim() || 'Untitled room';
     const room: Room = {
       id: uid(),
-      slug: uniqueSlug(slugify(trimmed) || 'room', get().rooms),
+      slug: uniqueSlug(uid(), get().rooms),
       name: trimmed,
       symbol: symbol.trim() || '✷',
       accent: null,
@@ -129,7 +127,7 @@ export const useWall = create<WallStore>((set, get) => ({
   updateRoom: (roomId, patch) =>
     set((s) => {
       const rooms = s.rooms.map((r) =>
-        r.id === roomId ? { ...r, ...patch, updatedAt: now() } : r,
+        r.id === roomId && !r.locked ? { ...r, ...patch, updatedAt: now() } : r,
       );
       const next = { rooms, stickies: s.stickies };
       saveWorld(next);
@@ -147,6 +145,7 @@ export const useWall = create<WallStore>((set, get) => ({
     }),
 
   addSticky: (roomId, wall) => {
+    if(!get().rooms.some(r=>r.id===roomId&&!r.locked))return null;
     const { stickies } = get();
     const inRoom = stickies.filter((s) => s.roomId === roomId && !s.archived);
     if (inRoom.length >= STICKY_LIMITS.maxStickiesPerRoom) return null;
@@ -165,7 +164,7 @@ export const useWall = create<WallStore>((set, get) => ({
       y: at.y,
       w,
       h,
-      rotation: clampRotation(rand(-12, 12)),
+      rotation: clampRotation(rand(-3, 3)),
       zIndex: nextZ(inRoom),
       color: pickColor(inRoom),
       tape: pickTape(i),
@@ -187,7 +186,7 @@ export const useWall = create<WallStore>((set, get) => ({
   updateSticky: (id, patch) =>
     set((s) => {
       const stickies = s.stickies.map((st) => {
-        if (st.id !== id) return st;
+        if (st.id !== id || st.locked) return st;
         return {
           ...st,
           ...patch,
@@ -244,7 +243,7 @@ function layoutRoom(
   const inRoom = s.stickies
     .filter((st) => st.roomId === roomId && !st.archived)
     .sort((a, b) => (dir === 'asc' ? a.createdAt - b.createdAt : b.createdAt - a.createdAt));
-  if (inRoom.length === 0) return s;
+  if (inRoom.length === 0) return saveAndReturn(s);
 
   const slot = 320;
   const cols = Math.max(1, Math.floor((wall.w - 48) / slot));

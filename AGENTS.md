@@ -2,6 +2,8 @@
 
 ## Product
 
+The latest product/design authority is `BUILD_SPEC.md`. Apply its named `skill:*` rules on demand; it supersedes earlier visual directions and governs privacy, materials, and build priority.
+
 Peaceful dark gallery: lobby of hanging room tags → matte black room walls → colored sticky notes with tape. Creative, aesthetic, calm.
 
 ## Skills (load on demand)
