@@ -10,11 +10,11 @@ Browser storage belongs to a site origin. To move notes from a local preview to 
 
 ## Develop
 
-Use Node 22.12 or newer.
+Use Node 22.12 or newer and pnpm 11.23.0 (the checked-in lockfile uses pnpm).
 
 ```sh
 cd web
-npm ci
+pnpm install --frozen-lockfile
 npm run dev
 ```
 

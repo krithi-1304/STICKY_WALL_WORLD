@@ -13,12 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.23.0
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-      - run: npm ci
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
         working-directory: web
       - run: npm run lint && npm run build:pages
         working-directory: web
