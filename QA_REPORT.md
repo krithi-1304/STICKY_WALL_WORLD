@@ -1,6 +1,6 @@
-# September 26 feature and usability review
+# September 30 feature and usability review
 
-All nine current Chromium end-to-end suites pass through `qa/end-to-end.cjs`. TypeScript/Vite production build and lint pass. Tests use isolated synthetic archives, never an existing personal archive.
+All ten current Chromium end-to-end suites pass through `qa/end-to-end.cjs`. TypeScript/Vite production build and lint pass. Tests use isolated synthetic archives, never an existing personal archive.
 
 | Suite | Coverage |
 | --- | --- |
@@ -12,6 +12,7 @@ All nine current Chromium end-to-end suites pass through `qa/end-to-end.cjs`. Ty
 | physical-interactions | Material sounds, click depth, lamps, rapid interaction, letter piles, close preserves writing, confirmed deletion and reduced motion |
 | ui-polish | Entry forms at 320/390/1440px, password visibility, errors, room chimes, mute, pointer depth, ambient animation and reduced motion |
 | help-guide | 13 topics, search, download, responsive fit, focus return, preserved drafts, nested modal hide, room rename/search, keyboard positioning and touch |
+| room-motion | Per-room on/off, still words when dimmed/closed, independent defaults, reload, encrypted backup/restore, re-enable, moon/stars and responsive cloud image |
 | sound-state | Measured audio output agrees with labels; off silences tails; rapid toggles, re-enable and persisted mute |
 
 ## Focused visual and UX review
@@ -19,7 +20,7 @@ All nine current Chromium end-to-end suites pass through `qa/end-to-end.cjs`. Ty
 - Entry uses readable field sizes, password guidance, a show-password target, clear restore instructions and disabled file selection while busy.
 - Gallery controls align on mobile. Room names remain readable before hover; keyboard navigation does not wait for an animation.
 - Help preserves drafts inside a native modal, with a persistent close control, search, download and immediate hide. This contextual modal intentionally keeps the current writing session in place.
-- Broad charcoal folds replace the sea lines and moon. Motion progresses without pointer input, pauses in hidden tabs and becomes static with reduced motion. Repeated button clicks cancel preceding feedback animations.
+- Original night clouds, a crescent moon and six sparse stars replace the rejected sea lines and charcoal folds. Motion progresses without pointer input, pauses in hidden tabs and becomes static with reduced motion. Repeated button clicks cancel preceding feedback animations. Falling letters can be switched off separately in each room.
 - Sound commits the current state before its enable preview. Muting zeroes the shared output and stops voices. Pending asynchronous playback cannot outlive its originating toggle state.
 - The handwritten title, fairy lights, paper, wooden walls and default-off sound remain intentional parts of the product.
 

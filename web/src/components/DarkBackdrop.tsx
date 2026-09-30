@@ -10,5 +10,5 @@ export function DarkBackdrop(){
     visibility();media.addEventListener('change',reset);document.addEventListener('visibilitychange',visibility);document.documentElement.addEventListener('pointerleave',reset);
     window.addEventListener('pointermove',move,{passive:true});return()=>{reset();media.removeEventListener('change',reset);document.removeEventListener('visibilitychange',visibility);document.documentElement.removeEventListener('pointerleave',reset);window.removeEventListener('pointermove',move);};
   },[]);
-  return <div ref={scene} className="ambient-scene" aria-hidden="true"><div ref={depth} className="ambient-depth"><div className="ink-fold ink-fold--near"/><div className="ink-fold ink-fold--far"/><div className="ink-glow"/></div><div className="ink-vignette"/></div>;
+  return <div ref={scene} className="ambient-scene night-sky" aria-hidden="true"><div ref={depth} className="ambient-depth"><div className="night-clouds"/><div className="night-haze"/><div className="night-moon"><span/></div>{[[10,18],[31,8],[68,15],[89,43],[18,69],[74,82]].map(([x,y],index)=><span key={index} className={`night-star night-star--${index}`} style={{left:`${x}%`,top:`${y}%`,animationDelay:`${index*-1.7}s`}}/>)}</div><div className="night-vignette"/></div>;
 }

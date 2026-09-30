@@ -34,7 +34,7 @@ Locked rooms require their separate item passphrase before you can read them. Th
 
 Choose Pin a thought inside a room to create a note and open its editor. Select any unlocked note to open it. Only one note editor is open at a time.
 
-Write in Your thought. Notes support up to 10,000 text characters. Edits save automatically. Done, Close note, or a short Escape closes the editor and keeps the note. Letters gathering at the bottom of the paper are a visual effect; your writing remains saved. Open the note again to read it.
+Write in Your thought. Notes support up to 10,000 text characters. Edits save automatically. Done, Close note, or a short Escape closes the editor and keeps the note. When Falling letters is on, letters gathering at the bottom of the paper are a visual effect; your writing remains saved. Open the note again to read it.
 
 Previous note and Next note move through the room's editable notes and skip notes with extra locks. Rooms hold up to 200 notes; create another room if one is full.
 
@@ -114,7 +114,9 @@ Chimes are off by default. Choose Chimes off to enable them; the button becomes 
 
 The room's Light on / Light off control changes the wall lighting. In the dark, bring the pointer's match near a note to reveal it, or focus or tap the note to read. Fairy-light switches adjust the decorative lights. A small mood symbol can appear over dimmed paper; it is a simple word-based hint, not an assessment.
 
-Soft charcoal folds drift across the black background. Pointer movement gives the atmosphere and paper a small perspective shift. Clicking controls provides depth feedback. Your system's Reduce motion setting simplifies these effects while keeping the controls usable.
+A crescent moon and six sparse stars sit above softly drifting night clouds. Pointer movement gives the atmosphere and paper a small perspective shift. Clicking controls provides depth feedback. Your system's Reduce motion setting simplifies these effects while keeping the controls usable.
+
+Each room has a Falling letters on / off button. Turn it off to keep words in their normal positions when you close or dim a note, and to close the editor without the falling-letter delay. Turn it on to bring the letter pile and reassembly back. This choice is saved separately for each room, survives locking and refreshing, and is included in encrypted backups. Existing rooms start with the effect on. Confirmed note deletion still removes the paper; this setting does not change what is saved or deleted.
 
 Use Tab and Shift+Tab to move between controls, Enter to follow a room link or submit a form, and Space or Enter to activate buttons. Arrow keys move focused note tape. Escape closes a dialog; holding it hides the archive. Help closes back to the control you used to open it, without leaving your draft.
 

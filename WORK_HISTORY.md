@@ -269,3 +269,12 @@ The latest user direction replaces sea lines, waves and moon with broad animated
 All nine current end-to-end suites pass, including measured Web Audio output rather than oscillator-count-only checks. Coverage includes archive persistence, failure recovery, rotation/reset, media/shares/locks, large files, physical interactions, entry/layout, help and actual sound states. TypeScript/Vite production build and lint pass. Screenshots inspected at desktop and mobile sizes. Impeccable launcher was not executable; direct review used its guidance and incumbent project documents. Physical devices, Safari/Firefox and independent accessibility/security review remain untested.
 
 Prepared GitHub Actions Pages deployment with repository-path-aware routes/assets/share URLs and a separate live-origin smoke test. Dynamic room URLs use the app’s custom Pages 404 fallback. Existing local archives are not moved to the hosted origin: users export and restore encrypted backups. Deployment status is recorded after publishing.
+
+
+## September 30 — Pinterest-led moonlit gallery and room motion choice
+
+Latest user feedback supersedes the charcoal folds. Researched Pinterest night-sky references and inspected a pin through its oEmbed preview. Generated original cloud art with the built-in imagegen tool; saved it in `web/public/night-clouds.png`. Separate crescent and six stars provide responsive composition and soft motion; cloud drift, hidden-tab pause and reduced motion remain. Removed the superseded sea/fold CSS. Reference links and the generation prompt are in `DESIGN_REFERENCES.md`.
+
+Added encrypted per-room `fallingLetters` preference, defaulting to on for older archives. Off disables dim/close piles and editor falling delay while retaining text, note deletion confirmation and other controls. The choice survives reload, restore and room locking. Help documents the setting.
+
+All ten end-to-end suites pass locally, including the new preference/backup/independent-room checks and actual audio output. Desktop/390px/320px visuals inspected. Production build and lint pass. The earlier GitHub run found a QA race clicking the lobby unlock button before its room flight completed; the test now waits for the locked-room screen. Publishing continues through the existing Pages workflow and live-origin test.

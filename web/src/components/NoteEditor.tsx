@@ -10,13 +10,13 @@ import { readAttachment } from '../domain/media';
 import { RichContent, SupportLine } from './RichContent';
 import { paperTone } from '../domain/presentation';
 import { ArchiveTools } from './ArchiveTools';
-export function NoteEditor({ note, origin, onClose, onRelease, onNext }: { note: Sticky; origin?: DOMRect | null; onClose: () => void; onRelease: () => void; onNext: (direction: number) => void }) {
+export function NoteEditor({ note, origin, fallingLetters = true, onClose, onRelease, onNext }: { note: Sticky; fallingLetters?: boolean; origin?: DOMRect | null; onClose: () => void; onRelease: () => void; onNext: (direction: number) => void }) {
   const ref = useRef<HTMLDialogElement>(null); const text = useRef<HTMLTextAreaElement>(null);
   const [linkOpen,setLinkOpen]=useState(false); const [link,setLink]=useState('');
   const fileInput=useRef<HTMLInputElement>(null);
   const words=useRef<HTMLDivElement>(null);
   const [closing,setClosing]=useState(false);
-  const [assembling,setAssembling]=useState(()=>!reducedMotion());
+  const [assembling,setAssembling]=useState(()=>fallingLetters&&!reducedMotion());
   useLetterPile(words,note.body,closing?'closing':assembling?'opening':false);
   const departing=useRef(false); const motion=useRef<Animation|null>(null);
   const [textBounds,setTextBounds]=useState<CSSProperties>({});
@@ -41,7 +41,7 @@ export function NoteEditor({ note, origin, onClose, onRelease, onNext }: { note:
   },[onClose,origin]);
   function dismiss(after=onClose){
     if(departing.current)return;
-    if(reducedMotion()){after();return;}
+    if(reducedMotion()||!fallingLetters){after();return;}
     departing.current=true;
     if(text.current&&ref.current){
       // Keep the words in view even when Done was clicked below a scrolled textarea.

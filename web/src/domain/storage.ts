@@ -46,7 +46,7 @@ export function validateWorld(value: unknown): World {
     if (!id || !slug || ids.has(id) || slugs.has(slug) || !/^[\p{L}\p{N}_-]+$/u.test(slug)) invalid();
     ids.add(id); slugs.add(slug);
     const locked=r.locked?parsePrivate(r.locked):undefined;
-    return { id, slug, locked, name: locked ? 'Locked room' : str(r.name, 120), symbol: locked ? '♡' : str(r.symbol ?? '✧', 20), accent: null, wallTint: 'none', fontId: 'caveat', createdAt: num(r.createdAt), updatedAt: num(r.updatedAt) };
+    return { id, slug, locked, fallingLetters: r.fallingLetters !== false, name: locked ? 'Locked room' : str(r.name, 120), symbol: locked ? '♡' : str(r.symbol ?? '✧', 20), accent: null, wallTint: 'none', fontId: 'caveat', createdAt: num(r.createdAt), updatedAt: num(r.updatedAt) };
   });
   const lockedRooms=new Set(rooms.filter(r=>r.locked).map(r=>r.id));
   const noteIds = new Set<string>();

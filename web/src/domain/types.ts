@@ -74,6 +74,8 @@ export interface Attachment {
 
 export interface Room {
   locked?: PrivateContent;
+  /** Defaults to true for existing archives; false keeps letters in place. */
+  fallingLetters?: boolean;
   id: string;
   slug: string;
   name: string;

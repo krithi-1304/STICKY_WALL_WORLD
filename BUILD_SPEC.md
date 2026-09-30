@@ -55,3 +55,7 @@ Unlock now defaults to a read-only, memory-only private view. The stored item re
 - Chimes on/off states describe the actual current audio state. Muting immediately silences and stops active voices; pending async playback cannot outlive the toggle state that requested it. The mute control itself has no hover sound.
 - A searchable, downloadable guide is available before entry and from archive, editor and recipient screens. It preserves writing context and supports immediate hiding from within its modal focus boundary. Its single source is `web/src/content/help.md`.
 - Publish the static app through GitHub Pages, with deployment-path-aware routes, assets and protected share links. No diary data or passphrases are uploaded by deployment. Existing local-preview archives must be exported and restored on the hosted origin.
+
+## September 30 — latest background and optional falling letters
+- Supersedes the charcoal-fold background: use the original `night-clouds.png` texture, one crescent and six sparse stars, with gentle drifting and existing reduced-motion/hidden-tab behavior. The user requested Pinterest research; references and the generation prompt are in `DESIGN_REFERENCES.md`. Keep the room walls, title and fairy lights.
+- Each unlocked room has Falling letters on/off. Existing rooms default to on. Off keeps words in place when dimmed or closed and removes the editor's falling-letter delay; it does not change deletion confirmation or saved text. Save this choice in the encrypted room, including backup/restore and locks.
