@@ -278,3 +278,10 @@ Latest user feedback supersedes the charcoal folds. Researched Pinterest night-s
 Added encrypted per-room `fallingLetters` preference, defaulting to on for older archives. Off disables dim/close piles and editor falling delay while retaining text, note deletion confirmation and other controls. The choice survives reload, restore and room locking. Help documents the setting.
 
 All ten end-to-end suites pass locally, including the new preference/backup/independent-room checks and actual audio output. Desktop/390px/320px visuals inspected. Production build and lint pass. The earlier GitHub run found a QA race clicking the lobby unlock button before its room flight completed; the test now waits for the locked-room screen. Publishing continues through the existing Pages workflow and live-origin test.
+
+
+## October 1 — readable room buttons
+
+Scoped paper-button styling to the editor’s own controls so dark text cannot leak into nested share, lock and passphrase dialogs. Room controls now use explicit ivory-on-charcoal pairs, warm gold primary actions, cream paper controls and a sage Done button. Selected states and keyboard focus retain clear visual feedback.
+
+Production build, lint and the new room-controls regression pass. All 36 sampled enabled button states exceed 7.4:1 text contrast; inspected desktop and 390px screenshots and checked toolbar bounds at 320/390/1440px. Added the regression to the eleven-suite deployment gate. The preceding moonlit-gallery release deployed successfully and passed live-origin smoke testing.

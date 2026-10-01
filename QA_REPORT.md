@@ -1,6 +1,6 @@
-# September 30 feature and usability review
+# October 1 feature and usability review
 
-All ten current Chromium end-to-end suites pass through `qa/end-to-end.cjs`. TypeScript/Vite production build and lint pass. Tests use isolated synthetic archives, never an existing personal archive.
+All eleven current Chromium end-to-end suites pass through `qa/end-to-end.cjs`. TypeScript/Vite production build and lint pass. Tests use isolated synthetic archives, never an existing personal archive.
 
 | Suite | Coverage |
 | --- | --- |
@@ -12,6 +12,7 @@ All ten current Chromium end-to-end suites pass through `qa/end-to-end.cjs`. Typ
 | physical-interactions | Material sounds, click depth, lamps, rapid interaction, letter piles, close preserves writing, confirmed deletion and reduced motion |
 | ui-polish | Entry forms at 320/390/1440px, password visibility, errors, room chimes, mute, pointer depth, ambient animation and reduced motion |
 | help-guide | 13 topics, search, download, responsive fit, focus return, preserved drafts, nested modal hide, room rename/search, keyboard positioning and touch |
+| room-controls | 36 button/state contrast samples (minimum 7.41:1), nested dialogs and 320/390/1440px layouts |
 | room-motion | Per-room on/off, still words when dimmed/closed, independent defaults, reload, encrypted backup/restore, re-enable, moon/stars and responsive cloud image |
 | sound-state | Measured audio output agrees with labels; off silences tails; rapid toggles, re-enable and persisted mute |
 

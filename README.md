@@ -29,7 +29,7 @@ cd ..
 QA_BASE_URL=http://127.0.0.1:5173 node qa/end-to-end.cjs
 ```
 
-The ten active browser suites cover the encrypted archive, failure recovery, passphrase changes, media and sharing, large files, physical interactions, UI layouts, help, measured audio output and per-room motion preferences. `qa/archive-interactions.cjs` and `qa/gallery-interactions.cjs` target the retired plaintext UI and are historical fixtures.
+The eleven active browser suites cover the encrypted archive, failure recovery, passphrase changes, media and sharing, large files, physical interactions, UI layouts, help, measured audio output, per-room motion preferences and room-button contrast. `qa/archive-interactions.cjs` and `qa/gallery-interactions.cjs` target the retired plaintext UI and are historical fixtures.
 
 ## Hosting
 

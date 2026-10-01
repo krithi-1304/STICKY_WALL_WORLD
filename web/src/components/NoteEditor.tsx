@@ -79,6 +79,6 @@ export function NoteEditor({ note, origin, fallingLetters = true, onClose, onRel
       try{const attachment=await readAttachment(file);if(!active.current)return;const current=useWall.getState().stickies.find(n=>n.id===note.id);if(current)useWall.getState().updateSticky(note.id,{attachments:[...(current.attachments??[]),attachment]});}catch(e){if(active.current)setError(e instanceof Error?e.message:'Could not add attachment.');}finally{if(active.current)setBusy(false);}
     }}/></label><p className="attachment-limits">Up to 3 files per note. No app-imposed file-size or duration limit. Available space and processing depend on your browser and device.</p>
     {error&&<p role="alert">{error}</p>}<SupportLine/>
-    <footer><button onClick={()=>dismiss(()=>onNext(-1))}>Previous note</button><button onClick={()=>dismiss(()=>onNext(1))}>Next note</button><button onClick={onRelease}>Let this go</button><button onClick={()=>dismiss()}>Done</button></footer>
+    <footer><button onClick={()=>dismiss(()=>onNext(-1))}>Previous note</button><button onClick={()=>dismiss(()=>onNext(1))}>Next note</button><button className="paper-release-action" onClick={onRelease}>Let this go</button><button className="paper-primary-action" onClick={()=>dismiss()}>Done</button></footer>
   </dialog>;
 }
