@@ -38,9 +38,10 @@ if (!base) throw new Error('Set QA_BASE_URL to the deployed site, including its 
     await share.getByLabel('Repeat passphrase').fill('deployment share passphrase');
     await share.getByRole('button', { name: 'Prepare private share' }).click();
     const url = await share.getByLabel('Protected share link').inputValue();
-    assert.ok(url.startsWith(`${base.replace(/\/$/, '')}/shared/#`));
+    const local = ['localhost', '127.0.0.1', '[::1]'].includes(new URL(base).hostname);
+    assert.ok(url.startsWith(`${local ? 'https://krithi-1304.github.io/STICKY_WALL_WORLD' : base.replace(/\/$/, '')}/shared/#`));
     const recipient = await browser.newPage({ reducedMotion: 'reduce' });
-    assert.equal((await recipient.goto(url)).status(), 200);
+    assert.equal((await recipient.goto(local ? `${base.replace(/\/$/, '')}/shared/${new URL(url).hash}` : url)).status(), 200);
     await recipient.getByLabel('Share passphrase', { exact: true }).fill('deployment share passphrase');
     await recipient.getByRole('button', { name: 'Open', exact: true }).click();
     await recipient.getByRole('button', { name: /Open your letter/ }).click();

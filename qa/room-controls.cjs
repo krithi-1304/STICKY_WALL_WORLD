@@ -15,7 +15,7 @@ async function contrast(locator) {
   return values;
 }
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ? {executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE} : {});
   try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
     await page.goto(base);
@@ -26,9 +26,9 @@ async function contrast(locator) {
     await page.getByRole('button', { name: 'Keep it', exact: true }).click();
     await page.getByRole('button', { name: 'Keep this thought' }).click();
     const measured = await contrast(page.locator('.diary-actions > button, .diary-actions > .item-controls > button'));
-    await page.getByRole('button', { name: 'Chimes off', exact: true }).click();
+    await page.getByRole('button', { name: 'Sound off', exact: true }).click();
     measured.push(...await contrast(page.locator('.diary-actions > button')));
-    await page.getByRole('button', { name: 'Chimes on', exact: true }).click();
+    await page.getByRole('button', { name: 'Sound on', exact: true }).click();
     for (const width of [1440, 390, 320]) {
       await page.setViewportSize({ width, height: 900 });
       await page.screenshot({ path: `/tmp/room-buttons-${width}.png` });

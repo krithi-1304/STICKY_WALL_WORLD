@@ -88,3 +88,43 @@
 @media(max-width:760px){.shared-paper--main{transform:none}.shared-paper--pinned{flex-basis:calc(100% - 16px);transform:rotate(.8deg)}.shared-letter-wick{right:0}.shared-notes{overflow:clip;padding-bottom:44px}.shared-room-heading h1{font-size:42px}}
 .shared-nav>a{min-height:44px}
 @media(max-width:760px){.shared-paper--main{--paper-tilt:0deg!important}.shared-paper--pinned{--paper-tilt:0deg!important;transform:none}}
+
+/* A letter carried into the room: reveal the material before the words. */
+.invitation-backing{position:absolute;inset:14px -9px -13px;background:#bda888;border:1px solid #ddc8a3;border-radius:5px;transform:rotate(2deg);z-index:-1;box-shadow:0 20px 45px #0005}
+.invitation-backing>span{position:absolute;bottom:5px;right:15px;color:#4a3526;font:16px var(--font-note)}
+.invitation-paper{border-radius:9px 9px 30px 9px;background:linear-gradient(120deg,#ffffff0b,transparent 45%),#141c28f2;padding-bottom:27px}
+.invitation-overline{letter-spacing:.13em;font-size:11px}
+.invitation-keyhole{position:absolute;right:20px;bottom:20px;width:8px;height:12px;background:#9b7853;clip-path:polygon(50% 0,90% 15%,100% 45%,65% 65%,80% 100%,20% 100%,35% 65%,0 45%,10% 15%)}
+.invitation-open{position:relative;overflow:hidden;background:#e8c798;border-radius:5px}
+.invitation-open::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 25%,#fff5 50%,transparent 75%);transform:translateX(-120%)}
+.is-opening .invitation-open::after{animation:invitation-glint 600ms ease-out both}
+.is-opening .invitation-backing{animation:invitation-backing-open 650ms var(--ease-out) both}
+.shared-envelope-shape{perspective:900px;isolation:isolate;background:#bf9690;border:0;box-shadow:5px 14px 35px #0005}
+.shared-envelope-shape::before{z-index:2;pointer-events:none;clip-path:polygon(0 0,50% 61%,100% 0,100% 100%,0 100%);background:linear-gradient(155deg,#efd0be,#d5aca4)}
+.shared-envelope-flap{z-index:4;transform-origin:50% 0;backface-visibility:hidden;transition:transform 300ms cubic-bezier(.22,1,.36,1)}
+.shared-envelope-insert{position:absolute;inset:15px 16px 10px;background:#f6e9cf;color:#6e5640;border-radius:3px;padding:27px 18px;font:26px/1.15 var(--font-note);text-align:left;z-index:1;transition:transform 340ms cubic-bezier(.22,1,.36,1),opacity 160ms}
+.shared-envelope-shape>.letter-seal{z-index:5;transition:transform 180ms,opacity 150ms}
+.shared-envelope-address{z-index:3;color:#624540;font-size:25px}
+.letter-phase--opening .shared-envelope-flap{transform:rotateX(175deg)}
+.letter-phase--opening .shared-envelope-shape>.letter-seal{transform:translateY(10px) rotate(15deg);opacity:0}
+.letter-phase--opening .shared-envelope-insert{transform:translateY(-54px);transition-delay:100ms}
+.letter-phase--opening .shared-envelope-shape{transform:rotate(0deg) translateY(5px)}
+.letter-phase--opening .shared-envelope>.wick{transform:rotate(3deg) translateX(8px);transition:transform 300ms}
+.shared-paper.letter-phase--folding{animation:letter-fold-away 180ms ease-in both;transform-origin:50% 90%}
+.shared-paper.is-unsealed:focus-visible{outline:2px solid #c39d6c;outline-offset:7px}
+.shared-wax{opacity:.8;transform:rotate(8deg)}
+.shared-wax .letter-seal{width:30px;height:30px}
+.shared-room-heading>p{letter-spacing:.015em}.shared-letter-prelude{font-size:21px}
+.secret-room button:active,.shared-room-actions>a:active{scale:.98;transition:scale 100ms}
+.secret-room button{touch-action:manipulation}
+@media(hover:hover) and (pointer:fine){
+ .shared-envelope:where(:hover,:focus-visible) .shared-envelope-insert{transform:translateY(-9px)}
+ .shared-envelope:where(:hover,:focus-visible) .shared-envelope-flap{transform:rotateX(18deg)}
+ .letter-phase--opening .shared-envelope:hover .shared-envelope-flap{transform:rotateX(175deg)}
+ .letter-phase--opening .shared-envelope:hover .shared-envelope-insert{transform:translateY(-54px)}
+}
+@keyframes invitation-glint{to{transform:translateX(120%)}}
+@keyframes invitation-backing-open{to{transform:translateY(12px) rotate(-2deg);opacity:0}}
+@keyframes letter-fold-away{to{transform:translateY(12px) rotateX(12deg) scale(.97);opacity:0}}
+@media(max-width:760px){.invitation-backing{inset:12px -4px -11px;transform:rotate(1deg)}.shared-envelope-insert{font-size:23px;padding:20px 15px}}
+@media(prefers-reduced-motion:reduce){.shared-envelope-insert,.shared-envelope-flap{transform:none!important}.secret-room button:active{scale:1}}

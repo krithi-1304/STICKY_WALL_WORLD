@@ -110,7 +110,7 @@ To begin again, download the old encrypted archive first and verify the file was
 
 ## Lights, chimes, depth, and keyboard controls
 
-Chimes are off by default. Choose Chimes off to enable them; the button becomes Chimes on. Choose it again to mute. The preference is remembered in this browser. With sound enabled, room tags play a quiet chime when you hover or focus them, and controls have subtle material sounds. Touch does not play hover sounds.
+Chimes are off by default. Choose Sound off to enable them; the button becomes Sound on. Choose it again to mute. The preference is remembered in this browser. With sound enabled, room tags play a quiet chime when you hover or focus them, and controls have subtle material sounds. Touch does not play hover sounds.
 
 The room's Light on / Light off control changes the wall lighting. In the dark, bring the pointer's match near a note to reveal it, or focus or tap the note to read. Fairy-light switches adjust the decorative lights. A small mood symbol can appear over dimmed paper; it is a simple word-based hint, not an assessment.
 

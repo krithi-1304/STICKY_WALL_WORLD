@@ -26,10 +26,10 @@ const phrase='a little secret phrase';
   await page.getByLabel('Share passphrase').fill(phrase);await page.getByLabel('Share passphrase').press('Enter');await page.locator('.is-opening').waitFor();assert.equal(await page.locator('.shared-room-heading').count(),0);await page.locator('.shared-room-heading').waitFor();assert.equal(await page.evaluate(()=>document.activeElement.tagName),'H1');
   assert.equal(new URL(page.url()).hash,'');assert.equal(await page.locator('textarea').count(),0);assert.equal(await page.locator('.shared-paper').count(),2);
   await page.setViewportSize({width:1440,height:1000});await snap('shared-sealed-1440');
-  await page.getByRole('button',{name:/Open your letter/}).click();await page.locator('.shared-paper--main .rich-content').waitFor();await page.waitForTimeout(1800);await page.locator('.shared-media img').evaluate(img=>img.decode());
+  await page.getByRole('button',{name:/Open your letter/}).click();await page.locator('.letter-phase--opening').waitFor();assert.equal(await page.locator('.shared-envelope').getAttribute('aria-disabled'),'true');await page.locator('.shared-paper--main .rich-content').waitFor();await page.waitForTimeout(1800);await page.locator('.shared-media img').evaluate(img=>img.decode());
   for(const width of [1440,768,360]){await page.setViewportSize({width,height:1000});await snap(`shared-room-${width}`)}
   await page.waitForTimeout(1600);assert.equal(await page.locator('.shared-celebration').count(),0);
-  await page.getByRole('button',{name:'Fold the letter'}).click();await page.getByRole('button',{name:/Open your letter/}).click();assert.equal(await page.locator('.is-revealing').count(),0);
+  await page.getByRole('button',{name:'Fold the letter'}).click();await page.locator('.letter-phase--folding').waitFor();await page.getByRole('button',{name:/Open your letter/}).click();await page.locator('.shared-paper--main .rich-content').waitFor();assert.equal(await page.locator('.is-revealing').count(),0);
   console.log('PASS: entry, wrong/right phrase, reveal, desktop/tablet/mobile layout');
   // Three real OFF/ON cycles; no reload or app remount, bounded nodes and new serial IDs.
   for(let i=0;i<3;i++){

@@ -1,4 +1,3 @@
-import { LetterSeal } from '../components/LetterSeal';
 import { ItemControls } from '../components/ItemPrivacy';
 import { FairyLights } from '../components/FairyLights';
 import { useEffect, useState } from 'react';
@@ -50,10 +49,10 @@ export function Lobby() {
       <DarkBackdrop />
       <div className="lobby__moon" aria-hidden="true" />
       <header className="lobby__header">
-        <p className="lobby__eyebrow"><LetterSeal/> THE NIGHT ARCHIVE</p>
+        <p className="lobby__eyebrow">THE NIGHT ARCHIVE</p>
         <h1 className="lobby__title" aria-label="Rooms for thoughts that stay."><span className="lobby__title-word">Rooms</span>{' '}<span className="lobby__title-word">for</span>{' '}<span className="lobby__title-word">thoughts</span>{' '}<span className="lobby__title-word">that</span>{' '}<span className="lobby__title-word lobby__title-word--accent">stay.</span></h1>
         <p className="lobby__subtitle">A quiet place to leave something behind</p>
-        <div className="lobby__preferences"><span>Saved in this browser · Never shared automatically</span><button type="button" data-sound-toggle title={sound.enabled ? "Turn chimes off" : "Turn chimes on"} aria-pressed={sound.enabled} onClick={sound.toggle}>Chimes {sound.enabled ? 'on' : 'off'}</button><ItemControls scope={{kind:'space'}} shareOnly/></div>
+        <div className="lobby__preferences"><span>Saved in this browser · Never shared automatically</span><button type="button" data-sound-toggle title={sound.enabled ? "Turn sound off" : "Turn sound on"} aria-pressed={sound.enabled} onClick={sound.toggle}>Sound {sound.enabled ? 'on' : 'off'}</button><ItemControls scope={{kind:'space'}} shareOnly/></div>
         {rooms.length > 0 && (
           <label className="lobby__search">
             <span className="lobby__search-icon" aria-hidden="true">⌕</span>

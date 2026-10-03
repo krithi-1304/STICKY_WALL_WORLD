@@ -29,3 +29,6 @@ Shared.tsx; shared.css; Wick, SharedBackdrop, SharedLetter, FallingLetters and L
 
 ## Acceptance / validation
 Wrong/right phrase and file import; cancel during decrypt/transition; main-letter reveal and reopening; room navigation; Close/reopen; safe rich text/media; light and match cursor; three OFF/ON cycles in recipient and local room; hidden-tab pause; refresh relock; desktop/360px and reduced motion; console clean; build/lint and existing relevant privacy/room checks. Results recorded in PROGRESS.md and COMMIT_LOG.md.
+
+## October 3 refinement (supersedes icon concept above)
+Identity is now a cream folded note with a navy moon; no icon beside The Night Archive. Share actions use a distinct outline envelope. An offset paper backing frames the invitation. Envelope flap and insert move for 440ms before the message appears; folding takes 180ms. Both cancel safely on unmount and skip travel for reduced motion. Master audio wording is Sound. Local preview share links now open the public recipient site; encryption and memory-only decryption are unchanged.

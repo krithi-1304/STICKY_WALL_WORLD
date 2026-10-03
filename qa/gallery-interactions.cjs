@@ -40,7 +40,7 @@ const fs = require('node:fs');
     assert.equal(await page.locator('.rainbow-flame').count(), 0);
     await bulb.focus(); await page.keyboard.press('ArrowRight');
     assert.equal(await page.locator('.lobby > .fairy-lights button').nth(1).evaluate(e => e === document.activeElement), true);
-    await page.getByRole('button', { name: 'Chimes off' }).click();
+    await page.getByRole('button', { name: 'Sound off' }).click();
     await page.waitForTimeout(750);
     await page.evaluate(() => { window.playedNotes = []; });
     const first = page.getByRole('link', { name: 'Open Room 1', exact: true });

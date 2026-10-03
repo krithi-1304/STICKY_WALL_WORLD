@@ -2121,3 +2121,10 @@ button {
 
 /* The shared wax seal belongs to the gallery too. */
 .lobby__eyebrow .letter-seal{width:26px;height:26px;vertical-align:middle;margin-right:9px}
+
+/* Quiet archive lettering; share is a letter, not the app badge. */
+.lobby__eyebrow{letter-spacing:.2em}
+.share-letter-icon{flex:none;overflow:visible;color:currentColor}
+.share-letter-icon__paper{transition:transform 180ms ease-out}
+@media(hover:hover) and (pointer:fine){.item-controls button:hover .share-letter-icon__paper{transform:translateY(-2px)}}
+@media(prefers-reduced-motion:reduce){.share-letter-icon__paper{transition:none!important;transform:none!important}}

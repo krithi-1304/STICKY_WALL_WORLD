@@ -5,12 +5,12 @@ const fixture={rooms:[{id:'room',slug:'physical',name:'Quiet room',symbol:'✧',
 const page=await browser.newPage({viewport:{width:1440,height:1000}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
 await page.addInitScript(()=>{window.qaTones=[];const create=AudioContext.prototype.createOscillator;AudioContext.prototype.createOscillator=function(){const oscillator=create.call(this),set=oscillator.frequency.setValueAtTime.bind(oscillator.frequency);oscillator.frequency.setValueAtTime=function(value,time){window.qaTones.push(value);return set(value,time);};return oscillator;};});await page.goto(base);await page.evaluate(world=>localStorage.setItem('black-wall:v1',JSON.stringify(world)),fixture);await page.reload();await page.getByLabel('Passphrase',{exact:true}).fill('physical world test phrase');await page.getByLabel('Repeat passphrase').fill('physical world test phrase');await page.getByRole('button',{name:'Create private archive'}).click();await page.getByRole('link',{name:'Open Quiet room'}).click();await page.locator('.diary-room.light-on').waitFor();
 assert.deepEqual(await page.evaluate(()=>window.qaTones),[]);
-await page.getByRole('button',{name:'Chimes off',exact:true}).click();
-assert.ok(await page.getByRole('button',{name:'Chimes on',exact:true}).evaluate(el=>el.getAnimations().some(a=>a.effect.getTiming().duration===320)));
+await page.getByRole('button',{name:'Sound off',exact:true}).click();
+assert.ok(await page.getByRole('button',{name:'Sound on',exact:true}).evaluate(el=>el.getAnimations().some(a=>a.effect.getTiming().duration===320)));
 for(const [selector,pitch] of [['.note-open',180],['.heart-lock-button',330],['.diary-switch',740],['.diary-actions > button:nth-child(3)',1046]]){
   await page.mouse.move(1,1);await page.waitForTimeout(230);await page.evaluate(()=>window.qaTones=[]);await page.locator(selector).first().hover();await page.waitForTimeout(50);const tones=await page.evaluate(()=>window.qaTones);assert.ok(tones.some(value=>Math.abs(value-pitch)<pitch*.04),JSON.stringify({selector,tones}));
 }
-await page.getByRole('button',{name:'Chimes on',exact:true}).click();await page.waitForTimeout(250);await page.evaluate(()=>window.qaTones=[]);await page.locator('.note-open').hover();await page.waitForTimeout(250);assert.deepEqual(await page.evaluate(()=>window.qaTones),[]);
+await page.getByRole('button',{name:'Sound on',exact:true}).click();await page.waitForTimeout(250);await page.evaluate(()=>window.qaTones=[]);await page.locator('.note-open').hover();await page.waitForTimeout(250);assert.deepEqual(await page.evaluate(()=>window.qaTones),[]);
 assert.equal(await page.locator('.room-pendant').count(),3);await page.waitForTimeout(650);
 await page.screenshot({path:'/tmp/physical-room-lit.png'});
 await page.locator('.diary-switch').click();await page.waitForTimeout(650);assert.equal(await page.locator('.room-pendant--center .room-pendant__bulb').evaluate(el=>getComputedStyle(el).boxShadow),'none');
