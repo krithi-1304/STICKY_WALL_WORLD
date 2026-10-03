@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const base = process.env.QA_BASE_URL || 'http://127.0.0.1:5173';
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ? {executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE} : {});
   try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
     const errors = [];
@@ -65,7 +65,7 @@ const base = process.env.QA_BASE_URL || 'http://127.0.0.1:5173';
     await page.goto(`${base.replace(/\/$/, '')}/shared/`);
     await help.click();
     await page.keyboard.press('Escape');
-    await page.getByRole('heading', { name: 'A thought shared with you' }).waitFor();
+    await page.getByRole('heading', { name: 'A note was left for you.' }).waitFor();
     await help.click();
     await guide.getByRole('button', { name: 'Hide screen', exact: true }).click();
     await page.getByRole('button', { name: 'Return', exact: true }).waitFor();

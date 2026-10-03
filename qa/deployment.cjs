@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const base = process.env.QA_BASE_URL;
 if (!base) throw new Error('Set QA_BASE_URL to the deployed site, including its repository path.');
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ? {executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE} : {});
   try {
     const page = await browser.newPage({ reducedMotion: 'reduce' });
     const errors = [];
@@ -42,8 +42,10 @@ if (!base) throw new Error('Set QA_BASE_URL to the deployed site, including its 
     const recipient = await browser.newPage({ reducedMotion: 'reduce' });
     assert.equal((await recipient.goto(url)).status(), 200);
     await recipient.getByLabel('Share passphrase', { exact: true }).fill('deployment share passphrase');
-    await recipient.getByRole('button', { name: 'Open shared snapshot' }).click();
-    await recipient.getByText('Synthetic deployment check; browser-local only.', { exact: true }).waitFor();
+    await recipient.getByRole('button', { name: 'Open', exact: true }).click();
+    await recipient.getByRole('button', { name: /Open your letter/ }).click();
+    await recipient.locator('.shared-paper--main .rich-content').waitFor();
+    assert.ok((await recipient.locator('.shared-paper--main .rich-content').textContent()).includes('Synthetic deployment check; browser-local only.'));
     await recipient.getByRole('button', { name: 'Hide screen' }).click();
     await recipient.getByRole('button', { name: 'Return', exact: true }).waitFor();
     assert.deepEqual(errors, []);

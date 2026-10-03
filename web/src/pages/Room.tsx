@@ -33,6 +33,11 @@ export function Room() {
 
   const wall=useRef<HTMLDivElement>(null);const glow=useRef<HTMLDivElement>(null);const frame=useRef(0);const sound=useSound();
   const fallingLetters=room?.fallingLetters!==false;
+  // Re-enabling must restore the closed-note pile, not only the saved preference.
+  function toggleLetters(){
+    useWall.getState().updateRoom(room!.id,{fallingLetters:!fallingLetters});
+    setPiled(fallingLetters?new Set():new Set(notes.filter(note=>!note.locked&&note.id!==opened).map(note=>note.id)));
+  }
   const close=useCallback(()=>{if(opened&&fallingLetters)setPiled(previous=>new Set([...previous,opened]));setOpened(null);},[opened,fallingLetters]);
   useEffect(()=>{document.documentElement.dataset.cursor=light?'wand':'match';return()=>{delete document.documentElement.dataset.cursor;cancelAnimationFrame(frame.current);};},[light]);
   if(!room)return <Navigate to="/" replace/>;
@@ -43,7 +48,7 @@ export function Room() {
   return <main className={`diary-room ${light?'light-on':'light-off'}${igniting?' is-igniting':''}`}>
     <header className="diary-bar glass"><Link to="/">← Lobby</Link>
       {renaming?<input aria-label="Room name" defaultValue={room.name} maxLength={60} autoFocus onBlur={e=>{const name=e.target.value.trim();if(name)useWall.getState().updateRoom(room.id,{name});setRenaming(false);}} onKeyDown={e=>{if(e.key==='Enter')e.currentTarget.blur();if(e.key==='Escape')setRenaming(false);}}/>:<h1><button onClick={()=>setRenaming(true)} title="Rename room">{room.name}</button></h1>}
-      <div className="diary-actions"><button className={`diary-switch ${light?'is-on':''}`} aria-pressed={light||igniting} aria-label={light||igniting?'Turn room light off':'Turn room light on'} onClick={toggleLight}><span aria-hidden="true"/>{light?'Light on':'Light off'}</button><button data-sound-toggle title={sound.enabled ? "Turn chimes off" : "Turn chimes on"} aria-pressed={sound.enabled} onClick={sound.toggle}>Chimes {sound.enabled?'on':'off'}</button><button className="room-primary-action" onClick={add}>Pin a thought</button><button className="letters-toggle" aria-pressed={fallingLetters} title="Choose whether letters fall when you close or dim notes" onClick={()=>{useWall.getState().updateRoom(room.id,{fallingLetters:!fallingLetters});setPiled(new Set());}}>Falling letters {fallingLetters?'on':'off'}</button><ItemControls scope={{kind:'room',id:room.id}}/></div>
+      <div className="diary-actions"><button className={`diary-switch ${light?'is-on':''}`} aria-pressed={light||igniting} aria-label={light||igniting?'Turn room light off':'Turn room light on'} onClick={toggleLight}><span aria-hidden="true"/>{light?'Light on':'Light off'}</button><button data-sound-toggle title={sound.enabled ? "Turn chimes off" : "Turn chimes on"} aria-pressed={sound.enabled} onClick={sound.toggle}>Chimes {sound.enabled?'on':'off'}</button><button className="room-primary-action" onClick={add}>Pin a thought</button><button className="letters-toggle" aria-pressed={fallingLetters} title="Choose whether letters fall when you close or dim notes" onClick={toggleLetters}>Falling letters {fallingLetters?'on':'off'}</button><ItemControls scope={{kind:'room',id:room.id}}/></div>
     </header>
     <p className="room-guidance">{light?'Open a note to write. Move it by its tape.': 'Bring the match close to read. You can also tap or focus any note.'}</p>
     {message&&<p role="status">{message}</p>}
