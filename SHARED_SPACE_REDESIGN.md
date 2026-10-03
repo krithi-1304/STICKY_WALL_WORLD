@@ -32,3 +32,11 @@ Wrong/right phrase and file import; cancel during decrypt/transition; main-lette
 
 ## October 3 refinement (supersedes icon concept above)
 Identity is now a cream folded note with a navy moon; no icon beside The Night Archive. Share actions use a distinct outline envelope. An offset paper backing frames the invitation. Envelope flap and insert move for 440ms before the message appears; folding takes 180ms. Both cancel safely on unmount and skip travel for reduced motion. Master audio wording is Sound. Local preview share links now open the public recipient site; encryption and memory-only decryption are unchanged.
+
+## Current refinement plan
+Keep the working encrypted invitation and room flow. Make entry a shorter, letter-shaped glass invitation with an integrated stationery seal and a peeking Wick; add a small shelf/candle vignette to give the empty side of the room physical scale. Keep The Night Archive wording unadorned; put the new mark separately above it. Restore the requested rose heart wax / amber flame identity and use a matching sealed-envelope share icon. Add the existing master Sound control to recipient rooms. Tighten ambient lifecycle tests to cover hidden tabs while OFF and emission rate after repeated toggling.
+
+The previous toggle repair is already committed here; do not claim a newly discovered RAF bug. Preserve memory-only reveal history and refresh relocking. Acceptance: existing full shared-space flow, sound, local room controls, build/lint, desktop/tablet/mobile screenshot inspection.
+
+## Refinement result
+Implemented the current plan. Build/lint, shared-space, room-controls and sound-state pass. Manual desktop/mobile review corrected greeting/navigation overlap; regression now checks their bounds. No new falling-letter runtime fix was needed: the existing fix passes, and tests now enforce one emission stream and no restart while OFF after tab visibility changes.

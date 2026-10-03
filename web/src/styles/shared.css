@@ -26,7 +26,7 @@
 .wick-greeting>p{display:table;position:relative;margin:0 auto -5px;padding:9px 18px;background:#f6e9cf;color:#4a3526;border-radius:45% 48% 44% 10% / 40% 50% 40% 30%;font:24px/1.2 var(--font-note);box-shadow:0 6px 22px #0003;transform:rotate(-4deg);animation:secret-float 6s ease-in-out infinite alternate}
 .wick{width:144px;height:auto;overflow:visible;vertical-align:bottom}.wick-body{transform-origin:80px 145px;animation:wick-bob 5s ease-in-out infinite}.wick-flame{transform-origin:80px 48px;animation:wick-flame 2.7s ease-in-out infinite alternate}.wick-eyes{transform-origin:80px 86px;animation:wick-blink 6s infinite}.wick--shy .wick-eyes{animation:wick-surprise 850ms ease-out}.wick--shy .wick-body{animation:wick-hide 850ms ease-out}
 .invitation-paper{position:relative;padding:46px 36px 20px;background:linear-gradient(135deg,#ffffff0d,#ffffff03),#151d29df;border:1px solid #ffc97838;border-radius:18px;box-shadow:0 28px 80px #0005,inset 0 1px 0 #fff1;backdrop-filter:blur(20px);text-align:center;transform-origin:50% 80%}
-.invitation-overline{font:12px var(--font-ui);color:#cfb999;letter-spacing:.08em}
+.invitation-stamp{position:absolute;top:21px;right:22px;transform:rotate(12deg);opacity:.85}.invitation-stamp .letter-seal{width:31px;height:31px}
 .invitation-paper h1{font:normal clamp(42px,4.3vw,56px)/1.03 var(--font-title);letter-spacing:-.02em;margin:18px 0 12px;color:#f6e9cf}
 .invitation-intro{font:14px/1.65 var(--font-ui);color:#c5c0b8;max-width:28ch;margin:0 auto 26px}
 .invitation-code{position:relative;padding:18px 18px 12px;background:#f6e9cf;color:#4a3526;border-radius:2px 3px 7px 2px;transform:rotate(-1.2deg);box-shadow:3px 6px 14px #0002;text-align:left}
@@ -93,7 +93,7 @@
 .invitation-backing{position:absolute;inset:14px -9px -13px;background:#bda888;border:1px solid #ddc8a3;border-radius:5px;transform:rotate(2deg);z-index:-1;box-shadow:0 20px 45px #0005}
 .invitation-backing>span{position:absolute;bottom:5px;right:15px;color:#4a3526;font:16px var(--font-note)}
 .invitation-paper{border-radius:9px 9px 30px 9px;background:linear-gradient(120deg,#ffffff0b,transparent 45%),#141c28f2;padding-bottom:27px}
-.invitation-overline{letter-spacing:.13em;font-size:11px}
+
 .invitation-keyhole{position:absolute;right:20px;bottom:20px;width:8px;height:12px;background:#9b7853;clip-path:polygon(50% 0,90% 15%,100% 45%,65% 65%,80% 100%,20% 100%,35% 65%,0 45%,10% 15%)}
 .invitation-open{position:relative;overflow:hidden;background:#e8c798;border-radius:5px}
 .invitation-open::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 25%,#fff5 50%,transparent 75%);transform:translateX(-120%)}
@@ -128,3 +128,22 @@
 @keyframes letter-fold-away{to{transform:translateY(12px) rotateX(12deg) scale(.97);opacity:0}}
 @media(max-width:760px){.invitation-backing{inset:12px -4px -11px;transform:rotate(1deg)}.shared-envelope-insert{font-size:23px;padding:20px 15px}}
 @media(prefers-reduced-motion:reduce){.shared-envelope-insert,.shared-envelope-flap{transform:none!important}.secret-room button:active{scale:1}}
+
+/* A small ledge gives the invitation the scale of a lived-in room. */
+.secret-keepsakes{position:absolute;left:13%;bottom:18%;width:210px;height:90px}
+.secret-shelf{position:absolute;bottom:0;left:-18px;width:240px;height:12px;background:linear-gradient(#745943,#36291f);border-radius:2px;box-shadow:5px 16px 20px #0007}
+.secret-candle{position:absolute;bottom:12px;left:16px;width:29px;height:55px;border-radius:5px 5px 3px 3px;background:linear-gradient(90deg,#c7b595,#f6e9cf 55%,#d6c3a3);box-shadow:5px 3px 10px #0003}
+.secret-candle i{position:absolute;left:9px;top:-24px;width:12px;height:22px;border-radius:80% 10% 65% 35%;background:#ffc978;transform:rotate(-18deg);transform-origin:50% 100%;animation:wick-flame 3s ease-in-out infinite alternate}
+.secret-kept-letter{position:absolute;bottom:14px;right:16px;width:96px;height:60px;border:1px solid #b89680;border-radius:3px;background:linear-gradient(32deg,transparent 49%,#b89680 50%,transparent 51%),linear-gradient(-32deg,#d6baa0 49%,#b89680 50%,#e4ceb1 51%);transform:rotate(-8deg)}
+.light-off .secret-candle i{opacity:0;animation:none}
+.invitation-paper{padding-top:37px}
+.invitation-paper h1{margin-top:14px}
+.invitation-intro{margin-bottom:20px}
+.shared-hint{margin-bottom:16px}
+.wick-greeting{bottom:calc(100% - 31px)}
+.shared-wax{opacity:1}
+.shared-wax .letter-seal{width:42px;height:42px}
+.shared-media--audio .shared-cassette{border-bottom:1px solid #94755866;margin-bottom:10px}
+@media(min-width:1100px){.secret-aside--left{top:65%;left:10%}.shared-entry .shared-entry-footer{width:510px;margin-left:calc(46% - 35px)}}
+@media(max-width:1099px){.secret-keepsakes{display:none}}
+@media(max-width:760px){.shared-invitation{margin-top:178px}.invitation-paper{padding-top:32px}.invitation-paper h1{font-size:43px}.invitation-stamp{top:17px;right:15px}.invitation-stamp .letter-seal{width:26px;height:26px}.shared-atmosphere{gap:6px}.shared-atmosphere button{padding-inline:9px}}

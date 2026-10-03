@@ -8,10 +8,12 @@ import { LetterSeal } from '../components/LetterSeal';
 import { TorchCursor } from '../components/TorchCursor';
 import { parsePrivate, unprotect, type PrivateContent } from '../domain/privateContent';
 import { validateWorld, type World } from '../domain/storage';
+import { useSound, playRitualSound } from '../domain/chime';
 import { reducedMotion } from '../domain/motion';
 import '../styles/shared.css';
 
 export function Shared() {
+  const sound = useSound();
   const [initial] = useState(() => {
     try {
       if (location.hash.length > 18000000) throw new Error('Too large');
@@ -99,7 +101,7 @@ export function Shared() {
       <div className="wick-greeting"><p>psst… someone thought of you ♡</p><Wick key={attempt} mood={opening ? 'happy' : attempt ? 'shy' : 'waiting'} letter/></div>
       <div className="invitation-backing" aria-hidden="true"><span>delivered by moonlight</span></div>
       <form className={`invitation-paper ${error && attempt ? 'has-mistake' : ''}`} onSubmit={open} aria-busy={busy}>
-        <span className="invitation-overline">a little corner, just for you</span>
+        <span className="invitation-stamp" aria-hidden="true"><LetterSeal seal/></span>
         <h1>A note was<br/>left for you.</h1>
         <p className="invitation-intro">Whisper the secret phrase to open the room.</p>
         <div className="invitation-code" key={attempt}>
@@ -130,6 +132,6 @@ export function Shared() {
       <div className="shared-room-actions"><button onClick={() => close()}>Close the room</button><a href={`${import.meta.env.BASE_URL}?reply=1#first-thought`}>Leave one back ♡</a><p>Write in your own archive, then share it with them.</p></div>
     </section>}
     {celebrate && <div className="shared-celebration" aria-hidden="true">{['♡','✦','♥','♡','✦','♡'].map((s, i) => <span key={i} style={{left:`${18 + i * 13}%`,animationDelay:`${i * 120}ms`}}>{s}</span>)}</div>}
-    <footer className="shared-entry-footer"><div className="shared-atmosphere"><button aria-pressed={light} aria-label={light ? 'Turn room light off' : 'Turn room light on'} onClick={() => setLight(v => !v)}><span className="shared-light-switch" aria-hidden="true"/>Light {light ? 'on' : 'off'}</button><button aria-pressed={letters} onClick={() => setLetters(v => !v)}>Falling letters {letters ? 'on' : 'off'}</button></div><p>A private, read-only copy. Not saved to your archive.</p></footer>
+    <footer className="shared-entry-footer"><div className="shared-atmosphere"><button aria-pressed={light} aria-label={light ? 'Turn room light off' : 'Turn room light on'} onClick={() => { if (!light) void playRitualSound('light'); setLight(v => !v); }}><span className="shared-light-switch" aria-hidden="true"/>Light {light ? 'on' : 'off'}</button><button data-sound-toggle aria-pressed={sound.enabled} onClick={sound.toggle}>Sound {sound.enabled ? 'on' : 'off'}</button><button aria-pressed={letters} onClick={() => setLetters(v => !v)}>Falling letters {letters ? 'on' : 'off'}</button></div><p>A private, read-only copy. Not saved to your archive.</p></footer>
   </main>;
 }
