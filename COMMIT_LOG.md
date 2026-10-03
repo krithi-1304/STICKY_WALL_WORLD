@@ -21,3 +21,9 @@ Limitations: Chromium emulation; the original room effect is CSS text settling, 
 ## Documentation follow-up
 Files: INSTRUCTIONS.md, PROGRESS.md, DECISIONS.md, COMMIT_LOG.md.
 Records final behavior, verification, commit hashes, and maintenance constraints. No runtime changes.
+
+## bfee16b — feedback refinements and public sharing
+Files: web/src/components/{LetterSeal,ShareLetterIcon,SharedLetter,ItemPrivacy}.tsx; web/src/domain/shareUrl.ts; web/src/pages/{Lobby,Room,Shared}.tsx; web/src/styles/shared.css; web/src/index.css; web/src/content/help.md; web/public/{favicon.svg,icon-192.png,icon-512.png,apple-touch-icon.png}; qa/{archive-interactions,deployment,gallery-interactions,media-sharing-locks,physical-interactions,private-archive,room-controls,shared-space,sound-state,ui-polish,public-share}.cjs; INSTRUCTIONS.md, PROGRESS.md, DECISIONS.md, SHARED_SPACE_REDESIGN.md.
+Behavior: Sound on/off wording, unadorned lobby eyebrow, moonlit folded-note identity, outline envelope share symbol, layered invitation, flap/insert opening and faster fold animation. Local preview shares now use the public HTTPS recipient URL.
+Tests: build:pages/lint, shared-space (including opening/folding, reduced motion and repeated falling toggles), sound-state, room-controls (minimum measured contrast 7.41:1), media-sharing-locks pass. public-share creates a synthetic room through UI locally and decrypts its generated link on the real public site. Desktop/mobile screenshots inspected; icon PNG regenerated.
+Limits: visual refinements not published; public app currently has the earlier design but compatible snapshot decryption. Existing localhost links must be regenerated. Physical device motion testing not performed. Unrelated room-motion QA edit and unused raster illustration remain unstaged.
