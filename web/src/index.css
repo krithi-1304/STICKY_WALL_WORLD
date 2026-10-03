@@ -2128,3 +2128,5 @@ button {
 .share-letter-icon__paper{transition:transform 180ms ease-out}
 @media(hover:hover) and (pointer:fine){.item-controls button:hover .share-letter-icon__paper{transform:translateY(-2px)}}
 @media(prefers-reduced-motion:reduce){.share-letter-icon__paper{transition:none!important;transform:none!important}}
+
+.lobby__brand-mark{display:flex;justify-content:center;margin:0 auto 12px}.lobby__brand-mark .letter-seal{width:36px;height:36px}

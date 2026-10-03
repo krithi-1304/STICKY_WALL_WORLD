@@ -1,3 +1,4 @@
+import { LetterSeal } from '../components/LetterSeal';
 import { ItemControls } from '../components/ItemPrivacy';
 import { FairyLights } from '../components/FairyLights';
 import { useEffect, useState } from 'react';
@@ -49,6 +50,7 @@ export function Lobby() {
       <DarkBackdrop />
       <div className="lobby__moon" aria-hidden="true" />
       <header className="lobby__header">
+        <div className="lobby__brand-mark" aria-hidden="true"><LetterSeal/></div>
         <p className="lobby__eyebrow">THE NIGHT ARCHIVE</p>
         <h1 className="lobby__title" aria-label="Rooms for thoughts that stay."><span className="lobby__title-word">Rooms</span>{' '}<span className="lobby__title-word">for</span>{' '}<span className="lobby__title-word">thoughts</span>{' '}<span className="lobby__title-word">that</span>{' '}<span className="lobby__title-word lobby__title-word--accent">stay.</span></h1>
         <p className="lobby__subtitle">A quiet place to leave something behind</p>

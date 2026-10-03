@@ -1,4 +1,4 @@
-/** A moon kept in a folded note: the archive mark, without a badge on paper. */
+/** Wick's candle flame, held in a heart-shaped wax seal. */
 export function LetterSeal({ seal = false }: { seal?: boolean }) {
-  return <svg className="letter-seal" viewBox="0 0 64 64" fill="none" aria-hidden="true">{!seal && <><rect width="64" height="64" rx="16" fill="#101722"/><rect x="3" y="3" width="58" height="58" rx="13" stroke="#c3a875" strokeOpacity=".3"/></>}<path d="M17 12h23l9 10v29H17z" fill="#e9d9b9"/><path d="M40 12v11h9" fill="#ae9673"/><path d="M35 25a9 9 0 1 0 6 14 10 10 0 0 1-6-14Z" fill="#263748"/><path d="M23 45h17" stroke="#ae9673" strokeWidth="2" strokeLinecap="round"/></svg>;
+  return <svg className="letter-seal" viewBox="0 0 64 64" fill="none" aria-hidden="true">{!seal && <rect width="64" height="64" rx="16" fill="#101722"/>}<path d="M32 54C26 50 9 39 9 25c0-14 17-19 23-8 7-11 23-6 23 8 0 14-17 25-23 29Z" fill="#c9455c"/><path d="M15 26c0-8 8-12 13-7" stroke="#f5a0ac" strokeWidth="2" strokeLinecap="round"/><path d="M32 43c-15-5-11-16 0-27-2 10 13 13 9 21-2 4-5 6-9 6Z" fill="#ffc978"/><path d="M32 41c-6-3-3-7 1-12 0 5 6 9-1 12Z" fill="#fff1cf"/></svg>;
 }
