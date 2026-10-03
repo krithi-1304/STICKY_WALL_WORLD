@@ -1,6 +1,7 @@
+import { LetterSeal } from '../components/LetterSeal';
 import { ItemControls } from '../components/ItemPrivacy';
 import { FairyLights } from '../components/FairyLights';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWall } from '../state/wall';
 import { RoomTag } from '../components/RoomTag';
@@ -18,6 +19,15 @@ export function Lobby() {
   const createRoom = useWall((s) => s.createRoom);
   const deleteRoom = useWall((s) => s.deleteRoom);
   const navigate = useNavigate();
+  useEffect(() => {
+    if (new URLSearchParams(location.search).get('reply') !== '1') return;
+    const frame = requestAnimationFrame(() => {
+      const composer = document.getElementById('first-thought');
+      composer?.focus({ preventScroll: true });
+      composer?.scrollIntoView({ block: 'center', behavior: 'instant' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
   const [query, setQuery] = useState('');
   const [release, setRelease] = useState<{name:string;id:string}|null>(null);
   const sorted = [...rooms].sort((a, b) => b.updatedAt - a.updatedAt);
@@ -40,7 +50,7 @@ export function Lobby() {
       <DarkBackdrop />
       <div className="lobby__moon" aria-hidden="true" />
       <header className="lobby__header">
-        <p className="lobby__eyebrow">ARCHIVE / 01</p>
+        <p className="lobby__eyebrow"><LetterSeal/> THE NIGHT ARCHIVE</p>
         <h1 className="lobby__title" aria-label="Rooms for thoughts that stay."><span className="lobby__title-word">Rooms</span>{' '}<span className="lobby__title-word">for</span>{' '}<span className="lobby__title-word">thoughts</span>{' '}<span className="lobby__title-word">that</span>{' '}<span className="lobby__title-word lobby__title-word--accent">stay.</span></h1>
         <p className="lobby__subtitle">A quiet place to leave something behind</p>
         <div className="lobby__preferences"><span>Saved in this browser · Never shared automatically</span><button type="button" data-sound-toggle title={sound.enabled ? "Turn chimes off" : "Turn chimes on"} aria-pressed={sound.enabled} onClick={sound.toggle}>Chimes {sound.enabled ? 'on' : 'off'}</button><ItemControls scope={{kind:'space'}} shareOnly/></div>

@@ -2118,3 +2118,6 @@ button {
   .lobby::before, .lobby::after, .torch-cursor__match-flame { animation: none; }
   .match-light-reveal__flame, .match-light-reveal__smoke { animation: none; opacity: 0; }
 }
+
+/* The shared wax seal belongs to the gallery too. */
+.lobby__eyebrow .letter-seal{width:26px;height:26px;vertical-align:middle;margin-right:9px}
