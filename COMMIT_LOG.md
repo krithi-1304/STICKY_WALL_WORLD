@@ -45,3 +45,12 @@ Files: qa/shared-space.cjs.
 Behavior: verifies bounded emission rate after each OFF/ON cycle, no hidden-tab restart while disabled, recipient Sound state, and mobile greeting clearance. Runtime falling-letter fix was already committed and passes; no unnecessary lifecycle rewrite.
 Tests: complete shared-space suite passes including three ambient/local toggle cycles, wrong/right phrases, file/link input, transitions, close/reopen, media, refresh, reduced motion and clean console.
 Limits: deterministic visibility simulation in headless Chromium.
+
+## d3f7ed7 — deployment bundle
+Files: qa/room-motion.cjs; web/public/letter-courier.png. Included remaining project files as requested; the courier artwork remains unused by the SVG experience. Build:pages/lint pass. GitHub Pages run 37122722759 completed successfully; hosted room creation, persistence, protected sharing and recipient Open passed.
+
+## d2c0cd5 — missing invitation recovery
+Files: web/src/pages/Shared.tsx; qa/{shared-space,deployment}.cjs; INSTRUCTIONS.md; PROGRESS.md; DECISIONS.md.
+Behavior: bare /shared/ and refreshed recipient pages explain why Open is disabled and how to recover via the original link or encrypted file; phrase entry is disabled until a payload is present.
+Tests: build:pages/lint and full shared-space regression pass, including missing-link state, valid-link decryption, file import, wrong phrase, refresh, mobile and reduced motion.
+Limits: original-link/file requirement is intentional privacy behavior; no phrase lookup service or recipient persistence.
