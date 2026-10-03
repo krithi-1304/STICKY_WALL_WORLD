@@ -46,7 +46,10 @@ if (!base) throw new Error('Set QA_BASE_URL to the deployed site, including its 
     assert.equal(await recipient.getByRole('button', { name: 'Open', exact: true }).isDisabled(), true);
     assert.equal(await recipient.getByLabel('Share passphrase', { exact: true }).isDisabled(), true);
 
-    assert.equal((await recipient.goto(local ? `${base.replace(/\/$/, '')}/shared/${new URL(url).hash}` : url)).status(), 200);
+    // Same-document navigation returns no HTTP response; the new hash must load.
+    await recipient.goto(local ? `${base.replace(/\/$/, '')}/shared/${new URL(url).hash}` : url);
+    await recipient.waitForFunction(() => !document.querySelector('#shared-phrase')?.disabled);
+
     await recipient.getByLabel('Share passphrase', { exact: true }).fill('deployment share passphrase');
     await recipient.getByRole('button', { name: 'Open', exact: true }).click();
     await recipient.getByRole('button', { name: /Open your letter/ }).click();

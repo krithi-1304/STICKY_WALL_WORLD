@@ -42,7 +42,24 @@ export function Shared() {
   const [light, setLight] = useState(true);
   const [letters, setLetters] = useState(true);
   const [tabHidden, setTabHidden] = useState(document.hidden);
-  useEffect(() => { history.replaceState(null, '', `${import.meta.env.BASE_URL}shared/`); }, []);
+  useEffect(() => {
+    const clearFragment = () => history.replaceState(null, '', `${import.meta.env.BASE_URL}shared/`);
+    const receive = () => {
+      if (!location.hash) return;
+      // A new invitation can arrive through same-document hash navigation.
+      close(); setFileName('');
+      try {
+        if (location.hash.length > 18000000) throw new Error('Too large');
+        setEnvelope(parsePrivate(JSON.parse(decodeURIComponent(location.hash.slice(1)))));
+      } catch {
+        setEnvelope(null);
+        setError('This shared link is damaged. Ask the sender for the encrypted file.');
+      } finally { clearFragment(); }
+    };
+    clearFragment();
+    window.addEventListener('hashchange', receive);
+    return () => window.removeEventListener('hashchange', receive);
+  }, []);
   function close(hideScreen = false) {
     generation.current++;
     clearTimeout(transition.current); clearTimeout(celebration.current);
@@ -58,7 +75,7 @@ export function Shared() {
     const invalidate = () => { generation.current++; clearTimeout(transition.current); clearTimeout(celebration.current); };
     return () => { invalidate(); window.removeEventListener('keydown', key); window.removeEventListener('black-wall:hide', hide); document.removeEventListener('visibilitychange', visibility); };
   }, []);
-  useEffect(() => { if (world) heading.current?.focus(); else if (!hidden) input.current?.focus({ preventScroll: true }); }, [world, roomId, hidden]);
+  useEffect(() => { if (world) heading.current?.focus(); else if (!hidden) input.current?.focus({ preventScroll: true }); }, [world, roomId, hidden, envelope]);
   useEffect(() => {
     if (!hidden) document.documentElement.dataset.cursor = light ? 'wand' : 'match';
     return () => { delete document.documentElement.dataset.cursor; };
