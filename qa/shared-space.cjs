@@ -21,7 +21,7 @@ const phrase='a little secret phrase';
   const unlock=async()=>{await page.getByLabel('Share passphrase').fill(phrase);await page.getByRole('button',{name:'Open',exact:true}).click();await page.locator('.shared-room-heading').waitFor()};
   const snap=async(name)=>{await page.screenshot({path:`/tmp/${name}.png`,fullPage:true});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'page overflow');assert.ok(await page.locator('.secret-room').evaluate(e=>e.scrollWidth<=e.clientWidth),'scene overflow')};
   await openLink();await page.evaluate(()=>document.fonts.ready);
-  for(const width of [1440,768,360]){await page.setViewportSize({width,height:900});await snap(`shared-entry-${width}`)}
+  for(const width of [1440,768,360]){await page.setViewportSize({width,height:900});await snap(`shared-entry-${width}`);if(width===360)assert.ok(await page.evaluate(()=>document.querySelector('.wick-greeting>p').getBoundingClientRect().top>document.querySelector('.shared-nav').getBoundingClientRect().bottom),'greeting clears mobile navigation')}
   await page.getByLabel('Share passphrase').fill('wrong phrase');await page.getByRole('button',{name:'Open',exact:true}).click();await page.getByRole('alert').waitFor();assert.equal(await page.getByLabel('Share passphrase').inputValue(),'');assert.equal(await page.getByLabel('Share passphrase').getAttribute('placeholder'),'not quite… try again');await snap('shared-wrong-360');
   await page.getByLabel('Share passphrase').fill(phrase);await page.getByLabel('Share passphrase').press('Enter');await page.locator('.is-opening').waitFor();assert.equal(await page.locator('.shared-room-heading').count(),0);await page.locator('.shared-room-heading').waitFor();assert.equal(await page.evaluate(()=>document.activeElement.tagName),'H1');
   assert.equal(new URL(page.url()).hash,'');assert.equal(await page.locator('textarea').count(),0);assert.equal(await page.locator('.shared-paper').count(),2);
@@ -35,11 +35,16 @@ const phrase='a little secret phrase';
   for(let i=0;i<3;i++){
    await page.getByRole('button',{name:'Falling letters on',exact:true}).click();assert.equal(await page.locator('.falling-letters>span').count(),0);
    await page.getByRole('button',{name:'Falling letters off',exact:true}).click();await page.locator('.falling-letters>span').first().waitFor();
-   const before=await page.locator('.falling-letters>span').last().getAttribute('data-letter-id');await page.waitForTimeout(1000);assert.notEqual(await page.locator('.falling-letters>span').last().getAttribute('data-letter-id'),before);assert.ok(await page.locator('.falling-letters>span').count()<=8);
+   const before=await page.locator('.falling-letters>span').last().getAttribute('data-letter-id');await page.waitForTimeout(1000);const after=await page.locator('.falling-letters>span').last().getAttribute('data-letter-id');assert.notEqual(after,before);assert.ok(Number(after)-Number(before)<=2,'one generator after repeated toggles');assert.ok(await page.locator('.falling-letters>span').count()<=8);
   }
   // Simulate Page Visibility API changes deterministically (headless tabs do not hide).
   await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>true});document.dispatchEvent(new Event('visibilitychange'))});assert.equal(await page.locator('.falling-letters>span').count(),0);
   await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>false});document.dispatchEvent(new Event('visibilitychange'))});await page.locator('.falling-letters>span').first().waitFor();
+  await page.getByRole('button',{name:'Falling letters on',exact:true}).click();
+  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>true});document.dispatchEvent(new Event('visibilitychange'));Object.defineProperty(document,'hidden',{configurable:true,get:()=>false});document.dispatchEvent(new Event('visibilitychange'))});
+  await page.waitForTimeout(1100);assert.equal(await page.locator('.falling-letters>span').count(),0,'visibility must not restart disabled letters');
+  await page.getByRole('button',{name:'Falling letters off',exact:true}).click();await page.locator('.falling-letters>span').first().waitFor();
+  await page.getByRole('button',{name:'Sound off',exact:true}).click();assert.equal(await page.getByRole('button',{name:'Sound on',exact:true}).getAttribute('aria-pressed'),'true');await page.getByRole('button',{name:'Sound on',exact:true}).click();
   await page.getByRole('button',{name:'Turn room light off'}).click();assert.equal(await page.locator('html').getAttribute('data-cursor'),'match');await page.getByRole('button',{name:'Turn room light on'}).click();
   await page.getByRole('button',{name:'For your rainy days'}).click();await page.getByRole('button',{name:/Open your letter/}).click();await page.waitForTimeout(1600);await page.waitForFunction(()=>document.querySelector('audio')?.readyState>=1);assert.equal(await page.locator('video').count(),1);assert.equal(await page.locator('.shared-media--audio').count(),1);await snap('shared-media-360');
   page.once('dialog',d=>d.dismiss());await page.getByRole('link',{name:'Our song'}).click();
