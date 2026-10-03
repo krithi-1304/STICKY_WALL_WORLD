@@ -15,3 +15,6 @@ Read AGENTS.md and BUILD_SPEC.md first. The October 2 recipient redesign is deta
 October 3 completion: LetterSeal accepts `seal` for bare wax on stationery; retain the dark rounded square for navigation and app icons. Production preview must use `--base=/STICKY_WALL_WORLD/`.
 
 Latest October 3 refinement: master controls read Sound on/off. Lobby eyebrow has no icon. Identity is a folded cream note with a navy crescent, superseding the heart-flame badge. Share controls use ShareLetterIcon. SharedLetter owns cancellable 440ms open / 180ms fold timers; reduced motion skips them. All generated share URLs go through domain/shareUrl.ts; local previews use the public GitHub Pages recipient URL, hosted installs preserve their own origin/base. Test public-share with synthetic data only.
+
+## Shared-room refinement — October 3
+Recipient controls use the existing master Sound store; never label room audio Chimes. Use the candle-flame heart seal consistently for favicon, app icons and stationery; the lobby mark sits separately above the unadorned Night Archive label. Keep Wick’s mobile greeting clear of navigation. Preserve the existing memory-only encrypted snapshot flow.

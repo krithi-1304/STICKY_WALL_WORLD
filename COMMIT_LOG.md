@@ -27,3 +27,21 @@ Files: web/src/components/{LetterSeal,ShareLetterIcon,SharedLetter,ItemPrivacy}.
 Behavior: Sound on/off wording, unadorned lobby eyebrow, moonlit folded-note identity, outline envelope share symbol, layered invitation, flap/insert opening and faster fold animation. Local preview shares now use the public HTTPS recipient URL.
 Tests: build:pages/lint, shared-space (including opening/folding, reduced motion and repeated falling toggles), sound-state, room-controls (minimum measured contrast 7.41:1), media-sharing-locks pass. public-share creates a synthetic room through UI locally and decrypts its generated link on the real public site. Desktop/mobile screenshots inspected; icon PNG regenerated.
 Limits: visual refinements not published; public app currently has the earlier design but compatible snapshot decryption. Existing localhost links must be regenerated. Physical device motion testing not performed. Unrelated room-motion QA edit and unused raster illustration remain unstaged.
+
+## 0407578 — SHARED-01/02: invitation and room refinement
+Files: SHARED_SPACE_REDESIGN.md; web/src/pages/Shared.tsx; web/src/components/SharedBackdrop.tsx; web/src/styles/shared.css.
+Behavior: compact stamped invitation, mobile greeting clearance, candle/letter ledge, existing master Sound control in recipient room.
+Tests: build/lint, full shared-space browser flow, desktop/tablet/mobile visual inspection, room-controls and sound-state.
+Limits: local preview only, browser-emulated mobile; original link/file required after refresh; reply remains explicit sharing from own archive.
+
+## 914c95b — SHARED-03: candle-heart identity
+Files: web/src/components/{LetterSeal,ShareLetterIcon}.tsx; web/src/pages/Lobby.tsx; web/src/index.css; web/public/{favicon.svg,icon-192.png,icon-512.png,apple-touch-icon.png}.
+Behavior: custom amber candle in rose wax heart, matching sealed-envelope share icon, separate lobby mark above Night Archive text.
+Tests: SVG-to-PNG regeneration, build/lint, shared-room screenshots, room-controls and sound-state.
+Limits: home-screen installation not tested on a physical device.
+
+## 08f596c — SHARED-04: lifecycle regression guards
+Files: qa/shared-space.cjs.
+Behavior: verifies bounded emission rate after each OFF/ON cycle, no hidden-tab restart while disabled, recipient Sound state, and mobile greeting clearance. Runtime falling-letter fix was already committed and passes; no unnecessary lifecycle rewrite.
+Tests: complete shared-space suite passes including three ambient/local toggle cycles, wrong/right phrases, file/link input, transitions, close/reopen, media, refresh, reduced motion and clean console.
+Limits: deterministic visibility simulation in headless Chromium.
