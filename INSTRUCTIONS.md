@@ -18,3 +18,6 @@ Latest October 3 refinement: master controls read Sound on/off. Lobby eyebrow ha
 
 ## Shared-room refinement — October 3
 Recipient controls use the existing master Sound store; never label room audio Chimes. Use the candle-flame heart seal consistently for favicon, app icons and stationery; the lobby mark sits separately above the unadorned Night Archive label. Keep Wick’s mobile greeting clear of navigation. Preserve the existing memory-only encrypted snapshot flow.
+
+## Shared Open recovery — October 3
+Published d3f7ed7 through GitHub Pages run 37122722759; live protected-share decryption passed. Bare /shared/ and refresh intentionally have no encrypted payload. Explain the missing invitation beside Open and disable phrase entry until a valid link/file exists. Do not persist recipient payloads or pretend the phrase can locate a message. Original links and file imports retain the existing behavior.

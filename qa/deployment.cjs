@@ -41,6 +41,11 @@ if (!base) throw new Error('Set QA_BASE_URL to the deployed site, including its 
     const local = ['localhost', '127.0.0.1', '[::1]'].includes(new URL(base).hostname);
     assert.ok(url.startsWith(`${local ? 'https://krithi-1304.github.io/STICKY_WALL_WORLD' : base.replace(/\/$/, '')}/shared/#`));
     const recipient = await browser.newPage({ reducedMotion: 'reduce' });
+    await recipient.goto(`${base.replace(/\/$/, '')}/shared/`);
+    await recipient.getByText(/Your invitation is missing/).waitFor();
+    assert.equal(await recipient.getByRole('button', { name: 'Open', exact: true }).isDisabled(), true);
+    assert.equal(await recipient.getByLabel('Share passphrase', { exact: true }).isDisabled(), true);
+
     assert.equal((await recipient.goto(local ? `${base.replace(/\/$/, '')}/shared/${new URL(url).hash}` : url)).status(), 200);
     await recipient.getByLabel('Share passphrase', { exact: true }).fill('deployment share passphrase');
     await recipient.getByRole('button', { name: 'Open', exact: true }).click();

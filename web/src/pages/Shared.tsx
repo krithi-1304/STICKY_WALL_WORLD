@@ -106,11 +106,11 @@ export function Shared() {
         <p className="invitation-intro">Whisper the secret phrase to open the room.</p>
         <div className="invitation-code" key={attempt}>
           <label htmlFor="shared-phrase">Do you know the secret phrase?</label>
-          <input id="shared-phrase" ref={input} aria-label="Share passphrase" type="password" autoComplete="off" required maxLength={200} value={pass} disabled={busy} aria-describedby={error ? 'shared-error share-pass-hint' : 'share-pass-hint'} aria-invalid={error ? true : undefined} onChange={e => setPass(e.target.value)} placeholder={attempt ? 'not quite… try again' : 'secret phrase'}/>
+          <input id="shared-phrase" ref={input} aria-label="Share passphrase" type="password" autoComplete="off" required maxLength={200} value={pass} disabled={busy || !envelope} aria-describedby={error ? 'shared-error share-pass-hint' : 'share-pass-hint'} aria-invalid={error ? true : undefined} onChange={e => setPass(e.target.value)} placeholder={attempt ? 'not quite… try again' : 'secret phrase'}/>
           <span className="invitation-keyhole" aria-hidden="true"/>
         </div>
-        <p id="share-pass-hint" className="shared-hint">The sender keeps the phrase separate from the letter.</p>
-        <button className="invitation-open" disabled={!envelope || busy}>{busy ? 'Opening your little world…' : 'Open'}<span aria-hidden="true">→</span></button>
+        <p id="share-pass-hint" className="shared-hint" role={!envelope ? 'status' : undefined}>{envelope ? 'The sender keeps the phrase separate from the letter.' : 'Your invitation is missing. Open the full link from the sender, or choose their shared file below. After a refresh, reopen the original link. The secret phrase alone cannot find a message.'}</p>
+        <button className="invitation-open" aria-describedby="share-pass-hint" disabled={!envelope || busy}>{busy ? 'Opening your little world…' : 'Open'}<span aria-hidden="true">→</span></button>
         {error && <p id="shared-error" className="shared-error" role="alert">{error}</p>}
         <details className="shared-file" open={!envelope || undefined}><summary>Have a shared file instead?</summary><label>Open shared file<input type="file" accept=".json,application/json" disabled={busy} onChange={async e => {
           const file = e.target.files?.[0]; if (!file) return;

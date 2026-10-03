@@ -18,3 +18,6 @@
 
 ## October 3 — latest shared-room identity
 The explicit current brief restores the rose heart wax seal with an amber flame, superseding the folded moon-note mark. The lobby mark is separate from The Night Archive text. Share actions use a sealed envelope from the same visual family. Recipient sound reuses useSound and playRitualSound, including muted-by-default behavior. A small CSS candle/letter ledge adds room scale without external artwork. The original falling-letter repair was already committed; this pass verifies and strengthens its regressions, rather than rewriting a working lifecycle.
+
+## Shared Open recovery — October 3
+Published d3f7ed7 through GitHub Pages run 37122722759; live protected-share decryption passed. Bare /shared/ and refresh intentionally have no encrypted payload. Explain the missing invitation beside Open and disable phrase entry until a valid link/file exists. Do not persist recipient payloads or pretend the phrase can locate a message. Original links and file imports retain the existing behavior.

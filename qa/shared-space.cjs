@@ -8,6 +8,7 @@ const phrase='a little secret phrase';
  try{
   const page=await browser.newPage({viewport:{width:1440,height:1000}});const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
   await page.goto(base+'/shared');
+  await page.getByText(/Your invitation is missing/).waitFor();assert.equal(await page.getByLabel('Share passphrase').isDisabled(),true);
   const envelope=await page.evaluate(async()=>{
    const {protect}=await import('/src/domain/privateContent.ts');
    const canvas=document.createElement('canvas');canvas.width=480;canvas.height=320;const ctx=canvas.getContext('2d');ctx.fillStyle='#455c66';ctx.fillRect(0,0,480,320);ctx.fillStyle='#f6e9cf';ctx.beginPath();ctx.arc(320,100,42,0,Math.PI*2);ctx.fill();ctx.fillStyle='#2a3e46';ctx.fillRect(0,220,480,100);
