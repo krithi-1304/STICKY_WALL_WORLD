@@ -54,3 +54,15 @@ Files: web/src/pages/Shared.tsx; qa/{shared-space,deployment}.cjs; INSTRUCTIONS.
 Behavior: bare /shared/ and refreshed recipient pages explain why Open is disabled and how to recover via the original link or encrypted file; phrase entry is disabled until a payload is present.
 Tests: build:pages/lint and full shared-space regression pass, including missing-link state, valid-link decryption, file import, wrong phrase, refresh, mobile and reduced motion.
 Limits: original-link/file requirement is intentional privacy behavior; no phrase lookup service or recipient persistence.
+
+## b72534c — receive a new invitation on the existing shared page
+Files: web/src/pages/Shared.tsx; qa/{shared-space,deployment}.cjs; PROGRESS.md; DECISIONS.md.
+Root cause: mount-only hash parsing missed same-document navigation from /shared/ to a protected link. A hashchange listener now replaces the in-memory envelope, cancels pending decrypt/reveal work, clears the fragment and restores focus.
+Tests: full shared-space including same-page link arrival passes; build:pages/lint pass. Hosted regression now exercises this exact path (same-document navigation has no HTTP response).
+Limits: refresh still requires original encrypted invitation by design.
+
+## 1fdd72b — moonlit journal identity
+Files: LetterSeal.tsx; ShareLetterIcon.tsx; favicon.svg, icon-192.png, icon-512.png, apple-touch-icon.png, site.webmanifest; INSTRUCTIONS.md; PROGRESS.md; DECISIONS.md; SHARED_SPACE_REDESIGN.md.
+Behavior: silver crescent and warm folded journal page on near-black navy; matching moon-sealed envelope. Supersedes candle-heart brand per latest user feedback; Wick remains in the shared scene.
+Tests: regenerated PNG assets visually inspected, build:pages/lint pass.
+Limits: physical home-screen installation not tested.
