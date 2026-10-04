@@ -40,3 +40,6 @@ The previous toggle repair is already committed here; do not claim a newly disco
 
 ## Refinement result
 Implemented the current plan. Build/lint, shared-space, room-controls and sound-state pass. Manual desktop/mobile review corrected greeting/navigation overlap; regression now checks their bounds. No new falling-letter runtime fix was needed: the existing fix passes, and tests now enforce one emission stream and no restart while OFF after tab visibility changes.
+
+## October 4 — moonlit journal identity
+Latest user direction supersedes the candle-heart brand: a silver crescent shelters a warm folded page on near-black navy. Reuse the original SVG in lobby, recipient navigation and dark stationery seals; Share uses a moon-sealed envelope. Regenerate favicon/192/512/Apple assets. Wick remains the candle messenger within the scene. The tested same-page protected-link fix is included in this deployment.

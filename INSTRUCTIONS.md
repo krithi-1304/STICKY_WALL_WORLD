@@ -21,3 +21,6 @@ Recipient controls use the existing master Sound store; never label room audio C
 
 ## Shared Open recovery — October 3
 Published d3f7ed7 through GitHub Pages run 37122722759; live protected-share decryption passed. Bare /shared/ and refresh intentionally have no encrypted payload. Explain the missing invitation beside Open and disable phrase entry until a valid link/file exists. Do not persist recipient payloads or pretend the phrase can locate a message. Original links and file imports retain the existing behavior.
+
+## October 4 — moonlit journal identity
+Latest user direction supersedes the candle-heart brand: a silver crescent shelters a warm folded page on near-black navy. Reuse the original SVG in lobby, recipient navigation and dark stationery seals; Share uses a moon-sealed envelope. Regenerate favicon/192/512/Apple assets. Wick remains the candle messenger within the scene. The tested same-page protected-link fix is included in this deployment.

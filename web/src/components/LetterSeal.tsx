@@ -1,4 +1,4 @@
-/** Wick's candle flame, held in a heart-shaped wax seal. */
+/** A page kept in moonlight: the archive's quiet night-journal mark. */
 export function LetterSeal({ seal = false }: { seal?: boolean }) {
-  return <svg className="letter-seal" viewBox="0 0 64 64" fill="none" aria-hidden="true">{!seal && <rect width="64" height="64" rx="16" fill="#101722"/>}<path d="M32 54C26 50 9 39 9 25c0-14 17-19 23-8 7-11 23-6 23 8 0 14-17 25-23 29Z" fill="#c9455c"/><path d="M15 26c0-8 8-12 13-7" stroke="#f5a0ac" strokeWidth="2" strokeLinecap="round"/><path d="M32 43c-15-5-11-16 0-27-2 10 13 13 9 21-2 4-5 6-9 6Z" fill="#ffc978"/><path d="M32 41c-6-3-3-7 1-12 0 5 6 9-1 12Z" fill="#fff1cf"/></svg>;
+  return <svg className="letter-seal" viewBox="0 0 64 64" fill="none" aria-hidden="true">{seal ? <circle cx="32" cy="32" r="31" fill="#151f2d"/> : <rect width="64" height="64" rx="16" fill="#0b1220"/>}<path d="M34 10C21 8 10 18 10 31c0 14 12 24 25 21-11-4-17-13-16-24 1-8 6-14 15-18Z" fill="#cdd6df"/><path d="M34 27h12l8 8v19H34V27Z" fill="#eadfc9"/><path d="M46 27v8h8" fill="#9aa8b7"/><path d="M39 41h9m-9 5h6" stroke="#526171" strokeWidth="2" strokeLinecap="round"/></svg>;
 }
