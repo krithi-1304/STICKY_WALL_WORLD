@@ -1,3 +1,4 @@
+import { ARCHIVE_LIMITS } from './types';
 import { parsePrivate } from './privateContent';
 import { create } from 'zustand';
 import type { Room, Sticky, Attachment } from './types';
@@ -26,6 +27,14 @@ async function acquireWriter() {
   try { await acquiring; } finally { acquiring = null; }
 }
 function releaseWriteLock() { releaseWriter?.(); releaseWriter = null; }
+// Track entry work so Hide cannot release a key before a late unlock installs it.
+const entryOperations = new Set<Promise<unknown>>();
+function trackEntry<T>(operation: () => Promise<T>): Promise<T> {
+  const task = operation();
+  entryOperations.add(task);
+  void task.then(() => entryOperations.delete(task), () => entryOperations.delete(task));
+  return task;
+}
 export const MEDIA_TYPES = ['image/jpeg','image/png','image/webp','audio/mpeg','audio/wav','audio/ogg','audio/webm','video/mp4','video/webm'] as const;
 function to64(bytes: Uint8Array): string {
   let result = '';
@@ -37,9 +46,9 @@ function invalid(): never { throw new Error('This archive is damaged or uses an 
 function record(value: unknown): Record<string, unknown> { if (!value || typeof value !== 'object' || Array.isArray(value)) invalid(); return value as Record<string, unknown>; }
 function str(value: unknown, max: number): string { if (typeof value !== 'string' || value.length > max) invalid(); return value; }
 function num(value: unknown, fallback = 0): number { return typeof value === 'number' && Number.isFinite(value) ? Math.max(-1000000, Math.min(1e15, value)) : fallback; }
-export function validateWorld(value: unknown): World {
+export function validateWorld(value: unknown, allowExistingOverCapacity = false): World {
   const v = record(value);
-  if (!Array.isArray(v.rooms) || !Array.isArray(v.stickies) || v.rooms.length > 500 || v.stickies.length > 10000) invalid();
+  if (!Array.isArray(v.rooms) || !Array.isArray(v.stickies) || (!allowExistingOverCapacity && (v.rooms.length > ARCHIVE_LIMITS.rooms || v.stickies.length > ARCHIVE_LIMITS.notes))) invalid();
   const ids = new Set<string>(); const slugs = new Set<string>();
   const rooms: Room[] = v.rooms.map(value => {
     const r = record(value); const id = str(r.id, 100); const slug = str(r.slug, 150);
@@ -120,10 +129,10 @@ async function decryptWorld(passphrase: string, envelope: Envelope) {
   let plaintext: ArrayBuffer;
   try { plaintext = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: from64(validated.iv), additionalData: encoder.encode('black-wall:v2') }, candidate, from64(validated.ciphertext)); }
   catch { throw new Error('The passphrase is incorrect, or this backup is damaged. Your saved archive is unchanged.'); }
-  const world = validateWorld(JSON.parse(new TextDecoder().decode(plaintext)));
+  const world = validateWorld(JSON.parse(new TextDecoder().decode(plaintext)), true);
   return { world, candidate, validated };
 }
-export async function openVault(passphrase: string): Promise<World> {
+async function openVaultOperation(passphrase: string): Promise<World> {
   await acquireWriter();
   try {
     // Read only after owning the writer lock: a waiting tab's cached envelope
@@ -136,7 +145,7 @@ export async function openVault(passphrase: string): Promise<World> {
     return world;
   } catch (error) { releaseWriteLock(); throw error; }
 }
-export async function createVault(passphrase: string, world: World) {
+async function createVaultOperation(passphrase: string, world: World) {
   if (legacyError) throw new Error(legacyError);
   if (passphrase.length < 12) throw new Error('Use at least 12 characters for your passphrase.');
   const newSalt = to64(crypto.getRandomValues(new Uint8Array(16))); const candidate = await derive(passphrase, newSalt);
@@ -149,7 +158,7 @@ export async function createVault(passphrase: string, world: World) {
   key = candidate; salt = newSalt; localStorage.removeItem(LEGACY);
   useStorage.setState({ status: 'saved', error: '' });
 }
-export async function restoreVault(passphrase: string, envelope: Envelope, allowReplace = false) {
+async function restoreVaultOperation(passphrase: string, envelope: Envelope, allowReplace = false) {
   const { world, candidate, validated } = await decryptWorld(passphrase, envelope);
   await acquireWriter();
   try {
@@ -164,7 +173,7 @@ export async function restoreVault(passphrase: string, envelope: Envelope, allow
 }
 export function saveWorld(world: World): void {
   if (!key) { useStorage.setState({ status: 'error', error: 'The archive is locked. Unlock before saving.' }); return; }
-  pending = JSON.stringify(world); useStorage.setState({ status: 'saving', error: '' }); if (writing || changingPassphrase) return;
+  pending = JSON.stringify(validateWorld(world, true)); useStorage.setState({ status: 'saving', error: '' }); if (writing || changingPassphrase) return;
   writing = (async () => {
     try { while (pending !== null) { const snapshot = pending; pending = null; await writeEnvelope(await seal(snapshot)); } useStorage.setState({ status: 'saved', error: '' }); }
     catch (error) { useStorage.setState({ status: 'error', error: error instanceof Error ? error.message : 'Saving failed. Export a backup before leaving.' }); }
@@ -174,14 +183,14 @@ export function saveWorld(world: World): void {
 export async function flushWorld() { await writing; if (useStorage.getState().status === 'error') throw new Error(useStorage.getState().error); }
 export async function exportVault(world: World) {
   if (!key) throw new Error('Unlock the archive first.');
-  const envelope = await seal(JSON.stringify(validateWorld(world)));
+  const envelope = await seal(JSON.stringify(validateWorld(world, true)));
   downloadEnvelope(envelope);
 }
 function downloadEnvelope(envelope: Envelope) {
   const url = URL.createObjectURL(new Blob([JSON.stringify(envelope)], { type: 'application/json' }));
   const link = document.createElement('a'); link.href = url; link.download = `black-wall-${new Date().toISOString().slice(0,10)}.encrypted.json`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-export async function forgetKey() { await changingPassphrase; await flushWorld(); key = null; salt = ''; pending = null; releaseWriteLock(); useStorage.setState({ status: 'locked' }); }
+export async function forgetKey() { await Promise.allSettled([...entryOperations]); await changingPassphrase; await flushWorld(); key = null; salt = ''; pending = null; releaseWriteLock(); useStorage.setState({ status: 'locked' }); }
 
 
 /** An unlocked archive can be re-encrypted without knowing the previous passphrase. */
@@ -194,7 +203,7 @@ export async function changePassphrase(passphrase: string, currentWorld: () => W
     await writing;
     const newSalt = to64(crypto.getRandomValues(new Uint8Array(16)));
     const candidate = await derive(passphrase, newSalt);
-    const snapshot = JSON.stringify(validateWorld(currentWorld()));
+    const snapshot = JSON.stringify(validateWorld(currentWorld(), true));
     // This snapshot includes edits queued while the new key was being derived.
     pending = null;
     await writeEnvelope(await seal(snapshot, candidate, newSalt));
@@ -218,7 +227,7 @@ export async function exportLockedVault(): Promise<Envelope> {
 }
 
 /** Only the explicit start-over form calls this. No attempt is made to decrypt old notes. */
-export async function startFreshVault(passphrase: string, exported: Envelope) {
+async function startFreshVaultOperation(passphrase: string, exported: Envelope) {
   if (key) throw new Error('Your archive is unlocked. Change its passphrase to keep your notes instead.');
   if (passphrase.length < 12 || passphrase.length > 200) throw new Error('Use between 12 and 200 characters for your new passphrase.');
   await acquireWriter();
@@ -232,3 +241,8 @@ export async function startFreshVault(passphrase: string, exported: Envelope) {
     useStorage.setState({ status: 'saved', error: '' });
   } catch (error) { releaseWriteLock(); throw error; }
 }
+
+export const openVault = (passphrase: string) => trackEntry(() => openVaultOperation(passphrase));
+export const createVault = (passphrase: string, world: World) => trackEntry(() => createVaultOperation(passphrase, world));
+export const restoreVault = (passphrase: string, envelope: Envelope, allowReplace = false) => trackEntry(() => restoreVaultOperation(passphrase, envelope, allowReplace));
+export const startFreshVault = (passphrase: string, exported: Envelope) => trackEntry(() => startFreshVaultOperation(passphrase, exported));

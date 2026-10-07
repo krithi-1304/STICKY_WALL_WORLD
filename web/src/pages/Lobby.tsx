@@ -1,3 +1,4 @@
+import { ROOM_LIMIT_MESSAGE } from '../domain/types';
 import { LetterSeal } from '../components/LetterSeal';
 import { ItemControls } from '../components/ItemPrivacy';
 import { FairyLights } from '../components/FairyLights';
@@ -28,6 +29,7 @@ export function Lobby() {
     });
     return () => cancelAnimationFrame(frame);
   }, []);
+  const [creationError, setCreationError] = useState('');
   const [query, setQuery] = useState('');
   const [release, setRelease] = useState<{name:string;id:string}|null>(null);
   const sorted = [...rooms].sort((a, b) => b.updatedAt - a.updatedAt);
@@ -37,6 +39,7 @@ export function Lobby() {
     const name = query.trim();
     if (!name) return;
     const room = createRoom({ name, symbol: symbolForName(name) });
+    if (!room) { setCreationError(ROOM_LIMIT_MESSAGE); return; }
     navigate(`/r/${room.slug}`);
   }
 
@@ -46,6 +49,7 @@ export function Lobby() {
 
   return (
     <main className="lobby mist lobby--archive">
+      {creationError && <p role="alert">{creationError}</p>}
       <FairyLights />
       <DarkBackdrop />
       <div className="lobby__moon" aria-hidden="true" />

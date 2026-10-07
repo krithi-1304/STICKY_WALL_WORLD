@@ -3,7 +3,7 @@ import { DarkBackdrop } from './DarkBackdrop';
 import { FairyLights } from './FairyLights';
 import { ForgotPassphrase } from './ForgotPassphrase';
 import { PassphraseDialog } from './PassphraseDialog';
-import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWall } from '../state/wall';
 import { createVault, openVault, readEnvelope, parseEnvelope, restoreVault, exportVault, forgetKey, saveWorld, useStorage, type Envelope } from '../domain/storage';
@@ -23,12 +23,33 @@ export function VaultGate({ children }: { children: ReactNode }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const storage = useStorage();
+  const generation = useRef(0);
+  const lockTask = useRef<Promise<void> | null>(null);
+  const [locking, setLocking] = useState(false);
+  const [lockFailed, setLockFailed] = useState(false);
+  const finishLock = useCallback(() => {
+    if (lockTask.current) return lockTask.current;
+    lockTask.current = (async () => {
+    setLocking(true); setLockFailed(false);
+    try {
+      await forgetKey();
+      useWall.setState({ rooms: [], stickies: [] });
+      setEnvelope(await readEnvelope());
+      setError('');
+    } catch {
+      setLockFailed(true);
+      setError('Your latest changes could not be saved. Retry or export an encrypted backup before leaving. Your notes remain concealed.');
+    } finally { setLocking(false); setBusy(false); lockTask.current = null; }
+    })();
+    return lockTask.current;
+  }, []);
   useEffect(() => { readEnvelope().then(value => { setEnvelope(value); setLoaded(true); }).catch(e => setError(String(e.message))); }, []);
   const hide = useCallback(() => {
+    generation.current += 1; setReady(false); setBackup(null);
     setChanging(false); setForgot(false); setHidden(true); setShowPass(false); setPass(''); setRepeat(''); document.title = 'Blank page';
     navigate('/', { replace: true });
-    void forgetKey().then(() => { useWall.setState({ rooms: [], stickies: [] }); setReady(false); return readEnvelope(); }).then(setEnvelope).catch(() => { /* Keep unsaved memory available behind the blank screen. */ });
-  }, [navigate]);
+    void finishLock();
+  }, [navigate, finishLock]);
   useEffect(() => {
     let hold: ReturnType<typeof setTimeout> | undefined;
     const down = (e: KeyboardEvent) => { if (e.key === 'Escape' && !e.repeat) hold = setTimeout(hide, 450); };
@@ -39,19 +60,32 @@ export function VaultGate({ children }: { children: ReactNode }) {
     return () => { clearTimeout(hold); window.removeEventListener('keydown', down); window.removeEventListener('keyup', up); window.removeEventListener('beforeunload', leaving); window.removeEventListener('black-wall:hide', hide); };
   }, [hide]);
   async function submit(e: React.FormEvent) {
-    e.preventDefault(); setBusy(true); setError('');
+    e.preventDefault(); if (busy || locking || lockFailed) return;
+    const operation = ++generation.current;
+    setBusy(true); setError('');
     try {
       if (backup) {
         const replacing = !!(await readEnvelope()) || useWall.getState().rooms.length > 0;
+        if (operation !== generation.current) return;
         if (replacing && !window.confirm('Replace this browser’s archive with the selected backup? Export your current archive first if you need to keep it.')) return;
-        useWall.setState(await restoreVault(pass, backup, replacing)); setEnvelope(backup); setBackup(null);
-      } else if (envelope) useWall.setState(await openVault(pass));
+        const world = await restoreVault(pass, backup, replacing);
+        if (operation !== generation.current) return;
+        useWall.setState(world); setEnvelope(backup); setBackup(null);
+      } else if (envelope) {
+        const world = await openVault(pass);
+        if (operation !== generation.current) return;
+        useWall.setState(world);
+      }
       else { if (pass !== repeat) throw new Error('The passphrases do not match.'); await createVault(pass, useWall.getState()); }
+      if (operation !== generation.current) return;
       setShowPass(false); setPass(''); setRepeat(''); setReady(true); document.title = 'The Black Wall';
-    } catch (e) { setError(e instanceof Error ? e.message : 'Could not open the archive.'); }
-    finally { setBusy(false); }
+    } catch (e) { if (operation === generation.current) setError(e instanceof Error ? e.message : 'Could not open the archive.'); }
+    finally { if (operation === generation.current) setBusy(false); }
   }
   if (hidden) return <main className="blank-page"><button onClick={() => { setHidden(false); document.title = 'The Black Wall'; }}>Return</button></main>;
+  if (locking || lockFailed) return <main className="vault-page"><section className="vault-panel glass" aria-label="Archive recovery"><h1>{locking ? 'Securing your archive…' : 'Your notes are concealed'}</h1>
+    {locking ? <p role="status">Finishing encrypted storage before returning to unlock.</p> : <><p role="alert">{error}</p><button onClick={() => { saveWorld(useWall.getState()); void finishLock(); }}>Retry saving and lock</button><button onClick={() => void exportVault(useWall.getState()).catch(e => setError(e.message))}>Export encrypted backup</button></>}
+    <button onClick={hide}>Hide screen</button></section></main>;
   if (!ready && forgot) return <ForgotPassphrase onCancel={() => setForgot(false)} onCreated={() => { setForgot(false); setReady(true); setPass(''); setRepeat(''); navigate('/', { replace: true }); }} />;
   if (!ready) return <main className="vault-page vault-entry"><DarkBackdrop/><FairyLights/><form className="vault-panel glass vault-entry__form" onSubmit={submit}>
     <div className="vault-entry__heading"><p className="eyebrow">THE BLACK WALL</p><HelpGuide /></div><h1>{backup ? 'Restore your archive' : envelope ? 'Welcome back' : 'A place for your thoughts'}</h1>
@@ -64,7 +98,7 @@ export function VaultGate({ children }: { children: ReactNode }) {
     <p className="privacy-copy">A forgotten passphrase cannot unlock old notes. Losing it, clearing browser data, or losing this device can permanently lose your notes. Save an encrypted backup after writing. An unlocked archive or a compromised device is not protected by this passphrase.</p>
     <button className="primary" disabled={!loaded || busy}>{busy ? (backup ? 'Restoring…' : envelope ? 'Opening…' : 'Creating…') : backup ? 'Restore backup' : envelope ? 'Unlock archive' : 'Create private archive'}</button>
     {envelope && !backup && <button type="button" disabled={busy} onClick={() => { setPass(''); setRepeat(''); setError(''); setForgot(true); }}>Forgot passphrase?</button>}
-    <label className="file-label">Choose an encrypted backup<input type="file" disabled={busy || !loaded} accept=".json,application/json" onChange={async e => { setBackup(null); try { const file = e.target.files?.[0]; if (!file) return; setBackup(parseEnvelope(await file.text())); setError(''); } catch (e) { setError(e instanceof Error ? e.message : 'Invalid backup.'); } }} /></label>
+    <label className="file-label">Choose an encrypted backup<input type="file" disabled={busy || !loaded} accept=".json,application/json" onChange={async e => { const operation = ++generation.current; setBackup(null); try { const file = e.target.files?.[0]; if (!file) return; const selected = parseEnvelope(await file.text()); if (operation !== generation.current) return; setBackup(selected); setError(''); } catch (e) { if (operation === generation.current) setError(e instanceof Error ? e.message : 'Invalid backup.'); } }} /></label>
     {backup && <button type="button" disabled={busy} onClick={() => setBackup(null)}>Cancel restore</button>}
     {error && <p role="alert">{error}</p>}
   </form></main>;

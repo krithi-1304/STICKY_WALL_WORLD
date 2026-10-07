@@ -1,9 +1,11 @@
 import { HelpGuide } from './HelpGuide';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { exportLockedVault, startFreshVault, type Envelope } from '../domain/storage';
 import { useWall } from '../state/wall';
 
 export function ForgotPassphrase({ onCancel, onCreated }: { onCancel: () => void; onCreated: () => void }) {
+  const active = useRef(true);
+  useEffect(() => { active.current = true; return () => { active.current = false; }; }, []);
   const [exported, setExported] = useState<Envelope | null>(null);
   const [pass, setPass] = useState('');
   const [repeat, setRepeat] = useState('');
@@ -15,7 +17,7 @@ export function ForgotPassphrase({ onCancel, onCreated }: { onCancel: () => void
     if (!exported || confirmation !== 'START FRESH') return;
     if (pass !== repeat) { setError('The passphrases do not match.'); return; }
     setBusy(true);
-    try { await startFreshVault(pass, exported); useWall.setState({ rooms: [], stickies: [] }); onCreated(); }
+    try { await startFreshVault(pass, exported); if (!active.current) return; useWall.setState({ rooms: [], stickies: [] }); onCreated(); }
     catch (e) { setError(e instanceof Error ? e.message : 'Could not start a new archive.'); }
     finally { setBusy(false); }
   }}>

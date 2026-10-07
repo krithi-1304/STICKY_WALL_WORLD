@@ -1,3 +1,4 @@
+import { ARCHIVE_LIMITS, NOTE_LIMIT_MESSAGE } from '../domain/types';
 import { SteelBinding, ItemControls } from '../components/ItemPrivacy';
 import type { Sticky } from '../domain/types';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -44,7 +45,7 @@ export function Room() {
   if(room.locked)return <main className="diary-room"><header className="diary-bar glass"><Link to="/">← Lobby</Link><h1>A room kept close</h1></header><section className="locked-room vault-panel glass"><div className="room-lock-seal"><SteelBinding/></div><h2>This room is locked</h2><p>Its notes have their own layer of encryption.</p><ItemControls scope={{kind:'room',id:room.id}}/></section></main>;
   const visibleNotes=[...notes];if(falling)visibleNotes.splice(Math.min(falling.index,visibleNotes.length),0,falling.note);
   const current=notes.find(note=>note.id===opened&&!note.locked);
-  function add(){const note=useWall.getState().addSticky(room!.id,{w:wall.current?.clientWidth??900,h:600});if(note)setOpened(note.id);else setMessage('This room is full. Keep a new thought in another room.');}
+  function add(){const note=useWall.getState().addSticky(room!.id,{w:wall.current?.clientWidth??900,h:600});if(note)setOpened(note.id);else setMessage(useWall.getState().stickies.length>=ARCHIVE_LIMITS.notes ? NOTE_LIMIT_MESSAGE : 'This room is full. Keep a new thought in another room.');}
   return <main className={`diary-room ${light?'light-on':'light-off'}${igniting?' is-igniting':''}`}>
     <header className="diary-bar glass"><Link to="/">← Lobby</Link>
       {renaming?<input aria-label="Room name" defaultValue={room.name} maxLength={60} autoFocus onBlur={e=>{const name=e.target.value.trim();if(name)useWall.getState().updateRoom(room.id,{name});setRenaming(false);}} onKeyDown={e=>{if(e.key==='Enter')e.currentTarget.blur();if(e.key==='Escape')setRenaming(false);}}/>:<h1><button onClick={()=>setRenaming(true)} title="Rename room">{room.name}</button></h1>}

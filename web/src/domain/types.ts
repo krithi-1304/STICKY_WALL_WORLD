@@ -1,3 +1,6 @@
+export const ARCHIVE_LIMITS = { rooms: 500, notes: 10000 } as const;
+export const ROOM_LIMIT_MESSAGE = 'This archive has reached its 500-room limit. Use an existing room or remove a room first.';
+export const NOTE_LIMIT_MESSAGE = 'This archive has reached its 10,000-note limit. Remove a note before keeping another.';
 import type { PrivateContent } from './privateContent';
 /**
  * Black Wall — domain model (S0 → S1 ready).

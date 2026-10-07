@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import { loadWorld, saveWorld } from '../domain/storage';
 import { uniqueSlug } from '../domain/slug';
-import { STICKY_LIMITS } from '../domain/types';
+import { STICKY_LIMITS, ARCHIVE_LIMITS } from '../domain/types';
 import type { HandFontId, Room, Sticky, StickyColorId, TapeStyle } from '../domain/types';
 
 interface WallStore {
   rooms: Room[];
   stickies: Sticky[];
-  createRoom: (input: { name: string; symbol: string }) => Room;
+  createRoom: (input: { name: string; symbol: string }) => Room | null;
   updateRoom: (roomId: string, patch: Partial<Room>) => void;
   deleteRoom: (roomId: string) => void;
   addSticky: (roomId: string, wall: { w: number; h: number }) => Sticky | null;
@@ -104,12 +104,13 @@ export const useWall = create<WallStore>((set, get) => ({
   ...loadWorld(),
 
   createRoom: ({ name, symbol }) => {
-    const trimmed = name.trim() || 'Untitled room';
+    if (get().rooms.length >= ARCHIVE_LIMITS.rooms) return null;
+    const trimmed = name.trim().slice(0, 120) || 'Untitled room';
     const room: Room = {
       id: uid(),
       slug: uniqueSlug(uid(), get().rooms),
       name: trimmed,
-      symbol: symbol.trim() || '✷',
+      symbol: symbol.trim().slice(0, 20) || '✷',
       accent: null,
       wallTint: 'charcoal',
       fontId: 'caveat',
@@ -147,6 +148,7 @@ export const useWall = create<WallStore>((set, get) => ({
   addSticky: (roomId, wall) => {
     if(!get().rooms.some(r=>r.id===roomId&&!r.locked))return null;
     const { stickies } = get();
+    if (stickies.length >= ARCHIVE_LIMITS.notes) return null;
     const inRoom = stickies.filter((s) => s.roomId === roomId && !s.archived);
     if (inRoom.length >= STICKY_LIMITS.maxStickiesPerRoom) return null;
 
