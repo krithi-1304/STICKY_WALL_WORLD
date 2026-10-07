@@ -1,0 +1,289 @@
+{
+  "date": "2026-10-07",
+  "runtimeCommit": "c0cda5478d6655dcd7f7d32c4044cd5eaccddf93",
+  "securityInputMatrix": [
+    {
+      "name": "url-protocol-and-credentials-matrix",
+      "status": "PASS",
+      "detail": {
+        "inputs": 23
+      },
+      "seconds": 0.604
+    },
+    {
+      "name": "authenticated-encryption-tamper-and-phrase-matrix",
+      "status": "PASS",
+      "detail": {
+        "roundTrips": 4,
+        "rejections": 31,
+        "failures": []
+      },
+      "seconds": 1.312
+    },
+    {
+      "name": "malformed-world-fuzz-and-prototype-inputs",
+      "status": "PASS",
+      "detail": {
+        "inputs": 145,
+        "rejected": 145,
+        "accepted": [],
+        "prototypePolluted": null,
+        "keys": [
+          "rooms",
+          "stickies"
+        ]
+      },
+      "seconds": 0.342
+    },
+    {
+      "name": "xss-through-room-note-and-recipient",
+      "status": "PASS",
+      "detail": {
+        "payloads": 9,
+        "safeLinks": 1
+      },
+      "seconds": 0.915
+    },
+    {
+      "name": "plaintext-storage-and-request-leakage",
+      "status": "PASS",
+      "detail": {
+        "capturedRequests": 5,
+        "externalOrigins": [
+          "https://fonts.gstatic.com"
+        ],
+        "storageContainsCiphertext": true,
+        "plaintextFound": false
+      },
+      "seconds": 0.813
+    },
+    {
+      "name": "invalid-media-upload-matrix",
+      "status": "PASS",
+      "detail": {
+        "inputs": 8,
+        "accepted": []
+      },
+      "seconds": 0.349
+    },
+    {
+      "name": "recipient-corrupt-file-recovery-and-no-persistence",
+      "status": "PASS",
+      "detail": {
+        "invalidFiles": 4,
+        "recipientDatabases": 0
+      },
+      "seconds": 1.067
+    },
+    {
+      "name": "user-input-journey-1",
+      "status": "PASS",
+      "detail": {
+        "inputs": 8,
+        "width": 1440,
+        "passphraseLength": 12
+      },
+      "seconds": 1.502
+    },
+    {
+      "name": "user-input-journey-2",
+      "status": "PASS",
+      "detail": {
+        "inputs": 8,
+        "width": 768,
+        "passphraseLength": 14
+      },
+      "seconds": 1.332
+    },
+    {
+      "name": "user-input-journey-3",
+      "status": "PASS",
+      "detail": {
+        "inputs": 8,
+        "width": 390,
+        "passphraseLength": 200
+      },
+      "seconds": 1.698
+    },
+    {
+      "name": "user-input-journey-4",
+      "status": "PASS",
+      "detail": {
+        "inputs": 8,
+        "width": 360,
+        "passphraseLength": 21
+      },
+      "seconds": 1.382
+    },
+    {
+      "name": "rapid-edits-last-write-wins",
+      "status": "PASS",
+      "detail": {
+        "typedCharacters": 104,
+        "typingAndSaveMs": 670
+      },
+      "seconds": 1.717
+    }
+  ],
+  "featureSuites": [
+    {
+      "suite": "private-archive",
+      "code": 0,
+      "signal": null,
+      "seconds": 40
+    },
+    {
+      "suite": "privacy-failures",
+      "code": 0,
+      "signal": null,
+      "seconds": 12
+    },
+    {
+      "suite": "passphrase-recovery",
+      "code": 0,
+      "signal": null,
+      "seconds": 6
+    },
+    {
+      "suite": "media-sharing-locks",
+      "code": 0,
+      "signal": null,
+      "seconds": 30
+    },
+    {
+      "suite": "large-media",
+      "code": 0,
+      "signal": null,
+      "seconds": 23
+    },
+    {
+      "suite": "physical-interactions",
+      "code": 0,
+      "signal": null,
+      "seconds": 17
+    },
+    {
+      "suite": "ui-polish",
+      "code": 0,
+      "signal": null,
+      "seconds": 11
+    },
+    {
+      "suite": "help-guide",
+      "code": 0,
+      "signal": null,
+      "seconds": 10
+    },
+    {
+      "suite": "sound-state",
+      "code": 0,
+      "signal": null,
+      "seconds": 6
+    },
+    {
+      "suite": "room-motion",
+      "code": 0,
+      "signal": null,
+      "seconds": 13
+    },
+    {
+      "suite": "room-controls",
+      "code": 0,
+      "signal": null,
+      "seconds": 2
+    },
+    {
+      "suite": "shared-space",
+      "code": 0,
+      "signal": null,
+      "seconds": 38
+    },
+    {
+      "suite": "public-share",
+      "code": 0,
+      "signal": null,
+      "seconds": 3
+    },
+    {
+      "suite": "regression-edge-cases",
+      "code": 1,
+      "signal": null,
+      "seconds": 22
+    }
+  ],
+  "edgeCases": [
+    {
+      "name": "hide-during-unlock",
+      "status": "FAIL",
+      "error": "Hidden pending unlock must not reveal the archive after Return\n\n1 !== 0\n",
+      "console": []
+    },
+    {
+      "name": "hide-during-create",
+      "status": "PASS"
+    },
+    {
+      "name": "room-cap-round-trip",
+      "status": "FAIL",
+      "error": "The app must not save an archive its own loader rejects\n\n1 !== 0\n",
+      "console": []
+    },
+    {
+      "name": "note-cap-validation",
+      "status": "FAIL",
+      "error": "10,001st note is accepted but saved data cannot reload",
+      "console": []
+    },
+    {
+      "name": "shared-same-tab-replacement",
+      "status": "PASS"
+    },
+    {
+      "name": "shared-hidden-new-link",
+      "status": "PASS"
+    },
+    {
+      "name": "rename-escape",
+      "status": "PASS"
+    },
+    {
+      "name": "unicode-and-duplicate-rooms",
+      "status": "PASS"
+    },
+    {
+      "name": "composer-empty-after-keep-choice",
+      "status": "FAIL",
+      "error": "Keep should not save a draft cleared after choosing a destination\n\n1 !== 0\n",
+      "console": []
+    },
+    {
+      "name": "hide-return-during-save",
+      "status": "FAIL",
+      "error": "Return exposes an unlocked archive while the pending save is finishing\n\n1 !== 0\n",
+      "console": []
+    },
+    {
+      "name": "fairy-lights-keyboard-after-resize",
+      "status": "FAIL",
+      "error": "Resizing hides the only tab stop in the fairy-light group\n\n0 !== 1\n",
+      "console": []
+    },
+    {
+      "name": "format-navigation-and-text-limit",
+      "status": "PASS"
+    },
+    {
+      "name": "mobile-short-viewport-and-long-content",
+      "status": "PASS"
+    },
+    {
+      "name": "note-keyboard-position-persists",
+      "status": "PASS"
+    }
+  ],
+  "buildPages": "PASS",
+  "lint": "PASS",
+  "liveDeploymentSmoke": "PASS",
+  "browser": "Chromium 1243; isolated synthetic contexts",
+  "runtimeModified": false
+}

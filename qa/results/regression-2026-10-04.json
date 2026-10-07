@@ -1,0 +1,186 @@
+{
+  "date": "2026-10-04",
+  "commit": "c0cda5478d6655dcd7f7d32c4044cd5eaccddf93",
+  "browser": "Chromium 1243 (installed Chrome for Testing); macOS host",
+  "localBase": "http://127.0.0.1:5174",
+  "initialSuites": [
+    {
+      "suite": "privacy-failures",
+      "code": 0,
+      "signal": null,
+      "seconds": 27
+    },
+    {
+      "suite": "passphrase-recovery",
+      "code": 0,
+      "signal": null,
+      "seconds": 17
+    },
+    {
+      "suite": "private-archive",
+      "code": 0,
+      "signal": null,
+      "seconds": 55
+    },
+    {
+      "suite": "media-sharing-locks",
+      "code": 1,
+      "signal": null,
+      "seconds": 98
+    },
+    {
+      "suite": "large-media",
+      "code": 1,
+      "signal": null,
+      "seconds": 86
+    },
+    {
+      "suite": "ui-polish",
+      "code": 0,
+      "signal": null,
+      "seconds": 53
+    },
+    {
+      "suite": "help-guide",
+      "code": 0,
+      "signal": null,
+      "seconds": 25
+    },
+    {
+      "suite": "physical-interactions",
+      "code": 1,
+      "signal": null,
+      "seconds": 81
+    },
+    {
+      "suite": "sound-state",
+      "code": 0,
+      "signal": null,
+      "seconds": 15
+    },
+    {
+      "suite": "room-motion",
+      "code": 0,
+      "signal": null,
+      "seconds": 28
+    },
+    {
+      "suite": "room-controls",
+      "code": 0,
+      "signal": null,
+      "seconds": 16
+    },
+    {
+      "suite": "public-share",
+      "code": 0,
+      "signal": null,
+      "seconds": 10
+    },
+    {
+      "suite": "shared-space",
+      "code": 0,
+      "signal": null,
+      "seconds": 63
+    }
+  ],
+  "serialReruns": [
+    {
+      "suite": "media-sharing-locks",
+      "code": 0,
+      "signal": null,
+      "seconds": 35
+    },
+    {
+      "suite": "large-media",
+      "code": 0,
+      "signal": null,
+      "seconds": 24
+    },
+    {
+      "suite": "physical-interactions",
+      "code": 0,
+      "signal": null,
+      "seconds": 15
+    }
+  ],
+  "edgeCases": [
+    {
+      "name": "hide-during-unlock",
+      "status": "FAIL",
+      "error": "Hidden pending unlock must not reveal the archive after Return\n\n1 !== 0\n",
+      "console": []
+    },
+    {
+      "name": "hide-during-create",
+      "status": "FAIL",
+      "error": "Hidden pending creation must not reopen an unlocked archive\n\n1 !== 0\n",
+      "console": []
+    },
+    {
+      "name": "room-cap-round-trip",
+      "status": "FAIL",
+      "error": "The app must not save an archive its own loader rejects\n\n1 !== 0\n",
+      "console": []
+    },
+    {
+      "name": "note-cap-validation",
+      "status": "FAIL",
+      "error": "10,001st note is accepted but saved data cannot reload",
+      "console": []
+    },
+    {
+      "name": "shared-same-tab-replacement",
+      "status": "PASS"
+    },
+    {
+      "name": "shared-hidden-new-link",
+      "status": "PASS"
+    },
+    {
+      "name": "rename-escape",
+      "status": "PASS"
+    },
+    {
+      "name": "unicode-and-duplicate-rooms",
+      "status": "PASS"
+    },
+    {
+      "name": "composer-empty-after-keep-choice",
+      "status": "FAIL",
+      "error": "Keep should not save a draft cleared after choosing a destination\n\n1 !== 0\n",
+      "console": []
+    },
+    {
+      "name": "hide-return-during-save",
+      "status": "FAIL",
+      "error": "Return exposes an unlocked archive while the pending save is finishing\n\n1 !== 0\n",
+      "console": []
+    },
+    {
+      "name": "fairy-lights-keyboard-after-resize",
+      "status": "FAIL",
+      "error": "Resizing hides the only tab stop in the fairy-light group\n\n0 !== 1\n",
+      "console": []
+    },
+    {
+      "name": "format-navigation-and-text-limit",
+      "status": "PASS"
+    },
+    {
+      "name": "mobile-short-viewport-and-long-content",
+      "status": "PASS"
+    },
+    {
+      "name": "note-keyboard-position-persists",
+      "status": "PASS"
+    }
+  ],
+  "productionSmoke": "PASS: hosted entry, guide, creation, persistence, same-document protected-share navigation and recipient decrypt",
+  "buildPages": "PASS",
+  "lint": "PASS",
+  "artifacts": [
+    "/tmp/black-wall-regression-UrizHx",
+    "/tmp/black-wall-regression-sH2KVI",
+    "/tmp/black-wall-edges-DvXKOk"
+  ]
+}

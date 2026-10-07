@@ -24,3 +24,11 @@ Published d3f7ed7 through GitHub Pages run 37122722759; live protected-share dec
 
 ## October 4 — moonlit journal identity
 Latest user direction supersedes the candle-heart brand: a silver crescent shelters a warm folded page on near-black navy. Reuse the original SVG in lobby, recipient navigation and dark stationery seals; Share uses a moon-sealed envelope. Regenerate favicon/192/512/Apple assets. Wick remains the candle messenger within the scene. The tested same-page protected-link fix is included in this deployment.
+
+## Regression audit workflow
+Use qa/regression-all.cjs for the 13 current suites; it defaults to serial execution after media/motion timing failures under two workers. Set QA_BASE_URL and PLAYWRIGHT_CHROMIUM_EXECUTABLE for the environment. qa/regression-edge-cases.cjs intentionally fails until the six defects documented in REGRESSION_REPORT_2026-10-04.md are fixed; do not weaken assertions to make the audit green. QA_CASES selects individual reproductions. Retired plaintext gallery/archive suites are historical, not current gates.
+
+For adversarial-input coverage, also run qa/security-input-matrix.cjs against local Vite (it imports domain modules). Start recipient-only persistence tests directly on /shared/ so archive-gate setup does not contaminate database assertions. Latest evidence and limitations are in SECURITY_TEST_REPORT_2026-10-07.md. A green normal-flow suite does not supersede failing privacy/capacity edge checks; distinguish development dependency advisories from production audit results.
+
+## October 7 — regression fixes
+The six audited defects are now fixed locally. Both qa/regression-edge-cases.cjs (18 cases) and qa/security-input-matrix.cjs (12 groups) must pass alongside the 13 feature suites. Earlier audit findings above are historical. Hide must immediately gate rendering and wait for entry/save work before clearing the key; failed saves stay concealed with encrypted export/retry. Enforce new-room/new-note limits in the store, while permitting structurally valid existing oversized encrypted archives to open for recovery.

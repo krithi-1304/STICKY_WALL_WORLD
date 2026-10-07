@@ -66,3 +66,15 @@ Files: LetterSeal.tsx; ShareLetterIcon.tsx; favicon.svg, icon-192.png, icon-512.
 Behavior: silver crescent and warm folded journal page on near-black navy; matching moon-sealed envelope. Supersedes candle-heart brand per latest user feedback; Wick remains in the shared scene.
 Tests: regenerated PNG assets visually inspected, build:pages/lint pass.
 Limits: physical home-screen installation not tested.
+
+## 5f1be2c — regression fixes and repeatable security tests
+Files: web/src/components/{FairyLights,ForgotPassphrase,ThoughtComposer,VaultGate}.tsx; web/src/domain/{storage,types}.ts; web/src/pages/{Lobby,NewRoom,Room}.tsx; web/src/state/wall.ts; qa/{regression-all,regression-edge-cases,security-input-matrix}.cjs.
+Behavior: immediate concealment, stale-entry suppression, concealed quota-failure recovery, central room/note creation limits, recovery of existing oversized archives, final draft validation and visible fairy-light keyboard focus.
+Tests: build:pages/lint; 13 feature suites; 12 security groups; 18 final edge cases; local production-path smoke; no uncaught page errors.
+Limits: Chromium automation only; hosting-header recommendations remain; not deployed.
+
+## dfb07a1 — patched development source-map dependency
+Files: web/pnpm-lock.yaml.
+Behavior: source-map-js 1.2.1 → 1.2.2 without unrelated dependency changes; no visual change.
+Tests: build:pages/lint and browser suite with patched installation; full pnpm audit reports zero advisories.
+Limits: an advisory scan is not proof of absence of vulnerabilities; not deployed.

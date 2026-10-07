@@ -26,3 +26,6 @@ Live verification also reproduced a same-document navigation bug: opening a full
 
 ## October 4 — moonlit journal identity
 Latest user direction supersedes the candle-heart brand: a silver crescent shelters a warm folded page on near-black navy. Reuse the original SVG in lobby, recipient navigation and dark stationery seals; Share uses a moon-sealed envelope. Regenerate favicon/192/512/Apple assets. Wick remains the candle messenger within the scene. The tested same-page protected-link fix is included in this deployment.
+
+## October 7 — immediate concealment and recoverable capacity
+Hide closes the UI immediately and invalidates pending gate results. Storage waits for tracked create/unlock/restore/reset operations and outstanding writes before releasing the key/writer lock. Return cannot expose the world while cleanup is pending. If storage fails, only encrypted export and retry are offered; unsaved memory is retained without rendering notes. New creation enforces 500 rooms / 10,000 notes centrally. Existing structurally valid oversized encrypted archives may open, export and shrink rather than being permanently rejected. Final composer submission validates current text before any room/note mutation. Responsive lights reconcile their tab stop with actual visible bulbs.

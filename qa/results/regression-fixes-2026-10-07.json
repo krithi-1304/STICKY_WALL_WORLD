@@ -1,0 +1,321 @@
+{
+  "date": "2026-10-07",
+  "baselineCommit": "c0cda5478d6655dcd7f7d32c4044cd5eaccddf93",
+  "stage": "post-fix local verification",
+  "featureAndSecuritySuites": [
+    {
+      "suite": "private-archive",
+      "code": 0,
+      "signal": null,
+      "seconds": 41
+    },
+    {
+      "suite": "privacy-failures",
+      "code": 0,
+      "signal": null,
+      "seconds": 13
+    },
+    {
+      "suite": "passphrase-recovery",
+      "code": 0,
+      "signal": null,
+      "seconds": 6
+    },
+    {
+      "suite": "media-sharing-locks",
+      "code": 0,
+      "signal": null,
+      "seconds": 29
+    },
+    {
+      "suite": "large-media",
+      "code": 0,
+      "signal": null,
+      "seconds": 22
+    },
+    {
+      "suite": "physical-interactions",
+      "code": 0,
+      "signal": null,
+      "seconds": 14
+    },
+    {
+      "suite": "ui-polish",
+      "code": 0,
+      "signal": null,
+      "seconds": 11
+    },
+    {
+      "suite": "help-guide",
+      "code": 0,
+      "signal": null,
+      "seconds": 8
+    },
+    {
+      "suite": "sound-state",
+      "code": 0,
+      "signal": null,
+      "seconds": 5
+    },
+    {
+      "suite": "room-motion",
+      "code": 0,
+      "signal": null,
+      "seconds": 12
+    },
+    {
+      "suite": "room-controls",
+      "code": 0,
+      "signal": null,
+      "seconds": 2
+    },
+    {
+      "suite": "shared-space",
+      "code": 0,
+      "signal": null,
+      "seconds": 36
+    },
+    {
+      "suite": "public-share",
+      "code": 0,
+      "signal": null,
+      "seconds": 4
+    },
+    {
+      "suite": "regression-edge-cases",
+      "code": 0,
+      "signal": null,
+      "seconds": 20
+    },
+    {
+      "suite": "security-input-matrix",
+      "code": 0,
+      "signal": null,
+      "seconds": 13
+    }
+  ],
+  "finalExpandedEdgeCases": [
+    {
+      "name": "hide-during-unlock",
+      "status": "PASS"
+    },
+    {
+      "name": "hide-during-create",
+      "status": "PASS"
+    },
+    {
+      "name": "hide-during-restore",
+      "status": "PASS"
+    },
+    {
+      "name": "hide-during-start-fresh",
+      "status": "PASS"
+    },
+    {
+      "name": "room-cap-round-trip",
+      "status": "PASS"
+    },
+    {
+      "name": "note-cap-validation",
+      "status": "PASS"
+    },
+    {
+      "name": "oversized-existing-archive-recovery",
+      "status": "PASS"
+    },
+    {
+      "name": "hide-save-failure-recovery",
+      "status": "PASS"
+    },
+    {
+      "name": "shared-same-tab-replacement",
+      "status": "PASS"
+    },
+    {
+      "name": "shared-hidden-new-link",
+      "status": "PASS"
+    },
+    {
+      "name": "rename-escape",
+      "status": "PASS"
+    },
+    {
+      "name": "unicode-and-duplicate-rooms",
+      "status": "PASS"
+    },
+    {
+      "name": "composer-empty-after-keep-choice",
+      "status": "PASS"
+    },
+    {
+      "name": "hide-return-during-save",
+      "status": "PASS"
+    },
+    {
+      "name": "fairy-lights-keyboard-after-resize",
+      "status": "PASS"
+    },
+    {
+      "name": "format-navigation-and-text-limit",
+      "status": "PASS"
+    },
+    {
+      "name": "mobile-short-viewport-and-long-content",
+      "status": "PASS"
+    },
+    {
+      "name": "note-keyboard-position-persists",
+      "status": "PASS"
+    }
+  ],
+  "securityInputMatrix": [
+    {
+      "name": "url-protocol-and-credentials-matrix",
+      "status": "PASS",
+      "detail": {
+        "inputs": 23
+      },
+      "seconds": 0.218
+    },
+    {
+      "name": "authenticated-encryption-tamper-and-phrase-matrix",
+      "status": "PASS",
+      "detail": {
+        "roundTrips": 4,
+        "rejections": 31,
+        "failures": []
+      },
+      "seconds": 1.199
+    },
+    {
+      "name": "malformed-world-fuzz-and-prototype-inputs",
+      "status": "PASS",
+      "detail": {
+        "inputs": 145,
+        "rejected": 145,
+        "accepted": [],
+        "prototypePolluted": null,
+        "keys": [
+          "rooms",
+          "stickies"
+        ]
+      },
+      "seconds": 0.219
+    },
+    {
+      "name": "xss-through-room-note-and-recipient",
+      "status": "PASS",
+      "detail": {
+        "payloads": 9,
+        "safeLinks": 1
+      },
+      "seconds": 0.77
+    },
+    {
+      "name": "plaintext-storage-and-request-leakage",
+      "status": "PASS",
+      "detail": {
+        "capturedRequests": 5,
+        "externalOrigins": [
+          "https://fonts.gstatic.com"
+        ],
+        "storageContainsCiphertext": true,
+        "plaintextFound": false
+      },
+      "seconds": 0.631
+    },
+    {
+      "name": "invalid-media-upload-matrix",
+      "status": "PASS",
+      "detail": {
+        "inputs": 8,
+        "accepted": []
+      },
+      "seconds": 0.26
+    },
+    {
+      "name": "recipient-corrupt-file-recovery-and-no-persistence",
+      "status": "PASS",
+      "detail": {
+        "invalidFiles": 4,
+        "recipientDatabases": 0
+      },
+      "seconds": 0.915
+    },
+    {
+      "name": "user-input-journey-1",
+      "status": "PASS",
+      "detail": {
+        "inputs": 8,
+        "width": 1440,
+        "passphraseLength": 12
+      },
+      "seconds": 1.345
+    },
+    {
+      "name": "user-input-journey-2",
+      "status": "PASS",
+      "detail": {
+        "inputs": 8,
+        "width": 768,
+        "passphraseLength": 14
+      },
+      "seconds": 1.27
+    },
+    {
+      "name": "user-input-journey-3",
+      "status": "PASS",
+      "detail": {
+        "inputs": 8,
+        "width": 390,
+        "passphraseLength": 200
+      },
+      "seconds": 1.262
+    },
+    {
+      "name": "user-input-journey-4",
+      "status": "PASS",
+      "detail": {
+        "inputs": 8,
+        "width": 360,
+        "passphraseLength": 21
+      },
+      "seconds": 1.212
+    },
+    {
+      "name": "rapid-edits-last-write-wins",
+      "status": "PASS",
+      "detail": {
+        "typedCharacters": 104,
+        "typingAndSaveMs": 278
+      },
+      "seconds": 1.006
+    }
+  ],
+  "buildPages": "PASS",
+  "lint": "PASS",
+  "dependencyAudit": {
+    "advisories": {},
+    "metadata": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0
+      },
+      "dependencies": 14,
+      "devDependencies": 68,
+      "optionalDependencies": 47,
+      "totalDependencies": 82
+    }
+  },
+  "limitations": [
+    "Chromium automation only",
+    "Not deployed",
+    "Hosted security-header recommendations remain"
+  ],
+  "localProductionPathSmoke": "PASS",
+  "fixCommit": "5f1be2c",
+  "dependencyCommit": "dfb07a1"
+}
