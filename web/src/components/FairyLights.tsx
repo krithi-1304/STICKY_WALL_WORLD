@@ -26,7 +26,7 @@ export function FairyLights({ small = false }: { small?: boolean }) {
     return () => { observer.disconnect(); window.removeEventListener('resize', reconcile); };
   }, []);
   const bulbs = small ? [12, 48, 84] : [8, 16.4, 24.8, 33.2, 41.6, 50, 58.4, 66.8, 75.2, 83.6, 92];
-  return <div ref={group} className={`fairy-lights${small ? ' fairy-lights--small' : ''}`} role="group" aria-label="Fairy lights — use arrow keys to choose a bulb" data-lit={lit !== null} style={{ '--light-x': `${lit === null ? 50 : bulbs[lit]}%` } as CSSProperties} onKeyDown={event => {
+  return <div ref={group} data-testid={small ? 'companion-fairy-lights' : 'main-fairy-lights'} className={`fairy-lights${small ? ' fairy-lights--small' : ''}`} role="group" aria-label="Fairy lights — use arrow keys to choose a bulb" data-lit={lit !== null} style={{ '--light-x': `${lit === null ? 50 : bulbs[lit]}%` } as CSSProperties} onKeyDown={event => {
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
     event.preventDefault();
     const buttons = [...event.currentTarget.querySelectorAll('button')].filter(button => button.offsetParent !== null);

@@ -6,3 +6,8 @@ dist/
 !.env.example
 .DS_Store
 *.local
+
+# Playwright artifacts contain synthetic test data and traces
+web/test-results/
+web/playwright-report/
+web/blob-report/

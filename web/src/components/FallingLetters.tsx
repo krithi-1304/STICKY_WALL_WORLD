@@ -29,5 +29,5 @@ export function FallingLetters({ enabled }: { enabled: boolean }) {
     sync(); document.addEventListener('visibilitychange', sync); reduced.addEventListener('change', sync);
     return () => { active = false; if (frame !== null) cancelAnimationFrame(frame); frame = null; document.removeEventListener('visibilitychange', sync); reduced.removeEventListener('change', sync); };
   }, [enabled]);
-  return <div className="falling-letters" aria-hidden="true">{enabled && letters.map(letter => <span key={letter.id} data-letter-id={letter.id} style={{ left: `${letter.x}%`, '--fall-tilt': `${letter.tilt}deg` } as CSSProperties} onAnimationEnd={() => setLetters(previous => previous.filter(p => p.id !== letter.id))}><svg viewBox="0 0 32 24" fill="none"><rect x="1" y="1" width="30" height="22" rx="2"/><path d="m2 3 14 11L30 3M2 22l9-9m19 9-9-9"/></svg></span>)}</div>;
+  return <div data-testid="falling-letters" className="falling-letters" aria-hidden="true">{enabled && letters.map(letter => <span key={letter.id} data-letter-id={letter.id} style={{ left: `${letter.x}%`, '--fall-tilt': `${letter.tilt}deg` } as CSSProperties} onAnimationEnd={() => setLetters(previous => previous.filter(p => p.id !== letter.id))}><svg viewBox="0 0 32 24" fill="none"><rect x="1" y="1" width="30" height="22" rx="2"/><path d="m2 3 14 11L30 3M2 22l9-9m19 9-9-9"/></svg></span>)}</div>;
 }
