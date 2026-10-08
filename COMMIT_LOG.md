@@ -78,3 +78,38 @@ Files: web/pnpm-lock.yaml.
 Behavior: source-map-js 1.2.1 → 1.2.2 without unrelated dependency changes; no visual change.
 Tests: build:pages/lint and browser suite with patched installation; full pnpm audit reports zero advisories.
 Limits: an advisory scan is not proof of absence of vulnerabilities; not deployed.
+
+## Pending pre-launch work — October 8
+No commits have been created for this pass. PRELAUNCH_COMMIT_PLAN.md contains the exact five-commit sequence, file lists, split dependency staging, explanatory bodies and validation limits. Intents: security hardening; native E2E coverage; PR CI; approved unreachable-code cleanup; documentation/evidence. Post-cleanup build/lint/typecheck and 31 native tests pass. Prior to cleanup, all 15 supplemental suites pass. Deployment and GitHub-hosted CI execution remain pending.
+
+## October 9 — pre-launch commits (supersedes pending status)
+
+### 2e5fe87 — production security hardening
+Files: web/src/main.tsx; web/scripts/pages.mjs.
+Behavior: framed visits show an open-in-own-tab link; production entrypoints carry CSP and no-referrer policies.
+Tests: production build/lint, framing and script enforcement, encrypted sharing/media checks; final native suite passes.
+Limits: response-level frame-ancestors headers require hosting support; not deployed.
+
+### a963c01 — isolated private archive E2E journeys
+Files: .gitignore; web/e2e/{README.md,archive.spec.ts,fixtures.ts,responsive.spec.ts,security.spec.ts,sharing.spec.ts}; web/{package.json,pnpm-lock.yaml,playwright.config.ts,tsconfig.e2e.json}; web/src/components/{DiaryNote,FairyLights,FallingLetters}.tsx.
+Behavior: encrypted synthetic fixtures, isolated browser contexts, desktop/mobile journeys, failure artifacts and test scripts; stable component selectors.
+Tests: final post-cleanup 31 native Playwright tests pass without retries; lint, test typecheck and production build pass. All 15 supplemental suites passed before cleanup.
+Limits: Chromium and emulated mobile; no persisted auth keys; not real-device or human accessibility certification.
+
+### ef54a52 — pull request browser checks
+Files: .github/workflows/e2e.yml.
+Behavior: runs native and supplemental suites on PRs, retaining reports and failure evidence.
+Tests: underlying commands pass locally; workflow reviewed.
+Limits: GitHub-hosted workflow has not run; legacy suites produce logs/screenshots rather than native Playwright traces.
+
+### b052a02 — approved unreachable-code cleanup
+Files: web/{package.json,pnpm-lock.yaml}; web/src/components/{RainbowFlame,RoomToolsMenu,StickyNote,WebGLTorchField,WorldAtmosphere,WritingStylePicker}.tsx; web/src/assets/{react.svg,vite.svg,hero.png}; web/src/domain/{motion,slug,types}.ts.
+Behavior: removes approved A1–A11 only and orphaned animation dependencies; reachable app behavior unchanged.
+Tests: post-cleanup build/lint/test-typecheck and 31 native tests pass, zero retries; dependency audit reports zero advisories.
+Limits: deferred store actions, crypto/UI extraction and file splitting remain untouched. Supplemental suites passed before cleanup and were not rerun.
+
+### Documentation commit accompanying this record
+Files: INSTRUCTIONS.md; PROGRESS.md; DECISIONS.md; COMMIT_LOG.md; PRELAUNCH_COMMIT_PLAN.md; qa/results/prelaunch-{e2e,cleanup}-2026-10-08.json.
+Behavior: records approvals, measured results, exact staging recipe and actual implementation hashes.
+Tests: staged whitespace checks and JSON parsing; no runtime changes.
+Limits: each historical implementation state was not independently checked out and retested. No push or deployment in this sequence.

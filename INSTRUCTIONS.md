@@ -32,3 +32,9 @@ For adversarial-input coverage, also run qa/security-input-matrix.cjs against lo
 
 ## October 7 — regression fixes
 The six audited defects are now fixed locally. Both qa/regression-edge-cases.cjs (18 cases) and qa/security-input-matrix.cjs (12 groups) must pass alongside the 13 feature suites. Earlier audit findings above are historical. Hide must immediately gate rendering and wait for entry/save work before clearing the key; failed saves stay concealed with encrypted export/retry. Enforce new-room/new-note limits in the store, while permitting structurally valid existing oversized encrypted archives to open for recovery.
+
+## Approved pre-launch test runner
+Use npm run test:e2e (from web) for the production-path Playwright suite; npm run test:e2e:ci enables retries/forbid-only, and npm run test:e2e:typecheck checks fixtures/config. Port 5190 must be free; the runner owns its server. Do not persist encryption keys in auth storageState. Native fixtures seed synthetic ciphertext into isolated contexts and unlock through the real form. PR CI additionally runs existing deep regressions on dev port 5191. See web/e2e/README.md for failure artifacts and limitations. The current user requires approval before Stage 3 cleanup; Stage 4 is a proposed command sequence, not authorization to commit automatically.
+
+## October 9 — commit authorization
+The user’s continuation authorized execution of the concrete five-commit plan in PRELAUNCH_COMMIT_PLAN.md. This supersedes the earlier pending Stage 4 status only for that reviewed sequence. Future cleanup outside A1–A11 still needs approval. Deployment remains separate.

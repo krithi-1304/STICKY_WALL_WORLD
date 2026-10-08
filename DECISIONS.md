@@ -29,3 +29,9 @@ Latest user direction supersedes the candle-heart brand: a silver crescent shelt
 
 ## October 7 — immediate concealment and recoverable capacity
 Hide closes the UI immediately and invalidates pending gate results. Storage waits for tracked create/unlock/restore/reset operations and outstanding writes before releasing the key/writer lock. Return cannot expose the world while cleanup is pending. If storage fails, only encrypted export and retry are offered; unsaved memory is retained without rendering notes. New creation enforces 500 rooms / 10,000 notes centrally. Existing structurally valid oversized encrypted archives may open, export and shrink rather than being permanently rejected. Final composer submission validates current text before any room/note mutation. Responsive lights reconcile their tab stop with actual visible bulbs.
+
+## October 8 — pre-launch approval boundaries
+Stage 1 approval permits a framed-render fallback and production Pages CSP/no-referrer; response-level framing headers and deployment remain separate. Stage 2 uses encrypted synthetic fixtures and real per-context unlock rather than persisting auth keys. Stage 3 approval covers A1–A11 only: unreachable components/assets, unused letterMotion/slugify/WallState and the orphaned framer-motion dependency. Keep store actions, persisted type variants, CSS order, crypto helpers and historical QA. Stage 4 supplies commands for review; it does not create commits automatically.
+
+## October 9 — execute reviewed atomic commits
+The user authorized the reviewed five-commit sequence by continuing after its presentation. Separate security, test infrastructure, PR CI, approved cleanup and evidence. Stage package/lockfile additions separately from dependency removal. Retain the original commands as an audit recipe; do not push or deploy as part of this sequence.

@@ -1,0 +1,133 @@
+{
+  "stage": "Stage 2 Playwright runner",
+  "date": "2026-10-08",
+  "stats": {
+    "startTime": "2026-10-08T09:08:53.650Z",
+    "duration": 55339.787,
+    "expected": 31,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "projects": [
+    "chromium",
+    "mobile-chromium"
+  ],
+  "dependencyAudit": {
+    "advisories": {},
+    "metadata": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0
+      },
+      "dependencies": 14,
+      "devDependencies": 69,
+      "optionalDependencies": 47,
+      "totalDependencies": 83
+    }
+  },
+  "lint": "PASS",
+  "typecheck": "PASS",
+  "buildPages": "PASS",
+  "ciWorkflowExecution": "Pending actual PR run",
+  "limitations": [
+    "Chromium and touch emulation only",
+    "No deployment",
+    "Supplemental legacy child browser tests have logs/screenshots but no runner traces"
+  ],
+  "supplementalSuites": [
+    {
+      "suite": "private-archive",
+      "code": 0,
+      "signal": null,
+      "seconds": 39
+    },
+    {
+      "suite": "privacy-failures",
+      "code": 0,
+      "signal": null,
+      "seconds": 12
+    },
+    {
+      "suite": "passphrase-recovery",
+      "code": 0,
+      "signal": null,
+      "seconds": 6
+    },
+    {
+      "suite": "media-sharing-locks",
+      "code": 0,
+      "signal": null,
+      "seconds": 29
+    },
+    {
+      "suite": "large-media",
+      "code": 0,
+      "signal": null,
+      "seconds": 22
+    },
+    {
+      "suite": "physical-interactions",
+      "code": 0,
+      "signal": null,
+      "seconds": 15
+    },
+    {
+      "suite": "ui-polish",
+      "code": 0,
+      "signal": null,
+      "seconds": 11
+    },
+    {
+      "suite": "help-guide",
+      "code": 0,
+      "signal": null,
+      "seconds": 10
+    },
+    {
+      "suite": "sound-state",
+      "code": 0,
+      "signal": null,
+      "seconds": 5
+    },
+    {
+      "suite": "room-motion",
+      "code": 0,
+      "signal": null,
+      "seconds": 12
+    },
+    {
+      "suite": "room-controls",
+      "code": 0,
+      "signal": null,
+      "seconds": 2
+    },
+    {
+      "suite": "shared-space",
+      "code": 0,
+      "signal": null,
+      "seconds": 36
+    },
+    {
+      "suite": "public-share",
+      "code": 0,
+      "signal": null,
+      "seconds": 4
+    },
+    {
+      "suite": "regression-edge-cases",
+      "code": 0,
+      "signal": null,
+      "seconds": 34
+    },
+    {
+      "suite": "security-input-matrix",
+      "code": 0,
+      "signal": null,
+      "seconds": 16
+    }
+  ]
+}
