@@ -92,12 +92,6 @@ export interface Room {
   updatedAt: number;
 }
 
-/** Shape the wall store works against — one room with its notes. */
-export interface WallState {
-  room: Room;
-  stickies: Sticky[];
-}
-
 export const STICKY_LIMITS = {
   maxBodyLength: 500,
   maxStickiesPerRoom: 200,
