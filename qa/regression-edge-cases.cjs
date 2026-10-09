@@ -89,6 +89,8 @@ const results=[];
  });
  await check('fairy-lights-keyboard-after-resize',async page=>{
   await create(page);await page.setViewportSize({width:1440,height:900});const group=page.locator('.lobby > .fairy-lights');await group.getByRole('button',{name:'Illuminate fairy light 2',exact:true}).focus();await page.setViewportSize({width:360,height:800});
+  // Viewport resizing resolves before the browser necessarily delivers resize/ResizeObserver callbacks.
+  await page.waitForFunction(()=>[...document.querySelectorAll('.lobby > .fairy-lights button')].filter(el=>el.tabIndex===0&&el.offsetParent!==null).length===1,undefined,{timeout:1000});
   const stops=await group.locator('button').evaluateAll(els=>els.filter(el=>el.tabIndex===0&&el.offsetParent!==null).length);assert.equal(stops,1,'Resizing hides the only tab stop in the fairy-light group');
  });
  await check('format-navigation-and-text-limit',async page=>{
