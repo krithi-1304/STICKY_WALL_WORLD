@@ -35,3 +35,6 @@ Stage 1 approval permits a framed-render fallback and production Pages CSP/no-re
 
 ## October 9 — execute reviewed atomic commits
 The user authorized the reviewed five-commit sequence by continuing after its presentation. Separate security, test infrastructure, PR CI, approved cleanup and evidence. Stage package/lockfile additions separately from dependency removal. Retain the original commands as an audit recipe; do not push or deploy as part of this sequence.
+
+## October 9 — release and regression timing
+The user's completion request plus existing deployment authorization permitted pushing the reviewed work. Preserve the original unsuccessful local results rather than replacing them with reruns. Synchronize the fairy-light resize test with its asynchronous browser callback; do not alter application focus behavior to satisfy a prematurely evaluated assertion. Keep deferred cleanup and hosting migration outside the approved scope.

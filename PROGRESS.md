@@ -67,3 +67,6 @@ User approved A1–A11 only. Removed six unreachable components, three unreferen
 
 ## October 9 — reviewed commit plan executed
 Following the user’s continuation, created 2e5fe87 (security), a963c01 (E2E), ef54a52 (PR CI), and b052a02 (approved cleanup). The final documentation commit records the evidence and execution. Staged diffs passed whitespace checks. Runtime validation remains the post-cleanup 31 native tests with zero retries, build/lint/typecheck, and the earlier 15 supplemental suites. No push, deployment or hosted CI run performed.
+
+## October 9 — release verified
+Published application commit 10e40e8. Pages run 37858827136 succeeded; hosted E2E run 37860084841 attempt 2 passed 31 native tests and all 15 supplemental suites. Attempt 1 was cancelled during a slow browser download. Live archive/share smoke and room controls at 320/390/1440px pass. Local follow-up exposed a resize test race; e89fe66 synchronizes the assertion without runtime changes. All 18 edge cases and ten resize repetitions pass. Initial local failures and unchanged reruns are preserved in qa/results/prelaunch-release-2026-10-09.json. See PRELAUNCH_RELEASE.md for hosting/device limits.

@@ -1,0 +1,234 @@
+{
+  "applicationCommit": "10e40e89daf255346e10f143cc1a5948a4bdc9f4",
+  "deployment": {
+    "run": 37858827136,
+    "status": "success"
+  },
+  "hostedCI": {
+    "run": 37860084841,
+    "attempt": 2,
+    "status": "success",
+    "nativeTestsPassed": 31,
+    "nativeDurationSeconds": 42.6,
+    "supplementalSuitesPassed": 15,
+    "firstAttempt": "Cancelled during slow browser download before tests"
+  },
+  "liveDeploymentSmoke": "PASS",
+  "liveRoomControls": {
+    "status": "PASS",
+    "widths": [
+      320,
+      390,
+      1440
+    ],
+    "buttonSamples": 36,
+    "minimumContrast": 7.41
+  },
+  "liveSecurityMetadata": "CSP and no-referrer present; expected bundle confirmed",
+  "localSupplementalInitial": [
+    {
+      "suite": "private-archive",
+      "code": 1,
+      "signal": null,
+      "seconds": 1046
+    },
+    {
+      "suite": "privacy-failures",
+      "code": 1,
+      "signal": null,
+      "seconds": 1002
+    },
+    {
+      "suite": "passphrase-recovery",
+      "code": 1,
+      "signal": null,
+      "seconds": 1006
+    },
+    {
+      "suite": "media-sharing-locks",
+      "code": 1,
+      "signal": null,
+      "seconds": 1911
+    },
+    {
+      "suite": "large-media",
+      "code": 1,
+      "signal": null,
+      "seconds": 1814
+    },
+    {
+      "suite": "physical-interactions",
+      "code": 0,
+      "signal": null,
+      "seconds": 23
+    },
+    {
+      "suite": "ui-polish",
+      "code": 0,
+      "signal": null,
+      "seconds": 15
+    },
+    {
+      "suite": "help-guide",
+      "code": 0,
+      "signal": null,
+      "seconds": 12
+    },
+    {
+      "suite": "sound-state",
+      "code": 0,
+      "signal": null,
+      "seconds": 9
+    },
+    {
+      "suite": "room-motion",
+      "code": 0,
+      "signal": null,
+      "seconds": 14
+    },
+    {
+      "suite": "room-controls",
+      "code": 0,
+      "signal": null,
+      "seconds": 4
+    },
+    {
+      "suite": "shared-space",
+      "code": 0,
+      "signal": null,
+      "seconds": 40
+    },
+    {
+      "suite": "public-share",
+      "code": 0,
+      "signal": null,
+      "seconds": 4
+    },
+    {
+      "suite": "regression-edge-cases",
+      "code": 1,
+      "signal": null,
+      "seconds": 28
+    },
+    {
+      "suite": "security-input-matrix",
+      "code": 0,
+      "signal": null,
+      "seconds": 15
+    }
+  ],
+  "localRerun": [
+    {
+      "suite": "private-archive",
+      "code": 0,
+      "signal": null,
+      "seconds": 40
+    },
+    {
+      "suite": "privacy-failures",
+      "code": 0,
+      "signal": null,
+      "seconds": 12
+    },
+    {
+      "suite": "passphrase-recovery",
+      "code": 0,
+      "signal": null,
+      "seconds": 6
+    },
+    {
+      "suite": "media-sharing-locks",
+      "code": 0,
+      "signal": null,
+      "seconds": 30
+    },
+    {
+      "suite": "large-media",
+      "code": 0,
+      "signal": null,
+      "seconds": 22
+    },
+    {
+      "suite": "regression-edge-cases",
+      "code": 1,
+      "signal": null,
+      "seconds": 32
+    }
+  ],
+  "finalEdgeCases": [
+    {
+      "name": "hide-during-unlock",
+      "status": "PASS"
+    },
+    {
+      "name": "hide-during-create",
+      "status": "PASS"
+    },
+    {
+      "name": "hide-during-restore",
+      "status": "PASS"
+    },
+    {
+      "name": "hide-during-start-fresh",
+      "status": "PASS"
+    },
+    {
+      "name": "room-cap-round-trip",
+      "status": "PASS"
+    },
+    {
+      "name": "note-cap-validation",
+      "status": "PASS"
+    },
+    {
+      "name": "oversized-existing-archive-recovery",
+      "status": "PASS"
+    },
+    {
+      "name": "hide-save-failure-recovery",
+      "status": "PASS"
+    },
+    {
+      "name": "shared-same-tab-replacement",
+      "status": "PASS"
+    },
+    {
+      "name": "shared-hidden-new-link",
+      "status": "PASS"
+    },
+    {
+      "name": "rename-escape",
+      "status": "PASS"
+    },
+    {
+      "name": "unicode-and-duplicate-rooms",
+      "status": "PASS"
+    },
+    {
+      "name": "composer-empty-after-keep-choice",
+      "status": "PASS"
+    },
+    {
+      "name": "hide-return-during-save",
+      "status": "PASS"
+    },
+    {
+      "name": "fairy-lights-keyboard-after-resize",
+      "status": "PASS"
+    },
+    {
+      "name": "format-navigation-and-text-limit",
+      "status": "PASS"
+    },
+    {
+      "name": "mobile-short-viewport-and-long-content",
+      "status": "PASS"
+    },
+    {
+      "name": "note-keyboard-position-persists",
+      "status": "PASS"
+    }
+  ],
+  "repeatedResizePasses": 10,
+  "testFixCommit": "e89fe66"
+}

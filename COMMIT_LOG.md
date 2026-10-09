@@ -113,3 +113,15 @@ Files: INSTRUCTIONS.md; PROGRESS.md; DECISIONS.md; COMMIT_LOG.md; PRELAUNCH_COMM
 Behavior: records approvals, measured results, exact staging recipe and actual implementation hashes.
 Tests: staged whitespace checks and JSON parsing; no runtime changes.
 Limits: each historical implementation state was not independently checked out and retested. No push or deployment in this sequence.
+
+## e89fe66 — synchronize responsive keyboard regression
+Files: qa/regression-edge-cases.cjs.
+Behavior: waits up to one second for resize callbacks before the existing exact visible-tab-stop assertion. No runtime changes.
+Tests: all 18 edge cases and ten consecutive resize repetitions pass.
+Limits: the hosted 31-test/15-suite pass precedes this test-only synchronization.
+
+## Release evidence commit accompanying this record
+Files: PRELAUNCH_RELEASE.md; qa/results/prelaunch-release-2026-10-09.json; INSTRUCTIONS.md; PROGRESS.md; DECISIONS.md; COMMIT_LOG.md.
+Behavior: records successful deployment of 10e40e8, hosted CI, live smoke/contrast/layout checks, initial local failures and follow-up results.
+Tests: JSON parsing and whitespace checks; application code unchanged.
+Limits: device/browser coverage and hosting-header gaps remain documented. CI is skipped for this documentation-only head to avoid redeploying an identical app bundle.

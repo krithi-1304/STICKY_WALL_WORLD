@@ -38,3 +38,6 @@ Use npm run test:e2e (from web) for the production-path Playwright suite; npm ru
 
 ## October 9 — commit authorization
 The user’s continuation authorized execution of the concrete five-commit plan in PRELAUNCH_COMMIT_PLAN.md. This supersedes the earlier pending Stage 4 status only for that reviewed sequence. Future cleanup outside A1–A11 still needs approval. Deployment remains separate.
+
+## Release verification record
+PRELAUNCH_RELEASE.md supersedes earlier not-deployed/pending-CI status for the approved pre-launch work. When testing responsive observers, allow the browser callback to complete using a bounded condition wait; retain behavior assertions. Do not equate viewport command completion with observer delivery. Physical-device and response-header limitations remain explicitly recorded.
